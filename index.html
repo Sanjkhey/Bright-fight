@@ -459,6 +459,19 @@ html:not(.desk) .desk-only{display:none!important}
 .agc.agfoc{box-shadow:0 0 0 3px var(--c),0 7px 0 rgba(42,26,99,.3),0 16px 30px rgba(42,26,99,.26)}
 html.desk #agr{justify-content:center;gap:12px}
 html.desk .agrb{flex:0 0 52px;height:52px;width:50px}
+/* ---------- full screen on iPhone : Home Screen guide ---------- */
+html.homeapp .fsbtn,html.homeapp #lfs,html.homeapp #fsg{display:none!important}
+#inst{position:fixed;left:0;top:0;right:0;bottom:0;z-index:95;display:flex;align-items:center;justify-content:center;background:rgba(26,16,70,.62);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);font-family:var(--font,'Fredoka',sans-serif);color:var(--ink,#2a1a63)}
+#inst[hidden]{display:none}
+#inst .ip{width:min(520px,92%);max-height:94%;overflow:auto;padding:14px 20px 14px;border-radius:22px;border:3px solid #fff;background:linear-gradient(160deg,#fff,#e6f5ff);box-shadow:0 7px 0 rgba(42,26,99,.28),0 14px 30px rgba(42,26,99,.22);text-align:center}
+#inst h2{margin:0 0 4px;font-size:22px}
+#inst .it{margin:0 0 8px;font-size:13.5px;line-height:1.3;color:#4a3a8a}
+#inst ol{list-style:none;margin:0 0 6px;padding:0;display:flex;flex-direction:column;gap:6px;text-align:left}
+#inst li{display:flex;align-items:center;gap:12px;padding:6px 10px;border-radius:14px;background:#fff;border:2px solid #d9d2f5;font-size:15px;line-height:1.15}
+#inst li small{display:block;font-size:11.5px;color:#7a6fb0}
+#inst .ic{flex:0 0 34px;height:34px;border-radius:10px;display:flex;align-items:center;justify-content:center;background:#e8f1ff;color:#1a6cff}
+#inst .ii{background:none}#inst .ii img{width:34px;height:34px;border-radius:9px}
+#inst .in{margin:2px 0 10px;font-size:11.5px;color:#7a6fb0}
 
 #lobby{position:fixed;left:0;top:0;right:0;bottom:0;z-index:5;box-sizing:border-box;overflow:hidden;background:#86d9ff}
 #app{position:relative;width:100%;height:100%;overflow:hidden}
@@ -5283,6 +5296,48 @@ function lockFit(){
     if(inst){try{screen.orientation.lock('landscape').catch(()=>{})}catch(_){}return}
     if(window.FS&&!FS.embedded&&FS.allowed()&&!FS.on())FS.toggle();
   },true);
+})();
+
+/* ================= full screen on iPhone =================
+   Safari on iPhone has no fullscreen for web pages : its bars always stay. The only way to play full screen is the
+   Home Screen app (manifest + apple-mobile-web-app-capable), so on an iPhone the fullscreen buttons explain how
+   to add it, and the guide shows itself once on the first visit. Android keeps the real fullscreen (PLAY, buttons). */
+const INST=(function(){
+  const ua=navigator.userAgent||'';
+  const iphone=/iPhone|iPod/.test(ua);
+  const standalone=navigator.standalone===true||(window.matchMedia&&matchMedia('(display-mode: standalone), (display-mode: fullscreen)').matches);
+  const framed=(()=>{try{return window.top!==window}catch(e){return true}})();
+  const web=/^https?:$/.test(location.protocol);
+  const need=iphone&&!standalone&&!framed&&web;              /* Safari on iPhone, on the real website */
+  const SHARE='<svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M12 3v12M7.5 7.5 12 3l4.5 4.5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M8 10H6a1 1 0 0 0-1 1v9a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-9a1 1 0 0 0-1-1h-2" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>';
+  const ADD='<svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><rect x="4" y="4" width="16" height="16" rx="4" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 8v8M8 12h8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>';
+  function el(){
+    let V=document.getElementById('inst');if(V)return V;
+    V=document.createElement('div');V.id='inst';V.hidden=true;
+    V.innerHTML='<div class="ip"><h2>Play full screen</h2>'
+      +'<p class="it">On iPhone, Safari always keeps its bars. Add Bright Fight to your Home Screen : it then opens full screen, like an app.</p>'
+      +'<ol><li><span class="ic">'+SHARE+'</span><span>Tap <b>Share</b> in Safari<small>in the toolbar, or in the <b>···</b> menu</small></span></li>'
+      +'<li><span class="ic">'+ADD+'</span><span>Choose <b>Add to Home Screen</b><small>scroll the list down if you don’t see it</small></span></li>'
+      +'<li><span class="ic ii"><img alt="" src="icons/icon-192.png"></span><span>Open <b>Bright Fight</b> from your Home Screen</span></li></ol>'
+      +'<p class="in">The Home Screen app keeps its own progress, separate from Safari.</p>'
+      +'<button class="btn" id="instok">GOT IT</button></div>';
+    document.body.appendChild(V);
+    V.addEventListener('click',e=>{if(e.target.id==='instok'||e.target===V)hide()});
+    return V;
+  }
+  function show(){const V=el();V.hidden=false;if(typeof rotFit==='function')rotFit(V)}
+  function hide(){const V=document.getElementById('inst');if(V)V.hidden=true;try{localStorage.setItem('bf-inst','1')}catch(_){}}
+  if(need){
+    /* the fullscreen buttons (lobby + game) open the guide instead of the "no fullscreen" message */
+    document.addEventListener('click',e=>{const b=e.target.closest&&e.target.closest('#lfs,#fsg');if(!b)return;e.preventDefault();e.stopImmediatePropagation();show()},true);
+    /* once, on the first visit, when the lobby is ready */
+    let seen=false;try{seen=localStorage.getItem('bf-inst')==='1'}catch(_){}
+    if(!seen){const t=setInterval(()=>{if(!document.getElementById('boot')&&G.mode==='menu'){clearInterval(t);setTimeout(show,700)}},400)}
+    addEventListener('resize',()=>{const V=document.getElementById('inst');if(V&&!V.hidden&&typeof rotFit==='function')rotFit(V)});
+  }
+  /* inside the Home Screen app on iPhone there is nothing to switch : no fullscreen buttons */
+  if(iphone&&standalone)document.documentElement.classList.add('homeapp');
+  return{need,standalone,show,hide};
 })();
 
 /* ---------- setup ---------- */
