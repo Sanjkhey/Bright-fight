@@ -142,7 +142,7 @@ h2{font-size:34px;line-height:1.05}
 #tnrv .tnk b{display:block;font-size:22px;color:#ffd22e;margin-bottom:4px}#tnrv .tnk span{font-size:14px;line-height:1.25;font-weight:600}
 #tnrv .tnbar{width:60%;height:6px;border-radius:3px;background:rgba(255,255,255,.2);overflow:hidden}#tnrv .tnbar i{display:block;height:100%;background:#ff4fd8;animation:tnBar 12s linear forwards}
 @keyframes tnBar{from{width:100%}to{width:0}}
-@media (max-height:470px){#tnrv .tnt{font-size:40px}#tnrv .tnn img{width:110px;height:66px}#tnrv .tnk{width:200px;min-height:100px;padding:9px 11px}#tnrv .tnk b{font-size:19px}#tnrv .tnk span{font-size:12.5px}}
+@media (max-height:470px){html:not(.lockL) #tnrv .tnt{font-size:40px}html:not(.lockL) #tnrv .tnn img{width:110px;height:66px}html:not(.lockL) #tnrv .tnk{width:200px;min-height:100px;padding:9px 11px}html:not(.lockL) #tnrv .tnk b{font-size:19px}html:not(.lockL) #tnrv .tnk span{font-size:12.5px}}@media (max-width:470px){html.lockL #tnrv .tnt{font-size:40px}html.lockL #tnrv .tnn img{width:110px;height:66px}html.lockL #tnrv .tnk{width:200px;min-height:100px;padding:9px 11px}html.lockL #tnrv .tnk b{font-size:19px}html.lockL #tnrv .tnk span{font-size:12.5px}}
 .agcl{margin:3px 0 8px;font-size:13px;color:var(--violet)}
 .agch{display:flex;flex-wrap:wrap;gap:5px}
 .chip{padding:2px 10px;border-radius:999px;font-size:12px;line-height:1.25;background:color-mix(in srgb,var(--c) 16%,#fff);border:2px solid var(--c);color:var(--ink)}
@@ -159,8 +159,8 @@ h2{font-size:34px;line-height:1.05}
 .agpt .agtag{margin:3px 0 6px;font-size:14px;color:var(--violet)}
 .agpt p{margin:6px 0 0;font-size:13px;line-height:1.35}
 .agpt .agsh{color:var(--violet);font-size:12px}
-@media (max-width:520px){.agc{grid-template-columns:84px 1fr}.agst{display:none}}
-@media (max-height:340px){.agc{height:118px}.agp{height:94px}.agmid h3{font-size:21px}}
+@media (max-width:520px){html:not(.lockL) .agc{grid-template-columns:84px 1fr}html:not(.lockL) .agst{display:none}}@media (max-height:520px){html.lockL .agc{grid-template-columns:84px 1fr}html.lockL .agst{display:none}}
+@media (max-height:340px){html:not(.lockL) .agc{height:118px}html:not(.lockL) .agp{height:94px}html:not(.lockL) .agmid h3{font-size:21px}}@media (max-width:340px){html.lockL .agc{height:118px}html.lockL .agp{height:94px}html.lockL .agmid h3{font-size:21px}}
 
 #deck{position:absolute;right:calc(var(--ir,0px) + 122px);top:calc(var(--it,0px) + 196px);z-index:3;display:flex;flex-direction:column;align-items:center;gap:6px}
 .dkt{font-size:12px;font-weight:600;color:var(--ink);background:rgba(255,255,255,.88);border-radius:99px;padding:3px 10px;box-shadow:0 2px 0 rgba(42,26,99,.2);white-space:nowrap;-webkit-text-stroke:0}
@@ -252,8 +252,8 @@ h2{font-size:34px;line-height:1.05}
 #edbar .btn{font-size:18px;min-height:38px;padding:4px 20px}
 .btns{margin-top:14px;display:flex;gap:12px;justify-content:center;align-items:center;flex-wrap:wrap}
 .btns .btn:not(.ghost){padding:8px 30px;font-size:27px}
-@media (max-height:470px){#settings .panel{max-width:820px;display:grid;grid-template-columns:1fr 1fr;column-gap:28px;align-content:start}#settings .panel>h2,#settings .panel>.tabs,#settings .panel>.btns,#settings .panel>.note{grid-column:1/-1}#settings .tabs{justify-self:center}}
-@media (max-height:470px){.panel{padding:10px 20px}h2{font-size:26px}.tabs{margin:6px 0}.row{padding:6px 0}.row small{font-size:12px}.btns{margin-top:8px}.btns .btn:not(.ghost){font-size:22px;min-height:42px;padding:6px 24px}.btn.ghost{font-size:18px;padding:6px 18px;min-height:42px}.note{margin-top:4px}}
+@media (max-height:470px){html:not(.lockL) #settings .panel{max-width:820px;display:grid;grid-template-columns:1fr 1fr;column-gap:28px;align-content:start}html:not(.lockL) #settings .panel>h2,html:not(.lockL) #settings .panel>.tabs,html:not(.lockL) #settings .panel>.btns,html:not(.lockL) #settings .panel>.note{grid-column:1/-1}html:not(.lockL) #settings .tabs{justify-self:center}}@media (max-width:470px){html.lockL #settings .panel{max-width:820px;display:grid;grid-template-columns:1fr 1fr;column-gap:28px;align-content:start}html.lockL #settings .panel>h2,html.lockL #settings .panel>.tabs,html.lockL #settings .panel>.btns,html.lockL #settings .panel>.note{grid-column:1/-1}html.lockL #settings .tabs{justify-self:center}}
+@media (max-height:470px){html:not(.lockL) .panel{padding:10px 20px}html:not(.lockL) h2{font-size:26px}html:not(.lockL) .tabs{margin:6px 0}html:not(.lockL) .row{padding:6px 0}html:not(.lockL) .row small{font-size:12px}html:not(.lockL) .btns{margin-top:8px}html:not(.lockL) .btns .btn:not(.ghost){font-size:22px;min-height:42px;padding:6px 24px}html:not(.lockL) .btn.ghost{font-size:18px;padding:6px 18px;min-height:42px}html:not(.lockL) .note{margin-top:4px}}@media (max-width:470px){html.lockL .panel{padding:10px 20px}html.lockL h2{font-size:26px}html.lockL .tabs{margin:6px 0}html.lockL .row{padding:6px 0}html.lockL .row small{font-size:12px}html.lockL .btns{margin-top:8px}html.lockL .btns .btn:not(.ghost){font-size:22px;min-height:42px;padding:6px 24px}html.lockL .btn.ghost{font-size:18px;padding:6px 18px;min-height:42px}html.lockL .note{margin-top:4px}}
 @media (prefers-reduced-motion:reduce){.sw::after{transition:none}}
 
 /* ================= progression : decks, upgrades, creator tools ================= */
@@ -353,7 +353,7 @@ h2{font-size:34px;line-height:1.05}
 .crg button{padding:9px 6px;border-radius:12px;border:2.5px solid var(--ink);background:#e6f5ff;color:var(--ink);font:inherit;font-size:15px;cursor:pointer}
 .crg button.bad{background:#ffd7dc}
 .crn{margin:8px 0 0;font-size:12px;color:#8a7fb3}
-@media (max-height:430px){.dkart.big{width:200px}.dki.agent img{width:84px;height:84px}.dki img{width:56px;height:56px}.dkot{font-size:22px}}
+@media (max-height:430px){html:not(.lockL) .dkart.big{width:200px}html:not(.lockL) .dki.agent img{width:84px;height:84px}html:not(.lockL) .dki img{width:56px;height:56px}html:not(.lockL) .dkot{font-size:22px}}@media (max-width:430px){html.lockL .dkart.big{width:200px}html.lockL .dki.agent img{width:84px;height:84px}html.lockL .dki img{width:56px;height:56px}html.lockL .dkot{font-size:22px}}
 
 /* guarantees (pity) */
 .dkgar{margin-top:8px;padding-top:8px;border-top:2px dashed rgba(42,26,99,.18)}
@@ -5236,14 +5236,61 @@ function keysSet(i){
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',bind);else setTimeout(bind,0);
 })();
 
+/* ================= landscape lock =================
+   A phone held upright still gets the landscape game : the canvases and the in-game panels are turned a quarter turn
+   (like the lobby already is) and the touches are turned back, so the game never stops on "Rotate your phone".
+   Where the browser allows it (Android, installed app), PLAY also goes fullscreen and locks the screen in landscape. */
+const LOCK={on:false,box:null,sig:''};
+function lockOn(){return!window.BF_DESK&&innerHeight>innerWidth}
+function lockEl(el,on){
+  const s=el.style;
+  if(on){s.width=innerHeight+'px';s.height=innerWidth+'px';s.left=innerWidth+'px';s.top='0px';s.right='auto';s.bottom='auto';s.transformOrigin='0 0';s.transform='rotate(90deg)'}
+  else{s.width='100%';s.height='100%';s.left='0px';s.top='0px';s.right='';s.bottom='';s.transformOrigin='';s.transform=''}
+}
+function lockFit(){
+  const on=lockOn(),sig=on+':'+innerWidth+'x'+innerHeight+':'+(G3.cv?1:0);
+  if(sig===LOCK.sig)return;LOCK.sig=sig;LOCK.on=on;
+  document.documentElement.classList.toggle('lockL',on);
+  lockEl(cv,on);if(G3.cv)lockEl(G3.cv,on);if(LOCK.box)lockEl(LOCK.box,on);
+}
+/* the in-game DOM (buttons, settings, results, layout editor) lives in one box that turns with the canvases */
+(function(){
+  const mk=()=>{
+    const b=document.createElement('div');b.id='lockbox';b.style.cssText='position:fixed;left:0;top:0;width:100%;height:100%;pointer-events:none;z-index:10';
+    cv.parentNode.insertBefore(b,cv.nextSibling);LOCK.box=b;
+    ['gear','fsg','result','settings','edbar','rotate'].forEach(id=>{const e=document.getElementById(id);if(e)b.appendChild(e)});
+    LOCK.sig='';lockFit();
+  };
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',mk);else mk();
+  const tick=()=>{lockFit();requestAnimationFrame(tick)};requestAnimationFrame(tick);
+})();
+/* touches on the turned canvas : screen point -> game point (inverse of the quarter turn) */
+['pointerdown','pointermove','pointerup','pointercancel'].forEach(t=>addEventListener(t,e=>{
+  if(!LOCK.on||e.target!==cv)return;
+  const x=e.clientX,y=e.clientY;
+  Object.defineProperty(e,'clientX',{value:y,configurable:true});
+  Object.defineProperty(e,'clientY',{value:innerWidth-x,configurable:true});
+},true));
+/* PLAY on a phone : fullscreen + landscape lock where the browser allows it (never inside a framed viewer) */
+(function(){
+  const go=document.getElementById('go');if(!go)return;
+  go.addEventListener('click',()=>{
+    if(window.BF_DESK)return;
+    const inst=window.matchMedia&&matchMedia('(display-mode: fullscreen), (display-mode: standalone)').matches;
+    if(inst){try{screen.orientation.lock('landscape').catch(()=>{})}catch(_){}return}
+    if(window.FS&&!FS.embedded&&FS.allowed()&&!FS.on())FS.toggle();
+  },true);
+})();
+
 /* ---------- setup ---------- */
 function resize(){
-  DPR=Math.min(window.devicePixelRatio||1,2);W=innerWidth;H=innerHeight;
+  DPR=Math.min(window.devicePixelRatio||1,2);W=innerWidth;H=innerHeight;if(lockOn()){W=innerHeight;H=innerWidth}
   cv.width=Math.round(W*DPR);cv.height=Math.round(H*DPR);
   const pr=document.createElement('div');
   pr.style.cssText='position:fixed;visibility:hidden;pointer-events:none;padding:env(safe-area-inset-top,0px) env(safe-area-inset-right,0px) env(safe-area-inset-bottom,0px) env(safe-area-inset-left,0px)';
   document.body.appendChild(pr);const cs=getComputedStyle(pr);
   INS.t=parseFloat(cs.paddingTop)||0;INS.r=parseFloat(cs.paddingRight)||0;INS.b=parseFloat(cs.paddingBottom)||0;INS.l=parseFloat(cs.paddingLeft)||0;
+  if(lockOn()){const t=INS.t,r=INS.r,b=INS.b,l=INS.l;INS.t=r;INS.r=b;INS.b=l;INS.l=t}
   pr.remove();
   chkRot();
 }
