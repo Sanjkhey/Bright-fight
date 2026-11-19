@@ -801,7 +801,7 @@ html.desk .agrb{flex:0 0 52px;height:52px;width:50px}
 <div class="tabs" role="tablist"><button class="tab" role="tab" aria-selected="true">Controls</button></div>
 <div class="row"><span id="l-swap">Swap sticks<small>Move on the right, aim on the left.</small></span><button class="sw" id="t-swap" role="switch" aria-checked="false" aria-labelledby="l-swap"></button></div>
 <div class="row"><span id="l-tap">Tap to move<small>Tap a spot and your agent walks there. The aim stick still aims and fires.</small></span><button class="sw" id="t-tap" role="switch" aria-checked="false" aria-labelledby="l-tap"></button></div>
-<div class="row"><span id="l-aa">Aim assist<small>When you aim by hand, the shot locks onto an opponent close to your line.</small></span><button class="sw" id="t-aa" role="switch" aria-checked="true" aria-labelledby="l-aa"></button></div>
+<div class="row"><span id="l-aa">Aim assist<small>When you aim by hand, the shot locks onto an opponent close to your line.</small></span><button class="sw" id="t-aa" role="switch" aria-checked="false" aria-labelledby="l-aa"></button></div>
 <div class="row"><span id="l-snd">Sound<small>Weapons, powers and eliminations.</small></span><button class="sw" id="t-snd" role="switch" aria-checked="true" aria-labelledby="l-snd"></button></div>
 <div class="row desk-only"><span id="l-keys">Keyboard &amp; mouse<small>Change the keys and mouse buttons.</small></span><button class="btn ghost" id="keyopen">KEYS</button></div>
 <div class="row"><span id="l-lay">Button layout<small>Move the sticks wherever suits your thumbs.</small></span><button class="btn ghost" id="editlay">EDIT</button></div>
@@ -2347,7 +2347,7 @@ function drawLoris(gl,po,e,tm,alpha,flash){
 /* aim helpers : soft aim assist (the tilted camera makes the visible body sit off its ground position) and smarter auto-target */
 function angDiff(a,b){let d=a-b;while(d>Math.PI)d-=6.2832;while(d<-Math.PI)d+=6.2832;return d}
 function assistAim(e,ang){
-  if(e.p&&S.aa===false)return ang;             /* Settings > Aim assist off : the manual aim goes exactly where the stick points */
+  if(e.p&&S.aa2!==true)return ang;             /* Aim assist is OFF by default (playtests : the lock got in the way) ; Settings can turn it on */
   let best=null,bk=9;
   for(const o of G.ents){
     if(o===e||!o.alive)continue;const dx=o.x-e.x,dy=o.y-e.y,d=Math.hypot(dx,dy);if(d>(e.rng||RANGE)||d<8)continue;
@@ -5261,7 +5261,7 @@ function lockFit(){
   const mk=()=>{
     const b=document.createElement('div');b.id='lockbox';b.style.cssText='position:fixed;left:0;top:0;width:100%;height:100%;pointer-events:none;z-index:10';
     cv.parentNode.insertBefore(b,cv.nextSibling);LOCK.box=b;
-    ['gear','fsg','result','settings','edbar','rotate'].forEach(id=>{const e=document.getElementById(id);if(e)b.appendChild(e)});
+    ['gear','fsg','result','settings','edbar','rotate'].forEach(id=>{const e=document.getElementById(id);if(e){b.appendChild(e);e.style.pointerEvents='auto'}});   /* the box lets touches through, its children take them */
     LOCK.sig='';lockFit();
   };
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',mk);else mk();
@@ -5590,12 +5590,12 @@ $('#edreset').onclick=()=>{S.lay=null;saveS()};
 $('#leave').onclick=()=>{G.paused=false;$('#settings').hidden=true;hurt(G.ents[0],1e4,null)};
 $('#gear').onclick=()=>{if(G.mode!=='play')return;G.paused=true;syncSw();$('#settings').hidden=false};
 $('#resume').onclick=()=>{G.paused=false;$('#settings').hidden=true};
-function syncSw(){$('#t-aa').setAttribute('aria-checked',String(S.aa!==false));$('#t-snd').setAttribute('aria-checked',String(S.snd!==false));$('#t-swap').setAttribute('aria-checked',String(S.swap));$('#t-tap').setAttribute('aria-checked',String(S.tap))}
+function syncSw(){$('#t-aa').setAttribute('aria-checked',String(S.aa2===true));$('#t-snd').setAttribute('aria-checked',String(S.snd!==false));$('#t-swap').setAttribute('aria-checked',String(S.swap));$('#t-tap').setAttribute('aria-checked',String(S.tap))}
 function flip(k){S[k]=!S[k];saveS();syncSw();C.mv.id=null;C.mv.x=C.mv.y=C.mv.mag=C.mv.kx=C.mv.ky=0;C.aim.id=null;C.aim.mag=0;C.spId=null;C.mv.aura=false;C.tap=null;C.tapId=null}
 $('#t-swap').onclick=()=>flip('swap');
 $('#t-tap').onclick=()=>flip('tap');
 $('#t-snd').onclick=()=>{S.snd=S.snd===false;saveS();syncSw();if(S.snd)sfxWake()};
-$('#t-aa').onclick=()=>{S.aa=S.aa===false;saveS();syncSw()};
+$('#t-aa').onclick=()=>{S.aa2=S.aa2!==true;saveS();syncSw()};
 
 /* ---------- render ---------- */
 function pill(x,y,w,h,r){ctx.beginPath();ctx.moveTo(x+r,y);ctx.arcTo(x+w,y,x+w,y+h,r);ctx.arcTo(x+w,y+h,x,y+h,r);ctx.arcTo(x,y+h,x,y,r);ctx.arcTo(x,y,x+w,y,r);ctx.closePath()}

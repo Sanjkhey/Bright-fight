@@ -1,5 +1,5 @@
 /* Bright Fight service worker : the game opens even offline ; a new version is fetched as soon as there is network */
-const V='bf-ef59430c97',CORE=['./','index.html','manifest.webmanifest','icons/icon-192.png','icons/icon-512.png'];
+const V='bf-dbe53f946d',CORE=['./','index.html','manifest.webmanifest','icons/icon-192.png','icons/icon-512.png'];
 self.addEventListener('install',e=>{e.waitUntil(caches.open(V).then(c=>c.addAll(CORE)).then(()=>self.skipWaiting()))});
 self.addEventListener('activate',e=>{e.waitUntil(caches.keys().then(k=>Promise.all(k.filter(x=>x!==V).map(x=>caches.delete(x)))).then(()=>self.clients.claim()))});
 self.addEventListener('fetch',e=>{
