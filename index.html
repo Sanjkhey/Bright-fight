@@ -2602,7 +2602,7 @@ function atApply(e){
 const LP={
   dashDist:AT_DASH,      /*         dash length (world units)                                                          */
   dashTime:.16,      /*         dash duration (s)                                                                  */
-  dashCd:2.2,        /*         dash cooldown (s) : fairly short, so it can be used often                           */
+  dashCd:3.2,        /*         dash cooldown (s) : was 2.2, +1 s after the first playtests (dash too spammable)    */
   rfNeed:30,         /* REFLECTION  charge needed to fill the bubble                                              */
   rfPct:.75,         /*         share of the damage taken from an opponent that is recovered into the bubble       */
   rfShots:3,         /*         number of boosted shots once the bubble is activated                               */
@@ -2787,7 +2787,7 @@ const SNP={
   accSlow:1,       /*              walking speed while aiming the big shot (1 = no slow-down)                        */
   dashDist:AT_DASH,/* SPEED : dash length (world units) : the same for every agent with Speed (attr.js)            */
   dashTime:.16,    /*         dash duration (s)                                                                      */
-  dashCd:2.8       /*         dash cooldown (s) : a bit longer than Loris (2.2 s), San already shoots from afar      */
+  dashCd:3.2       /*         (not read : every Speed agent uses the shared dash of powers.js, 3.2 s)                 */
 };
 const SNZ={v:1,t:1};                 /* camera zoom (eased)  */
 const SUP=.3;                        /* the upper body is lifted by this (model units) so the legs show */
@@ -3797,11 +3797,14 @@ const BAI={
   hear:700,           /* a shot closer than this can be heard                                           */
   mem:4.5,            /* s a bot remembers where it last saw somebody                                   */
   noise:260,          /* positional error of the vague "somebody is over there" hunting sense           */
-  aim:[.1,.6],        /* accuracy range among bots (1 = perfect). The bots play by the player's rules  */
+  aim:[.07,.55],     /* was [.1,.6] : bots made slightly easier after the first playtests              */
+                      /* accuracy range among bots (1 = perfect). The bots play by the player's rules  */
                       /* (same damage, same fire rate) : their level comes only from this aim, their   */
                       /* reactions and their choices (range set so they are about as dangerous as before)*/
-  react:[.2,.55],     /* reaction time range (s)                                                        */
-  dodge:[.1,.45],     /* chance to dodge an incoming bullet, range among bots                           */
+  react:[.22,.58],    /* reaction time range (s) : was .2-.55                                          */
+  spread:.37,       /* aim error of a bot with aim 0 (rad) : was .34                                    */
+  pause:[.35,1.0],    /* rest between two bursts (s) : was .3-.95                                        */
+  dodge:[.08,.38],    /* chance to dodge an incoming bullet, range among bots : was .1-.45              */
   retreat:[26,44],    /* hp below which a bot breaks off to hide                                        */
   resume:[72,92],     /* hp at which it comes back                                                      */
   dmg:8               /* damage of a bot bullet : the same as the player's                              */
@@ -4025,11 +4028,11 @@ function botStep(e,dt){
       let tx=t.x,ty=t.y;
       if(B.lead>0){const tl=d/BSPD;tx+=B.tv.x*tl*B.lead;ty+=B.tv.y*tl*B.lead}
       const base=Math.atan2(ty-e.y,tx-e.x);
-      const sig=(1-B.aim)*.34+d/RANGE*.08+(e.moving?.04:0)+(B.hitT<.6?.05:0);
+      const sig=(1-B.aim)*BAI.spread+d/RANGE*.08+(e.moving?.04:0)+(B.hitT<.6?.05:0);
       B.aimOff=B.aimOff*.35+gz()*sig*.8;
       if(B.burst<=0){const bu=(agOf(e)&&agOf(e).burst)||[2,4];B.burst=bu[0]+Math.floor(Math.random()*(bu[1]-bu[0]+1))}
       fire(e,base+B.aimOff,BAI.dmg);
-      B.burst--;if(B.burst<=0)B.pause=rnd(.3,.95);
+      B.burst--;if(B.burst<=0)B.pause=rnd(BAI.pause[0],BAI.pause[1]);
     }
   }
 }
