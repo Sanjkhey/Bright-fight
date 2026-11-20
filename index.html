@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="google" content="notranslate">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
+<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,viewport-fit=cover,user-scalable=no">
 <meta name="description" content="Bright Fight : a 20-player cartoon battle royale in a Colosseum.">
 <meta name="theme-color" content="#0d33b4">
 <link rel="manifest" href="manifest.webmanifest">
@@ -5296,6 +5296,22 @@ function lockFit(){
     if(inst){try{screen.orientation.lock('landscape').catch(()=>{})}catch(_){}return}
     if(window.FS&&!FS.embedded&&FS.allowed()&&!FS.on())FS.toggle();
   },true);
+})();
+
+/* ---------- turning the phone : everything is laid out again, with the real new size ----------
+   iOS Safari sends 'resize' before the new size is known, and zooms the page in when an upright page turns sideways.
+   So : no pinch / auto zoom, and a fresh 'resize' (every module listens to it) whenever the size really changes. */
+(function(){
+  const vm=document.querySelector('meta[name=viewport]');
+  const unzoom=()=>{if(!vm)return;const c=vm.getAttribute('content')||'';if(!/maximum-scale/.test(c))vm.setAttribute('content',c+',maximum-scale=1,minimum-scale=1');
+    /* re-setting the tag makes iOS drop a zoom it applied during the turn */
+    const v=vm.getAttribute('content');vm.setAttribute('content',v.replace(/initial-scale=[\d.]+/,'initial-scale=1.0001'));setTimeout(()=>vm.setAttribute('content',v),50)};
+  ['gesturestart','gesturechange'].forEach(t=>document.addEventListener(t,e=>e.preventDefault(),{passive:false}));
+  let last=innerWidth+'x'+innerHeight,busy=false;
+  const relayout=()=>{busy=true;try{dispatchEvent(new Event('resize'))}finally{busy=false}};
+  addEventListener('orientationchange',()=>{unzoom();[60,250,600,1200].forEach(t=>setTimeout(relayout,t))});
+  if(window.visualViewport)visualViewport.addEventListener('resize',()=>{if(!busy&&visualViewport.scale>1.01)unzoom()});
+  (function watch(){const k=innerWidth+'x'+innerHeight;if(k!==last){last=k;setTimeout(relayout,30)}requestAnimationFrame(watch)})();
 })();
 
 /* ================= full screen on iPhone =================
