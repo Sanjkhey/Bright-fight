@@ -472,6 +472,48 @@ html.homeapp .fsbtn,html.homeapp #lfs,html.homeapp #fsg{display:none!important}
 #inst .ic{flex:0 0 34px;height:34px;border-radius:10px;display:flex;align-items:center;justify-content:center;background:#e8f1ff;color:#1a6cff}
 #inst .ii{background:none}#inst .ii img{width:34px;height:34px;border-radius:9px}
 #inst .in{margin:2px 0 10px;font-size:11.5px;color:#7a6fb0}
+/* ---------- lobby : Club in the top bar ---------- */
+#st .club{left:calc((100% - 358px) / 2 - 78px);top:calc(12px + var(--it,0px));height:56px;padding:0 18px 0 10px;display:flex;align-items:center;gap:6px}
+#st .club svg{width:42px;height:42px}
+#st .club .t{font-size:24px}
+/* ---------- weekly gauge (right side of the lobby) ---------- */
+#wk{position:absolute;right:calc(18px + var(--ir,0px));top:calc(var(--it,0px) + 86px);bottom:calc(var(--ib,0px) + 142px);width:138px;max-height:480px;z-index:3;
+  display:flex;flex-direction:column;align-items:center;padding:8px 6px 14px;box-sizing:border-box;cursor:pointer;
+  background:linear-gradient(180deg,rgba(255,255,255,.92),rgba(225,240,255,.88));border:4px solid var(--ink,#2a1a63);border-radius:20px;box-shadow:0 6px 0 var(--ink2,#1a1050)}
+#wk .wkh{display:flex;flex-direction:column;align-items:center;line-height:1;-webkit-text-stroke:0;color:var(--ink,#2a1a63)}
+#wk .wkh b{font-size:21px;letter-spacing:.5px}
+#wk .wkh span{font-size:15px;color:#5a3cd6;margin-top:2px}
+#wk .wkb{position:relative;flex:1;width:100%;margin-top:10px}
+#wk .wktr{position:absolute;left:50%;top:14px;bottom:14px;width:16px;margin-left:-8px;border-radius:9px;background:#d9d2f5;border:3px solid var(--ink,#2a1a63);overflow:hidden}
+#wk .wkf{position:absolute;left:0;right:0;bottom:0;height:0;background:linear-gradient(0deg,#ffd22e,#ff8a3c 60%,#ff4fa0);box-shadow:inset 0 3px 0 rgba(255,255,255,.5)}
+/* the steps are placed on the track's height (top/bottom 14px kept for the end nodes) */
+#wk .wkn,#wk .wkc{position:absolute;transform:translateY(50%)}
+#wk .wkn{left:50%;margin-left:calc(-22px + var(--sd,1) * 30px);width:44px;height:44px;padding:0;border:3px solid var(--ink,#2a1a63);border-radius:50%;background:#fff;display:grid;place-items:center;cursor:pointer;
+  box-shadow:0 3px 0 var(--ink2,#1a1050);filter:grayscale(.75) brightness(.95);transition:filter .3s,transform .2s;
+  bottom:0}
+#wk .wkb>.wkn{bottom:calc(14px + (100% - 28px) * var(--p,0))}
+#wk .wki svg{width:30px;height:30px;display:block}
+#wk .wkl{position:absolute;left:50%;bottom:-15px;transform:translateX(-50%);font-size:13px;line-height:15px;white-space:nowrap;color:var(--ink,#2a1a63);-webkit-text-stroke:0;background:#fff;border:2px solid var(--ink,#2a1a63);border-radius:7px;padding:0 4px}
+#wk .wkr{position:absolute;left:calc(50% - var(--sd,1) * 56px);top:50%;transform:translate(-50%,-50%);font-size:14px;font-weight:700;color:var(--ink,#2a1a63);-webkit-text-stroke:0;opacity:.75}
+#wk .wkn.ready{filter:none;background:#fff7c2;border-color:#ff8a00;animation:wkr 1s ease-in-out infinite}
+#wk .wkn.ready::after{content:'';position:absolute;inset:-7px;border-radius:50%;border:3px solid #ffd22e;opacity:.8;animation:wkg 1s ease-out infinite}
+#wk .wkn.done{filter:none;opacity:.55}
+#wk .wkn.done::before{content:'\2713';position:absolute;right:-6px;top:-6px;width:18px;height:18px;border-radius:50%;background:#2fb64b;color:#fff;font:700 12px/18px sans-serif;text-align:center;border:2px solid var(--ink,#2a1a63)}
+#wk .wkn.pop{animation:wkp .45s cubic-bezier(.3,1.6,.5,1)}
+@keyframes wkr{50%{transform:translateY(50%) scale(1.1)}}
+@keyframes wkg{from{transform:scale(.85);opacity:.9}to{transform:scale(1.35);opacity:0}}
+@keyframes wkp{0%{transform:translateY(50%) scale(.7)}60%{transform:translateY(50%) scale(1.3)}100%{transform:translateY(50%) scale(1)}}
+#wk .wkc{left:50%;margin-left:-12px;z-index:2;min-width:24px;box-sizing:border-box;height:22px;padding:0 4px;border:2px solid #fff;border-radius:11px;background:var(--ink,#2a1a63);color:#ffd22e;font-size:14px;line-height:22px;text-align:center;-webkit-text-stroke:0;
+  bottom:calc(14px + (100% - 28px) * var(--p,0))}
+.wkfly{position:absolute;left:0;top:0;width:44px;height:44px;z-index:30;pointer-events:none;filter:drop-shadow(0 3px 0 rgba(26,16,80,.4))}
+.wkfly svg{width:100%;height:100%}
+.wkhit{animation:wkhit .4s cubic-bezier(.3,1.6,.5,1)}
+@keyframes wkhit{50%{transform:scale(1.18)}}
+.wksp{position:absolute;width:12px;height:12px;z-index:30;pointer-events:none;background:#ffd22e;clip-path:polygon(50% 0,62% 38%,100% 50%,62% 62%,50% 100%,38% 62%,0 50%,38% 38%)}
+.wkplus{position:absolute;z-index:31;pointer-events:none;transform:translate(-50%,-50%);font-size:28px;color:#ffd22e;-webkit-text-stroke:5px var(--ink,#2a1a63);paint-order:stroke;animation:wkpl 1.3s ease-out forwards}
+@keyframes wkpl{0%{opacity:0;transform:translate(-50%,-30%) scale(.6)}20%{opacity:1;transform:translate(-50%,-80%) scale(1.15)}100%{opacity:0;transform:translate(-50%,-220%) scale(1)}}
+#st .tile.l{height:88px}
+#st .tile.l svg{width:48px;height:48px}
 
 #lobby{position:fixed;left:0;top:0;right:0;bottom:0;z-index:5;box-sizing:border-box;overflow:hidden;background:#86d9ff}
 #app{position:relative;width:100%;height:100%;overflow:hidden}
@@ -778,12 +820,12 @@ html.homeapp .fsbtn,html.homeapp #lfs,html.homeapp #fsg{display:none!important}
 <button class="b p menu fsb fsbtn" id="lfs" aria-label="Fullscreen"><svg viewBox="0 0 34 34" fill="none" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 13V5h8M21 5h8v8M29 21v8h-8M13 29H5v-8"/></svg></button>
 <button class="b p menu" aria-label="Menu" data-t="Menu"><svg viewBox="0 0 34 34"><path d="M5 9h24M5 17h24M5 25h24" stroke="#fff" stroke-width="4" stroke-linecap="round"/></svg></button>
 
-<button class="b p tile l" style="top:calc(var(--it,0px) + 150px)" data-t="Shop"><svg viewBox="0 0 56 56" stroke="#1a1050" stroke-width="3.5" stroke-linejoin="round"><path d="M8 22l5-13h30l5 13z" fill="#ff3b4e"/><rect x="11" y="22" width="34" height="26" rx="4" fill="#fff3cf"/><rect x="22" y="31" width="12" height="17" rx="2" fill="#ffb02e"/></svg><span class="t">SHOP</span></button>
-<button class="b p tile l" style="top:calc(var(--it,0px) + 256px)" data-t="Agents"><svg class="ag" viewBox="0 0 72 62" stroke="#1a1050" stroke-width="2.5" stroke-linejoin="round"><g transform="rotate(-28 36 52)"><rect x="24" y="6" width="24" height="40" rx="4.5" fill="#fff"/><rect x="26.5" y="8.5" width="19" height="35" rx="2.5" fill="#2f8bff" stroke="none"/><circle cx="36" cy="18" r="7" fill="#fff" stroke="none"/><g stroke="none"><ellipse cx="32.2" cy="19.5" rx="3" ry="1.7" transform="rotate(-30 32.2 19.5)" fill="#9cc3ff"/><ellipse cx="39.8" cy="19.5" rx="3" ry="1.7" transform="rotate(30 39.8 19.5)" fill="#9cc3ff"/><path d="M33.8 24l2.2-5 2.2 5z" fill="#2f8bff"/><circle cx="36" cy="17" r="2.1" fill="#ffcf9e"/></g><ellipse cx="36" cy="13.5" rx="2.4" ry=".9" fill="none" stroke="#f2a900" stroke-width="1.1"/></g><g transform="rotate(28 36 52)"><rect x="24" y="6" width="24" height="40" rx="4.5" fill="#fff"/><rect x="26.5" y="8.5" width="19" height="35" rx="2.5" fill="#ff4558" stroke="none"/><circle cx="36" cy="18" r="7" fill="#fff" stroke="none"/><g fill="none" stroke="#c4162c" stroke-width="1.5" stroke-linecap="round"><circle cx="36" cy="18" r="3.8"/><path d="M36 11.8v3.2M36 21v3.2M29.8 18H33M39 18h3.2"/></g><circle cx="36" cy="18" r="1" fill="#c4162c" stroke="none"/></g><rect x="24" y="6" width="24" height="40" rx="4.5" fill="#fff"/><rect x="26.5" y="8.5" width="19" height="35" rx="2.5" fill="#ffd22e" stroke="none"/><circle cx="36" cy="26" r="9" fill="#fff" stroke="none"/><path d="M36 19.5l6 2.3v4.2c0 4.2-3 6.5-6 8-3-1.5-6-3.8-6-8v-4.2z" fill="#ffb300" stroke-width="1.4"/><g fill="#ffc994"><rect x="21" y="45" width="30" height="15" rx="7.5"/><ellipse cx="25.5" cy="46" rx="6" ry="3.8" transform="rotate(-28 25.5 46)"/></g><path d="M31 50.5v5M36 50.5v5M41 50.5v5" stroke-width="1.6" stroke-linecap="round" fill="none"/></svg><span class="t">AGENTS</span></button>
+<button class="b p tile l" style="top:calc(var(--it,0px) + 134px)" data-t="Shop"><svg viewBox="0 0 56 56" stroke="#1a1050" stroke-width="3.5" stroke-linejoin="round"><path d="M8 22l5-13h30l5 13z" fill="#ff3b4e"/><rect x="11" y="22" width="34" height="26" rx="4" fill="#fff3cf"/><rect x="22" y="31" width="12" height="17" rx="2" fill="#ffb02e"/></svg><span class="t">SHOP</span></button>
+<button class="b p tile l" style="top:calc(var(--it,0px) + 230px)" data-t="Agents"><svg class="ag" viewBox="0 0 72 62" stroke="#1a1050" stroke-width="2.5" stroke-linejoin="round"><g transform="rotate(-28 36 52)"><rect x="24" y="6" width="24" height="40" rx="4.5" fill="#fff"/><rect x="26.5" y="8.5" width="19" height="35" rx="2.5" fill="#2f8bff" stroke="none"/><circle cx="36" cy="18" r="7" fill="#fff" stroke="none"/><g stroke="none"><ellipse cx="32.2" cy="19.5" rx="3" ry="1.7" transform="rotate(-30 32.2 19.5)" fill="#9cc3ff"/><ellipse cx="39.8" cy="19.5" rx="3" ry="1.7" transform="rotate(30 39.8 19.5)" fill="#9cc3ff"/><path d="M33.8 24l2.2-5 2.2 5z" fill="#2f8bff"/><circle cx="36" cy="17" r="2.1" fill="#ffcf9e"/></g><ellipse cx="36" cy="13.5" rx="2.4" ry=".9" fill="none" stroke="#f2a900" stroke-width="1.1"/></g><g transform="rotate(28 36 52)"><rect x="24" y="6" width="24" height="40" rx="4.5" fill="#fff"/><rect x="26.5" y="8.5" width="19" height="35" rx="2.5" fill="#ff4558" stroke="none"/><circle cx="36" cy="18" r="7" fill="#fff" stroke="none"/><g fill="none" stroke="#c4162c" stroke-width="1.5" stroke-linecap="round"><circle cx="36" cy="18" r="3.8"/><path d="M36 11.8v3.2M36 21v3.2M29.8 18H33M39 18h3.2"/></g><circle cx="36" cy="18" r="1" fill="#c4162c" stroke="none"/></g><rect x="24" y="6" width="24" height="40" rx="4.5" fill="#fff"/><rect x="26.5" y="8.5" width="19" height="35" rx="2.5" fill="#ffd22e" stroke="none"/><circle cx="36" cy="26" r="9" fill="#fff" stroke="none"/><path d="M36 19.5l6 2.3v4.2c0 4.2-3 6.5-6 8-3-1.5-6-3.8-6-8v-4.2z" fill="#ffb300" stroke-width="1.4"/><g fill="#ffc994"><rect x="21" y="45" width="30" height="15" rx="7.5"/><ellipse cx="25.5" cy="46" rx="6" ry="3.8" transform="rotate(-28 25.5 46)"/></g><path d="M31 50.5v5M36 50.5v5M41 50.5v5" stroke-width="1.6" stroke-linecap="round" fill="none"/></svg><span class="t">AGENTS</span></button>
 
 
-<button class="b p tile r" style="top:calc(var(--it,0px) + 150px)" data-t="Friends"><svg viewBox="0 0 56 56" stroke="#1a1050" stroke-width="3.5"><circle cx="20" cy="31" r="14" fill="#ffd22e"/><circle cx="37" cy="27" r="14" fill="#ff7ab8"/><circle cx="16" cy="28" r="2" fill="#1a1050"/><circle cx="25" cy="28" r="2" fill="#1a1050"/><circle cx="33" cy="24" r="2" fill="#1a1050"/><circle cx="42" cy="24" r="2" fill="#1a1050"/></svg><span class="t">FRIENDS</span></button>
-<button class="b p tile r" style="top:calc(var(--it,0px) + 256px)" data-t="Club"><svg viewBox="0 0 56 56" stroke="#1a1050" stroke-width="3.5" stroke-linejoin="round"><path d="M28 6l18 6v16c0 12-9 19-18 22C19 47 10 40 10 28V12z" fill="#ff3b4e"/><path d="M28 18l3.5 7.5 8 1-6 5.5 1.7 8L28 36l-7.2 4 1.7-8-6-5.5 8-1z" fill="#fff" stroke-width="2.5"/></svg><span class="t">CLUB</span></button>
+<button class="b p tile l" style="top:calc(var(--it,0px) + 326px)" data-t="Friends"><svg viewBox="0 0 56 56" stroke="#1a1050" stroke-width="3.5"><circle cx="20" cy="31" r="14" fill="#ffd22e"/><circle cx="37" cy="27" r="14" fill="#ff7ab8"/><circle cx="16" cy="28" r="2" fill="#1a1050"/><circle cx="25" cy="28" r="2" fill="#1a1050"/><circle cx="33" cy="24" r="2" fill="#1a1050"/><circle cx="42" cy="24" r="2" fill="#1a1050"/></svg><span class="t">FRIENDS</span></button>
+<button class="b p club" data-t="Club"><svg viewBox="0 0 56 56" stroke="#1a1050" stroke-width="3.5" stroke-linejoin="round"><path d="M28 6l18 6v16c0 12-9 19-18 22C19 47 10 40 10 28V12z" fill="#ff3b4e"/><path d="M28 18l3.5 7.5 8 1-6 5.5 1.7 8L28 36l-7.2 4 1.7-8-6-5.5 8-1z" fill="#fff" stroke-width="2.5"/></svg><span class="t">CLUB</span></button>
 
 
 
@@ -4742,6 +4784,7 @@ function pgFinish(rank){
   if(out.rank<=PGC.WIN_RANK){
     out.gold=PGC.WGOLD[out.rank-1];PG.d.gold+=out.gold;
     if(D.w<PGC.WINS){D.w++;}
+    if(typeof wkWin==='function')wkWin();                 /* weekly gauge : week.js */
     const q0=D.q.length;dkTick();
     out.deck=D.q.length>q0?'got':D.w>=PGC.WINS?'full':'prog';
   }
@@ -5274,6 +5317,111 @@ function lb3Plates(){
   const t=w.querySelector('.lbt'),k2=Math.round(midX)+','+Math.round(top);
   if(t.dataset.p!==k2){t.dataset.p=k2;t.style.left=midX+'px';t.style.top=(top-26)+'px'}
 }
+
+/* ================= Weekly rewards : a gauge on the right of the lobby =================
+   Every victory (top 6, the same rule as the decks) moves the gauge one step. Rewards wait at fixed steps ;
+   a reached reward glows and is claimed with a tap (it flies to its counter). The week restarts on Monday 00:00.
+   On the way back to the lobby after a victory, the gauge fills up with an animation. */
+const WK_STEPS=[                                   /* victories needed -> reward */
+  {n:2, k:'gold',v:100},
+  {n:4, k:'pot', v:1},
+  {n:6, k:'deck',v:'epic'},
+  {n:9, k:'gold',v:250},
+  {n:12,k:'pot', v:2},
+  {n:16,k:'deck',v:'mythic'},
+  {n:20,k:'deck',v:'special'}];
+const WK_MAX=WK_STEPS[WK_STEPS.length-1].n;
+const WK={anim:false,el:null};
+function wkMonday(t){const d=new Date(t);d.setHours(0,0,0,0);d.setDate(d.getDate()-((d.getDay()+6)%7));return d.getTime()}
+function wkData(){
+  const d=PG.d,s=wkMonday(Date.now());
+  if(!d.wk||d.wk.s!==s){d.wk={s,v:0,sh:0,cl:[]};pgSave()}           /* a new week : the gauge starts again */
+  return d.wk;
+}
+/* called by pgFinish for every victory */
+function wkWin(){const w=wkData();w.v=Math.min(WK_MAX,w.v+1)}
+function wkLeft(){const ms=wkData().s+7*864e5-Date.now(),d=Math.floor(ms/864e5),h=Math.floor(ms%864e5/36e5),m=Math.floor(ms%36e5/6e4);return d>0?d+'d '+h+'h':h>0?h+'h '+m+'m':m+'m'}
+function wkIcon(st,small){
+  if(st.k==='gold')return ICO.gold;
+  if(st.k==='pot')return ICO.pot;
+  const D=DKT[st.v]||DKT.common;     /* a tiny deck : two cards in the deck's colours */
+  return '<svg viewBox="0 0 40 40"><rect x="9" y="5" width="22" height="30" rx="4" transform="rotate(-12 20 20)" fill="'+D.c2+'" stroke="#1a1050" stroke-width="3"/><rect x="10" y="5" width="22" height="30" rx="4" transform="rotate(8 20 20)" fill="'+D.col+'" stroke="#1a1050" stroke-width="3"/><path d="M21 13l2.2 4.6 5 .6-3.7 3.4 1 5-4.5-2.5-4.5 2.5 1-5-3.7-3.4 5-.6z" fill="#fff" transform="rotate(8 20 20)"/></svg>';
+}
+function wkLabel(st){return st.k==='gold'?String(st.v):st.k==='pot'?'x'+st.v:(DKT[st.v]||{}).name.replace(' deck','')}
+const wkPct=n=>Math.max(0,Math.min(1,n/WK_MAX))*100;
+function wkBuild(){
+  const st=document.getElementById('st');if(!st||document.getElementById('wk'))return;
+  const el=document.createElement('div');el.id='wk';
+  el.innerHTML='<div class="wkh t"><b>WEEKLY</b><span id="wkt"></span></div>'+
+    '<div class="wkb"><div class="wktr"><i class="wkf" id="wkf"></i></div><span class="wkc t" id="wkc">0</span>'+
+    WK_STEPS.map((s,i)=>'<button class="wkn" data-i="'+i+'" style="--p:'+(wkPct(s.n)/100)+';--sd:'+(i%2?1:-1)+'" aria-label="Reward at '+s.n+' victories"><span class="wki">'+wkIcon(s)+'</span><span class="wkl t">'+wkLabel(s)+'</span><span class="wkr t">'+s.n+'</span></button>').join('')+'</div>';
+  st.appendChild(el);WK.el=el;
+  el.addEventListener('click',e=>{const b=e.target.closest('.wkn');if(b)wkClaim(+b.dataset.i);else wkToast('Win matches (top 6) to fill the weekly gauge')});
+  wkDraw(true);
+}
+function wkDraw(instant){
+  if(!WK.el)return;const w=wkData();
+  const shown=WK.anim?null:w.sh;
+  if(shown!==null){document.getElementById('wkf').style.height=wkPct(shown)+'%';const c=document.getElementById('wkc');c.textContent=shown;c.style.setProperty('--p',wkPct(shown)/100)}
+  document.getElementById('wkt').textContent=wkLeft();
+  WK.el.querySelectorAll('.wkn').forEach(b=>{const i=+b.dataset.i,s=WK_STEPS[i],got=w.cl.indexOf(i)>=0,ok=(shown===null?w.v:shown)>=s.n;
+    b.classList.toggle('done',got);b.classList.toggle('ready',ok&&!got)});
+}
+/* claim : the reward flies to its counter */
+function wkClaim(i){
+  const w=wkData(),s=WK_STEPS[i];
+  if(w.cl.indexOf(i)>=0){wkToast('Already claimed');return}
+  if(WK.anim||w.sh<s.n){wkToast(s.n-w.v>0?(s.n-w.v)+' more victor'+(s.n-w.v>1?'ies':'y')+' this week':'Wait for the gauge');return}
+  w.cl.push(i);
+  if(s.k==='gold')PG.d.gold+=s.v;else if(s.k==='pot')PG.d.pot+=s.v;else PG.d.dk.q.push(s.v);
+  pgSave();
+  const b=WK.el.querySelector('.wkn[data-i="'+i+'"]');b.classList.add('pop');setTimeout(()=>b.classList.remove('pop'),500);
+  const target=document.getElementById(s.k==='gold'?'coinB':s.k==='pot'?'potB':'pass');
+  wkFly(b,target,wkIcon(s),()=>{pgHud();if(target){target.classList.remove('wkhit');void target.offsetWidth;target.classList.add('wkhit')}});
+  wkToast('+'+(s.k==='deck'?'1 '+DKT[s.v].name:s.v+(s.k==='gold'?' gold':' potion'+(s.v>1?'s':''))));
+  wkDraw();
+}
+/* stage coordinates of an element's centre (the stage itself may be scaled or turned) */
+function wkPos(el){const st=document.getElementById('st');let x=el.offsetWidth/2,y=el.offsetHeight/2,n=el;while(n&&n!==st){x+=n.offsetLeft;y+=n.offsetTop;n=n.offsetParent}return[x,y]}
+function wkFly(from,to,svg,done){
+  const st=document.getElementById('st');if(!to||!st){done&&done();return}
+  const a=wkPos(from),b=wkPos(to);
+  for(let k=0;k<5;k++){
+    const f=document.createElement('div');f.className='wkfly';f.innerHTML=svg;st.appendChild(f);
+    const dx=(Math.random()-.5)*70,dy=-40-Math.random()*60,mid=[(a[0]+b[0])/2+dx,Math.min(a[1],b[1])+dy];
+    const an=f.animate([{transform:'translate('+(a[0]-22)+'px,'+(a[1]-22)+'px) scale(.6)',opacity:0},
+      {transform:'translate('+(a[0]-22+dx*.4)+'px,'+(a[1]-42)+'px) scale(1.15)',opacity:1,offset:.18},
+      {transform:'translate('+(mid[0]-22)+'px,'+(mid[1]-22)+'px) scale(1)',opacity:1,offset:.6},
+      {transform:'translate('+(b[0]-22)+'px,'+(b[1]-22)+'px) scale(.55)',opacity:.9}],
+      {duration:760+k*90,delay:k*70,easing:'cubic-bezier(.45,0,.55,1)',fill:'forwards'});
+    an.onfinish=()=>{f.remove();if(k===4&&done)done()};
+  }
+}
+/* back in the lobby after a victory : the gauge fills up step by step, with sparkles */
+function wkAnimate(){
+  const w=wkData();if(WK.anim||!WK.el||w.v<=w.sh)return;
+  const lob=document.getElementById('lobby');if(!lob||lob.hidden||lob.style.visibility==='hidden'||G.mode!=='menu')return;
+  WK.anim=true;const from=w.sh,to=w.v,f=document.getElementById('wkf'),c=document.getElementById('wkc');
+  const t0=performance.now(),dur=700+300*(to-from);
+  const step=()=>{const k=Math.min(1,(performance.now()-t0)/dur),e=1-Math.pow(1-k,3),v=from+(to-from)*e;
+    f.style.height=wkPct(v)+'%';c.style.setProperty('--p',wkPct(v)/100);c.textContent=Math.floor(v+1e-6);
+    WK.el.querySelectorAll('.wkn').forEach(b=>{const s=WK_STEPS[+b.dataset.i];if(v>=s.n&&!b.classList.contains('ready')&&w.cl.indexOf(+b.dataset.i)<0){b.classList.add('ready','pop');setTimeout(()=>b.classList.remove('pop'),500)}});
+    if(k<1){requestAnimationFrame(step);return}
+    w.sh=to;pgSave();WK.anim=false;wkSpark(c);wkDraw()};
+  wkSpark(c,true);requestAnimationFrame(step);
+}
+function wkSpark(at,plus){
+  const st=document.getElementById('st');if(!st||!at)return;const p=wkPos(at);
+  if(plus){const t=document.createElement('div');t.className='wkplus t';t.textContent='+1';t.style.left=p[0]+'px';t.style.top=(p[1]-10)+'px';st.appendChild(t);setTimeout(()=>t.remove(),1300)}
+  for(let k=0;k<10;k++){const s=document.createElement('i');s.className='wksp';const a=k/10*6.283+Math.random()*.4,r=34+Math.random()*26;
+    s.style.left=p[0]+'px';s.style.top=p[1]+'px';st.appendChild(s);
+    s.animate([{transform:'translate(-50%,-50%) scale(.3)',opacity:1},{transform:'translate(calc(-50% + '+Math.cos(a)*r+'px),calc(-50% + '+Math.sin(a)*r+'px)) scale(1)',opacity:0}],{duration:650+Math.random()*250,easing:'ease-out',fill:'forwards'}).onfinish=()=>s.remove()}
+}
+(function(){
+  const go=()=>{wkBuild();setInterval(()=>{if(G.mode==='menu'){wkDraw();wkAnimate()}},700)};
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',go);else setTimeout(go,0);
+})();
+function wkToast(t){if(window.LB&&LB.toast)LB.toast(t,2600)}
 
 /* ================= keyboard & mouse bindings =================
    Every action has two slots. A slot holds 'K:<KeyboardEvent.code>' (physical key, whatever the layout)
