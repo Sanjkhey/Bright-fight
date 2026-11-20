@@ -3628,30 +3628,33 @@ function pShot(o){
 }
 
 /* ================= P : gameplay =================
-   Bow : hearts, a little faster than the colts but a little weaker, they fly a little slower.
+   Bow : hearts, a hair faster than the colts but a little weaker, they fly a little slower.
    ChromeGun (button, same rules as Tonio's) : for 5 s he shoots twice as fast.
    Regen (attribute) : heals faster when left alone. Healer's touch : every 3 s he heals a little, EVEN under fire. */
 const PP={
   dmg:7,           /* DAMAGE : one heart (8 = one standard bullet)                                                */
-  cd:.36,          /* s between two hearts (standard : .42)                                                         */
+  cd:.39,          /* s between two hearts (standard : .42) : was .36, a bit too fast after the first playtests     */
+  cdCg:.18,        /* s between two hearts while ChromeGun runs (unchanged)                                         */
   sp:.9,           /* heart speed, x the normal bullet speed                                                        */
   rng:1,           /* range, x the normal range                                                                     */
   hr:4,            /* extra hit radius : a heart is plump                                                           */
   pulseT:3,        /* HEALER'S TOUCH : every this many seconds...                                                   */
-  pulse:5          /* ...he heals this much (x his regen bonus), even while taking hits                             */
+  pulse:7,         /* ...he heals this much (x his regen bonus), even while taking hits : was 5                     */
+  rgK:.9,          /* REGEN : P's own bonus on top of the Regen attribute : waits 10 % less before healing...       */
+  rgH:1.15         /* ...and each regen tick heals 15 % more                                                        */
 };
 function P3(){return !!(window.BFSEL&&BFSEL.agent==='cupid')}
-function pInit(e){e.sp='ChromeGun';e.cgT=0;e.cgCd=0;e.hpT=0;e.spd=e.atSpd||1}
+function pInit(e){e.pRg=0;e.sp='ChromeGun';e.cgT=0;e.cgCd=0;e.hpT=0;e.spd=e.atSpd||1}
 function pStep(e,dt){
   if(e.cgT===undefined)pInit(e);
+  if(!e.pRg){e.pRg=1;e.rgK=(e.rgK||1)*PP.rgK;e.rgH=(e.rgH||1)*PP.rgH}          /* once, after the attributes are applied */
   e.spd=e.atSpd||1;e.cgT=Math.max(0,e.cgT-dt);e.cgCd=Math.max(0,e.cgCd-dt);
   e.hpT=(e.hpT||0)+dt;
   if(e.hpT>=PP.pulseT){e.hpT=0;if(e.hp<(e.mhp||100)){const h=Math.min((e.mhp||100)-e.hp,PP.pulse*(e.rgH||1));e.hp+=h;e.hlT=performance.now();e.hlA=h}}
   if(e.p?G.t-TN.req<=.2:e.bS){if(e.p)TN.req=-9;e.bS=0;tnUse(e)}           /* the ChromeGun button (tonio.js) */
 }
 function pFire(e){
-  const cg=e.cgT>0?TNP.cgK:1;
-  return{dm:PP.dmg/8,rg:PP.rng,sp:PP.sp,cd:PP.cd*cg,on:0,ht:e.cgT>0?2:1,hr:PP.hr,zh:20};
+  return{dm:PP.dmg/8,rg:PP.rng,sp:PP.sp,cd:e.cgT>0?PP.cdCg:PP.cd,on:0,ht:e.cgT>0?2:1,hr:PP.hr,zh:20};
 }
 /* ground : chrome pulse while ChromeGun runs, a pink ring when the healer's touch heals */
 function pDecal(gl,po,e,tm){
