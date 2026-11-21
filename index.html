@@ -690,6 +690,78 @@ html.homeapp .fsbtn,html.homeapp #lfs,html.homeapp #fsg{display:none!important}
 .panel .pgp i.on,#dkv .pgp i.on{background:#b6ff3b;border-color:#100935}
 .panel .sw[aria-checked="true"]{background:linear-gradient(100deg,#b6ff3b,#29e0ff)}
 .panel .btn.alt{background:linear-gradient(180deg,rgba(255,255,255,.35),rgba(255,255,255,0) 50%),linear-gradient(100deg,#c46bff,#ff5fc8)}
+/* ---------- level up show ---------- */
+body.lvup #gl{z-index:45}
+#lvup{position:fixed;left:0;top:0;right:0;bottom:0;z-index:46;overflow:hidden;font-family:var(--font,'Fredoka',sans-serif);color:#fff;
+  -webkit-user-select:none;user-select:none;touch-action:none;cursor:pointer;animation:lvIn .25s ease-out;--c:#ffd22e}
+#lvup[hidden]{display:none}
+#lvup.out{animation:lvOut .26s ease-in forwards}
+@keyframes lvIn{from{opacity:0}to{opacity:1}}
+@keyframes lvOut{to{opacity:0;transform:scale(1.04)}}
+#lvup.flat{background:radial-gradient(80% 90% at 50% 55%,#3b2fa6,#1a1050 70%)}
+/* light rays turning behind (screen blend : they only brighten) */
+#lvup .lvbg{position:absolute;left:35%;top:50%;width:160vmax;height:160vmax;margin:-80vmax 0 0 -80vmax;mix-blend-mode:screen;opacity:.32;pointer-events:none;
+  background:repeating-conic-gradient(from 0deg,color-mix(in srgb,var(--c) 70%,#fff) 0deg 9deg,transparent 9deg 24deg);
+  -webkit-mask-image:radial-gradient(circle,#000 0,transparent 42%);mask-image:radial-gradient(circle,#000 0,transparent 42%);animation:lvRays 9s linear infinite}
+@keyframes lvRays{to{transform:rotate(360deg)}}
+/* fallback without WebGL : the card art spins on a flat pedestal */
+#lvup .lvped{position:absolute;left:35%;top:74%;width:230px;height:52px;margin-left:-115px;border-radius:50%;background:radial-gradient(#fff3d6,#d9b56e);box-shadow:0 0 0 6px #ffd22e,0 0 40px var(--c)}
+#lvup .lvart{position:absolute;left:35%;top:46%;width:min(46%,420px);height:auto;max-height:64%;object-fit:contain;transform:translate(-50%,-50%);border-radius:14px;border:4px solid #100935;animation:lvSpin 1.5s cubic-bezier(.2,.7,.3,1) both}
+@keyframes lvSpin{from{transform:translate(-50%,-50%) perspective(600px) rotateY(-720deg) scale(.6)}to{transform:translate(-50%,-50%) perspective(600px) rotateY(0) scale(1)}}
+/* title */
+#lvup .lvtt{position:absolute;left:58%;right:calc(2% + var(--or,0px));top:calc(22% + var(--ot,0px));text-align:center;pointer-events:none}
+#lvup .lvtt b{display:inline-block;font-size:clamp(32px,8.5vmin,64px);white-space:nowrap;font-weight:700;letter-spacing:2px;color:#ffd22e;-webkit-text-stroke:8px #100935;paint-order:stroke fill;
+  text-shadow:0 6px 0 #100935,0 0 30px color-mix(in srgb,var(--c) 70%,transparent);animation:lvPop .6s cubic-bezier(.2,1.7,.4,1) .12s both}
+@keyframes lvPop{from{transform:scale(.2) rotate(-8deg);opacity:0}to{transform:scale(1) rotate(-2deg);opacity:1}}
+/* attribute plate */
+#lvup .lvpl{position:absolute;left:58%;right:calc(2% + var(--or,0px));margin:0 auto;width:max-content;max-width:calc(40% - var(--or,0px));box-sizing:border-box;top:calc(22% + var(--ot,0px) + clamp(50px,13vmin,92px));display:flex;align-items:center;gap:12px;padding:8px 22px 8px 10px;border-radius:18px;
+  background:linear-gradient(180deg,#3b2fa6,#221866);border:4px solid #100935;box-shadow:0 0 0 3px var(--c),0 6px 0 #0a0526;pointer-events:none;
+  animation:lvUp .45s cubic-bezier(.2,1.5,.4,1) .45s both}
+@keyframes lvUp{from{transform:translateX(80px);opacity:0}to{transform:none;opacity:1}}
+#lvup .lvic svg{width:54px;height:54px;display:block}
+#lvup .lvpl b{display:block;font-size:22px;line-height:1.05;-webkit-text-stroke:4px #100935;paint-order:stroke fill}
+#lvup .lvpl em{display:block;font-style:normal;font-size:20px;color:#fff;-webkit-text-stroke:4px #100935;paint-order:stroke fill}
+#lvup .lvpl em i{font-style:normal;color:#ffd22e;display:inline-block;animation:lvNum .5s cubic-bezier(.2,1.8,.4,1) .95s both}
+@keyframes lvNum{from{transform:scale(2.4);opacity:0}to{transform:scale(1);opacity:1}}
+#lvup .lvpl s{text-decoration:none;font-size:.7em;color:var(--c)}
+#lvup .lvpl small{display:block;font-size:13px;line-height:1.25;color:#d9d0ff}
+#lvup .lvpl b,#lvup .lvpl em{white-space:nowrap}
+#lvup .lvic{flex:none}
+#lvup .lvpl small u{text-decoration:none;color:#fff;font-weight:700}
+#lvup .lvh{position:absolute;right:calc(18px + var(--or,0px));bottom:calc(14px + var(--ob,0px));font-size:14px;color:#fff;opacity:0;-webkit-text-stroke:3px #100935;paint-order:stroke fill;animation:lvIn .4s ease-out 1.4s forwards;pointer-events:none}
+/* effects layer, centred on the agent */
+#lvup .lvfx{position:absolute;left:35%;top:50%;width:0;height:0;pointer-events:none}
+#lvup .lvq{position:absolute;left:0;top:0;display:block;pointer-events:none}
+#lvup .ring{width:80px;height:80px;border-radius:50%;border:5px solid;box-sizing:border-box}
+#lvup .heart{width:34px;height:30px;background:#ff4f6d;clip-path:path('M17,30 C5,21 0,14 0,8 C0,3 4,0 8.5,0 C12,0 15,2 17,5 C19,2 22,0 25.5,0 C30,0 34,3 34,8 C34,14 29,21 17,30Z');filter:drop-shadow(0 0 1.5px #fff) drop-shadow(0 0 1.5px #fff) drop-shadow(0 0 8px #ff9db0)}
+#lvup .line{left:0;height:5px;border-radius:3px;background:linear-gradient(90deg,#fff,rgba(41,224,255,0))}
+#lvup .chev{width:70px;height:70px;background:#29e0ff;clip-path:polygon(60% 0,100% 50%,60% 100%,40% 100%,80% 50%,40% 0,20% 0,60% 50%,20% 100%,0 100%,40% 50%,0 0);transform:scaleX(-1)}
+#lvup .burst{width:200px;height:200px;background:radial-gradient(#fff,#ffd22e 35%,#ff8a1f 65%);clip-path:polygon(50% 0,60% 32%,93% 18%,72% 45%,100% 58%,67% 64%,78% 97%,50% 74%,22% 97%,33% 64%,0 58%,28% 45%,7% 18%,40% 32%)}
+#lvup .spark{width:26px;height:5px;border-radius:3px;background:#ffd22e;box-shadow:0 0 6px #ff8a1f}
+#lvup .lvbat{position:absolute;left:-200px;top:-30px;display:flex;gap:4px;padding:6px 10px 6px 6px;border:4px solid #100935;border-radius:10px;background:#1d1460;box-shadow:0 4px 0 #0a0526}
+#lvup .lvbat::after{content:'';position:absolute;right:-12px;top:50%;width:8px;height:18px;margin-top:-9px;border-radius:0 4px 4px 0;background:#100935}
+#lvup .lvbat i{width:14px;height:34px;border-radius:4px;background:rgba(255,255,255,.12);transition:background .15s,box-shadow .15s}
+#lvup .lvbat i.on{background:#9dff5a;box-shadow:0 0 10px #9dff5a}
+#lvup .lvbat.full{animation:lvFull .5s ease-in-out 2}
+@keyframes lvFull{50%{box-shadow:0 0 0 4px #9dff5a,0 0 30px #9dff5a}}
+#lvup .bolt{width:28px;height:42px;background:#fff36b;clip-path:polygon(60% 0,10% 55%,45% 55%,30% 100%,90% 40%,55% 40%,75% 0);filter:drop-shadow(0 0 6px #9dff5a)}
+#lvup .plus{width:26px;height:26px;background:#4fe08a;clip-path:polygon(35% 0,65% 0,65% 35%,100% 35%,100% 65%,65% 65%,65% 100%,35% 100%,35% 65%,0 65%,0 35%,35% 35%);filter:drop-shadow(0 0 5px #b8ffcf)}
+#lvup .lvshards{position:absolute;left:0;top:0;width:300px;height:300px}
+#lvup .lvshards i{position:absolute;left:50%;top:50%;width:26px;height:46px;margin:-23px 0 0 -13px;background:linear-gradient(135deg,#fff,#7ad7ff 45%,#3a8fd6);clip-path:polygon(50% 0,100% 30%,80% 100%,20% 100%,0 30%);
+  transform:rotate(calc(var(--k) * 45deg)) translateY(-130px);filter:drop-shadow(0 0 8px #7ad7ff)}
+#lvup .beam{width:90px;height:6px;border-radius:3px;background:linear-gradient(90deg,rgba(122,215,255,0),#fff)}
+#lvup .dot{width:20px;height:20px;border-radius:50%;background:radial-gradient(#fff,#9cc8ff 60%);box-shadow:0 0 12px 3px #4f9dff}
+#lvup .bubble{width:250px;height:290px;border-radius:50%;border:4px solid rgba(160,205,255,.9);background:radial-gradient(circle at 35% 30%,rgba(255,255,255,.55),rgba(79,157,255,.18) 40%,rgba(79,157,255,.06) 70%);box-shadow:0 0 30px rgba(79,157,255,.7),inset 0 0 30px rgba(79,157,255,.5)}
+#lvup .shine{left:-60px;top:-260px;width:70px;height:520px;background:linear-gradient(90deg,transparent,rgba(255,255,255,.9),transparent);mix-blend-mode:screen}
+#lvup .case{width:13px;height:28px;border-radius:4px;background:linear-gradient(90deg,#b8862a,#ffe9a0,#d9a43a);border:2.5px solid #100935;box-shadow:0 0 8px rgba(255,233,160,.6)}
+#lvup .smoke{width:120px;height:120px;border-radius:50%;background:radial-gradient(#7d4fd0,rgba(70,25,130,.85) 45%,rgba(40,10,80,0) 70%)}
+#lvup .slash{width:360px;height:10px;border-radius:5px;background:linear-gradient(90deg,transparent,#fff 30%,#e2c8ff 70%,transparent);box-shadow:0 0 18px #a45cff;transform-origin:50% 50%}
+#lvup .lvorbs{position:absolute;left:0;top:0;width:280px;height:280px}
+#lvup .lvorbs i{position:absolute;left:50%;top:50%;width:24px;height:24px;margin:-12px;border-radius:50%;background:radial-gradient(#fff,#ffcf3a 55%,#ff9500);box-shadow:0 0 14px #ffcf3a;transform:rotate(calc(var(--k) * 60deg)) translateY(-120px)}
+#lvup .flash{left:-100vmax;top:-100vmax;width:200vmax;height:200vmax;background:radial-gradient(circle,#fff6c8,rgba(255,207,58,.4) 30%,transparent 60%)}
+#lvup .star{width:30px;height:30px;background:#ffd22e;clip-path:polygon(50% 0,61% 35%,98% 35%,68% 57%,79% 91%,50% 70%,21% 91%,32% 57%,2% 35%,39% 35%)}
+@media (prefers-reduced-motion:reduce){#lvup .lvbg{animation:none}}
+@media (min-width:1100px) and (min-height:640px){#lvup .lvpl{zoom:1.5}#lvup .lvh{font-size:18px}}
 
 #lobby{position:fixed;left:0;top:0;right:0;bottom:0;z-index:5;box-sizing:border-box;overflow:hidden;background:#86d9ff}
 #app{position:relative;width:100%;height:100%;overflow:hidden}
@@ -2794,7 +2866,7 @@ function render3(){
 /* ---------- dispatcher : 3D when WebGL2 works, otherwise the faux-3D canvas renderer ---------- */
 function render(){
   if(!G3.failed&&(G3.on||gl3Init())){
-    try{if(typeof lb3Want==='function'&&lb3Want()){const lv=document.getElementById('lobby');if(lv&&lv.style.visibility==='hidden')return;lb3Render()}else{if(LB3.clr){LB3.clr=0;document.body.classList.remove('lb3')}render3()}G3.err=0;return}catch(e){console.error('render3 failed',e);G3.err=(G3.err||0)+1;if(G3.err>=5){G3.failed=true;G3.on=false;document.body.classList.remove('lb3');if(G3.cv&&G3.cv.parentNode)G3.cv.parentNode.removeChild(G3.cv)}}
+    try{if(window.LVON&&G.mode==='menu'){lvRender()}else if(typeof lb3Want==='function'&&lb3Want()){const lv=document.getElementById('lobby');if(lv&&lv.style.visibility==='hidden')return;lb3Render()}else{if(LB3.clr){LB3.clr=0;document.body.classList.remove('lb3')}render3()}G3.err=0;return}catch(e){console.error('render3 failed',e);G3.err=(G3.err||0)+1;if(G3.err>=5){G3.failed=true;G3.on=false;document.body.classList.remove('lb3');if(G3.cv&&G3.cv.parentNode)G3.cv.parentNode.removeChild(G3.cv)}}
   }
   render2D();
 }
@@ -5227,7 +5299,7 @@ function pgUpgHTML(id){
   const rows=pgAttrs(id).map(a=>{
     const lv=pgLv(id,a),need=pgNeed(lv),have=pgFr(id,a),cost=pgCost(lv),max=lv>=AT_MAX;
     const okG=!pgCan(id,a,'gold'),okP=!pgCan(id,a,'pot');
-    return '<div class="ur'+(pgIsSp(a)?' spa':'')+'"><div class="un">'+frIcon(a)+'<b>'+a+'</b><span>Lv '+lv+'<small>/'+AT_MAX+'</small></span></div>'+
+    return '<div class="ur'+(pgIsSp(a)?' spa':'')+'" data-a="'+a+'"><div class="un">'+frIcon(a)+'<b>'+a+'</b><span>Lv '+lv+'<small>/'+AT_MAX+'</small></span></div>'+
       '<div class="uf">'+pgFx(a,lv)+(max?'':' → <b>'+pgFx(a,lv+1)+'</b>')+'</div>'+
       '<i class="dkbar"><i style="width:'+(max?100:Math.min(100,100*have/need))+'%"></i><em>'+(max?'MAX':have+'/'+need+' fragments')+'</em></i>'+
       (max?'':'<div class="ub"><button class="ubg" data-a="'+a+'" data-h="gold"'+(okG?'':' disabled')+'>'+ICO.gold+cost+'</button><button class="ubp" data-a="'+a+'" data-h="pot"'+(okP?'':' disabled')+'>'+ICO.pot+pgPots(lv)+'</button></div>')+'</div>';
@@ -5240,7 +5312,8 @@ function pgUpgHTML(id){
 function pgUpgBind(box,id,redraw){
   box.addEventListener('click',e=>{const b=e.target.closest('.ubg,.ubp');if(!b||b.disabled)return;e.stopPropagation();
     const er=pgUp(id,b.dataset.a,b.dataset.h);if(er){if(typeof pkToast==='function')pkToast(er);return}
-    sfxSafe('bubble');redraw();if(typeof pkToast==='function')pkToast(b.dataset.a+' is now level '+pgLv(id,b.dataset.a))});
+    const a=b.dataset.a,to=pgLv(id,a);redraw(a);
+    if(typeof lvPlay==='function')lvPlay(id,a,to-1,to);else{sfxSafe('bubble');if(typeof pkToast==='function')pkToast(a+' is now level '+to)}});
 }
 function pgMarkLocks(){document.querySelectorAll('#agl .agc').forEach(c=>{const id=c.dataset.ag;if(!id)return;
   c.classList.toggle('lock',!pgOwn(id));
@@ -5278,7 +5351,13 @@ function crDo(k){
 })();
 function pgDetail(D,id){
   const box=D.querySelector('.pkup'),ab=D.querySelector('.pkab');if(!box)return;
-  const draw=()=>{box.innerHTML=pgUpgHTML(id)};draw();pgUpgBind(box,id,()=>{draw();pgMarkLocks()});
+  /* redraw in place : the panel keeps its scroll, and the upgraded row stays in view */
+  const draw=a=>{const s=box.closest('.fascroll'),y=s?s.scrollTop:0;box.innerHTML=pgUpgHTML(id);
+    if(!s)return;s.scrollTop=y;const r=a&&box.querySelector('.ur[data-a="'+a+'"]');if(!r)return;
+    let top=0,n=r;while(n&&n!==s){top+=n.offsetTop;n=n.offsetParent}
+    if(n!==s){top=r.getBoundingClientRect().top-s.getBoundingClientRect().top+s.scrollTop}   /* offsetParent chain may skip the scroller */
+    if(top<s.scrollTop)s.scrollTop=top-6;else if(top+r.offsetHeight>s.scrollTop+s.clientHeight)s.scrollTop=top+r.offsetHeight-s.clientHeight+6};
+  draw();pgUpgBind(box,id,a=>{draw(a);pgMarkLocks()});
   D.querySelectorAll('.pktabs button').forEach(b=>b.onclick=()=>{D.querySelectorAll('.pktabs button').forEach(x=>x.classList.toggle('on',x===b));box.hidden=b.dataset.tab!=='up';ab.hidden=b.dataset.tab!=='ab'});
 }
 /* picks saved before the progression : keep only the agents the player owns */
@@ -5600,6 +5679,154 @@ function wkSpark(at,plus){
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',go);else setTimeout(go,0);
 })();
 function wkToast(t){if(window.LB&&LB.toast)LB.toast(t,2600)}
+
+/* ================= Level up : a short show after every attribute upgrade =================
+   The agent's real 3D model spins on a pedestal (drawn on the WebGL canvas, brought above the agent screen),
+   "LEVEL UP!" pops, and each attribute has its own effect (hearts for Health, speed lines for Speed ...).
+   Tap to skip. Without WebGL, the agent's card art spins instead. */
+const LV={on:false,t0:0,id:'',a:'',e:null,el:null,tm:[],end:0};
+const LV_COL={Health:'#ff4f6d',Speed:'#29e0ff',Damage:'#ff8a1f',Endurance:'#9dff5a',Regen:'#4fe08a',Reflection:'#7ad7ff',
+  Absorption:'#4f9dff',ChromeGun:'#e3ecf5',Assassins:'#a45cff',Accumulation:'#ffcf3a'};
+const LV_SND={Health:'bubble',Speed:'dash',Damage:'bigshot',Endurance:'reload',Regen:'bubble',Reflection:'shield',
+  Absorption:'shield',ChromeGun:'chrome',Assassins:'invis',Accumulation:'reload'};
+const LV_DUR=3.6;                                   /* closes by itself after this many seconds */
+const LVP={dist:190,h:62,tz:40,fov:.62,sx:-.3};   /* sx : the agent stands left of centre (36 %), the plate goes on the right */            /* close-up camera on one agent */
+const LV_FIT={tonio:1,cupid:1.08,geiger:1.25,san:1.3,loris:1.42};   /* camera distance per agent height (a new agent gets 1.3) */
+const lvC=a=>LV_COL[a]||'#ffd22e';
+const lvTS=()=>window.LV_TS||1;                   /* time scale : tests slow the whole show down (with the page's animation rate) */
+const lvRGB=h=>[1,3,5].map(i=>parseInt(h.slice(i,i+2),16)/255);
+if(typeof SND!=='undefined')SND.lvup=(t,v)=>{[523,659,784,1047].forEach((f,i)=>sTone('triangle',f,f,t+i*.075,.22,v*.32));sTone('sine',2093,2093,t+.3,.35,v*.12)};
+
+/* ---------- start / stop ---------- */
+function lvPlay(id,a,from,to){
+  if(LV.on)lvStop(true);
+  let el=document.getElementById('lvup');
+  if(!el){el=document.createElement('div');el.id='lvup';document.body.appendChild(el);
+    el.addEventListener('pointerdown',e=>{e.preventDefault();e.stopPropagation();if(performance.now()-LV.t0>600)lvStop()});
+    addEventListener('resize',()=>{if(LV.on&&typeof rotFit==='function')rotFit(el)})}
+  const col=lvC(a),max=to>=AT_MAX,f=typeof agFind==='function'&&agFind(id),art=typeof agArtOf==='function'?agArtOf(id):'';
+  const gl=!G3.failed&&(G3.on||(typeof gl3Init==='function'&&gl3Init()));
+  el.className='a-'+a+(gl?'':' flat');el.style.setProperty('--c',col);
+  el.innerHTML='<div class="lvbg"></div>'+(gl?'':'<div class="lvped"></div><img class="lvart" src="'+art+'" alt="">')+'<div class="lvfx"></div>'+
+    '<div class="lvtt"><b>'+(max?'MAX LEVEL!':'LEVEL UP!')+'</b></div>'+
+    '<div class="lvpl"><span class="lvic">'+(typeof frIcon==='function'?frIcon(a):'')+'</span><div><b>'+a+'</b>'+
+      '<em>Lv '+from+' <s>&#9654;</s> <i>'+to+'</i></em><small>'+pgFx(a,from)+' <s>&#9654;</s> <u>'+pgFx(a,to)+'</u></small></div></div>'+
+    '<div class="lvh">Tap to continue</div>';
+  el.hidden=false;if(typeof rotFit==='function')rotFit(el);
+  LV.on=true;window.LVON=!!gl;LV.clr=0;LV.t0=performance.now();LV.id=id;LV.a=a;LV.gl=!!gl;
+  LV.e={agt:id,id:1,rx:0,ry:0,x:0,y:0,face:0,vf:0,moving:false,hp:100,alive:true,fT:-1e9,sK:1,mlT:-1e9};
+  if(gl)document.body.classList.add('lvup');
+  sfxSafe('lvup');lvLater(380,()=>sfxSafe(LV_SND[a]||'bubble'));
+  (LVFX[a]||LVFX.def)(el.querySelector('.lvfx'),col);
+  LV.tm.push(setTimeout(()=>lvStop(),(window.LV_HOLD||LV_DUR)*1000));   /* LV_HOLD : tests keep it open longer */
+}
+function lvStop(now){
+  if(!LV.on)return;LV.on=false;window.LVON=false;LV.tm.forEach(clearTimeout);LV.tm=[];
+  const el=document.getElementById('lvup');document.body.classList.remove('lvup');
+  if(!el)return;
+  if(now){el.hidden=true;el.innerHTML='';return}
+  el.classList.add('out');setTimeout(()=>{if(!LV.on){el.hidden=true;el.innerHTML='';el.classList.remove('out')}},260);
+}
+const lvEase=x=>1-Math.pow(1-Math.max(0,Math.min(1,x)),3);
+
+/* ---------- the 3D show : called by the render dispatcher while LV.on ---------- */
+function lvRender(){
+  const gl=G3.gl;lb3Init(gl);
+  const rs=Math.min(1,1.5/DPR),w=Math.round(W*DPR*rs),h=Math.round(H*DPR*rs);
+  if(G3.cv.width!==w||G3.cv.height!==h){G3.cv.width=w;G3.cv.height=h}
+  const port=H>W&&!window.BF_DESK,asp=port?H/W:W/H,t=(performance.now()-LV.t0)/1000*lvTS(),a=LV.a,col=lvRGB(lvC(a));
+  const k=LV_FIT[LV.id]||1.3,ax=COLO.x+40,ay=COLO.y,ex=ax-LVP.dist*k,ey=ay;
+  const eye=[ex,-ey,LVP.h*k],P=M4.persp(asp<1.9?2*Math.atan(Math.tan(LVP.fov/2)*1.9/asp):LVP.fov,asp,5,4000),V=M4.look(eye,[ax,-ay,LVP.tz*k],[0,0,1]);
+  let VP=M4.mul(new Float32Array([1,0,0,0, 0,1,0,0, 0,0,1,0, LVP.sx,0,0,1]),M4.mul(P,V));
+  if(port){const R=new Float32Array([0,-1,0,0, 1,0,0,0, 0,0,1,0, 0,0,0,1]);VP=M4.mul(R,VP)}
+  gl.viewport(0,0,w,h);
+  gl.clearColor(.1,.06,.3,1);gl.clearStencil(0);gl.stencilMask(255);gl.depthMask(true);gl.clear(gl.COLOR_BUFFER_BIT|gl.DEPTH_BUFFER_BIT|gl.STENCIL_BUFFER_BIT);
+  gl.enable(gl.DEPTH_TEST);gl.depthFunc(gl.LEQUAL);gl.disable(gl.CULL_FACE);gl.disable(gl.BLEND);gl.disable(gl.STENCIL_TEST);
+  const po=G3.po,u=po.u;gl.useProgram(po.p);gl.uniformMatrix4fv(u.uVP,false,VP);
+  const L=LB3SUN.L;gl.uniform3f(u.uL,L[0],L[1],L[2]);gl.uniform2f(u.uSh,LB3SUN.sh[0],LB3SUN.sh[1]);gl.uniform1f(u.uSz,0);gl.uniform3f(u.uCP,eye[0],eye[1],eye[2]);gl.uniform1f(u.uZon,0);
+  /* floor : a wide dark disc, a lighter one, then the coloured glow under the pedestal */
+  drawM(gl,po,G3.unitDisc,M4.model(ax,-ay,-.5,0,900),1,0,[.16,.1,.42],1,0,1);
+  drawM(gl,po,G3.unitDisc,M4.model(ax,-ay,-.3,0,150),1,0,[.22,.15,.55],1,0,1);
+  const pulse=.5+.5*Math.sin(t*6);
+  gl.enable(gl.BLEND);gl.blendFunc(gl.SRC_ALPHA,gl.ONE);gl.depthMask(false);
+  const gr=lvEase(t/.5);
+  drawM(gl,po,G3.unitDisc,M4.model(ax,-ay,.2,0,(58+pulse*6)*gr),1,0,col,.55,0,1);
+  drawM(gl,po,G3.unitDisc,M4.model(ax,-ay,.25,0,(82+pulse*10)*gr),1,0,col,.22,0,1);
+  /* a ring that runs outward every 0.9 s */
+  const rk=(t%.9)/.9;drawM(gl,po,G3.unitDisc,M4.model(ax,-ay,.3,0,50+rk*110),1,0,col,.3*(1-rk),0,1);
+  gl.depthMask(true);gl.disable(gl.BLEND);
+  /* pedestal */
+  const hop=a==='Damage'?Math.max(0,Math.sin(Math.min(1,Math.max(0,(t-.3)/.35))*Math.PI))*10:0;
+  drawM(gl,po,LB3.ped,M4.model(ax,-ay,0,0,1),1,0,null,1,0,0);
+  /* the agent : fast spin that slows down, then faces the camera with a small sway */
+  const e=LV.e,turns=a==='Speed'?4:2,sd=a==='Speed'?1.25:1.5,toCam=Math.PI;
+  e.x=e.rx=ax;e.y=e.ry=ay;
+  e.face=e.vf=toCam+turns*Math.PI*2*lvEase(t/sd)+(t>sd?Math.sin((t-sd)*1.4)*.3*Math.min(1,(t-sd)*2):0);
+  let al=1,fl=0;
+  if(a==='Assassins'){const k=t<.45?0:t<.75?(t-.45)/.3:t<1.55?1:t<1.85?1-(t-1.55)/.3:0;al=1-k*.88}
+  if(a==='Damage'&&t>.62&&t<.8)fl=.85*(1-(t-.62)/.18);
+  if(a==='Accumulation'&&t>1.15&&t<1.4)fl=.8*(1-(t-1.15)/.25);
+  if(a==='ChromeGun'&&t>.5&&t<.9)fl=.35*Math.sin((t-.5)/.4*Math.PI);
+  gl.enable(gl.BLEND);gl.blendFunc(gl.SRC_ALPHA,gl.ONE_MINUS_SRC_ALPHA);gl.depthMask(false);
+  drawM(gl,po,G3.unitDisc,M4.model(ax,-ay,LB3P.ped+.5+hop,0,PR*.95),1,0,[.06,.03,.2],.3*al,0,1);
+  if(al<1){gl.depthMask(false)}else{gl.depthMask(true);gl.disable(gl.BLEND)}
+  DPRE=M4.tr(0,0,LB3P.ped+hop);
+  try{agOf(e).draw(gl,po,e,performance.now()/1000,al,fl)}finally{DPRE=null;gl.depthMask(true);gl.disable(gl.BLEND)}
+  if(!LV.clr){ctx.setTransform(DPR,0,0,DPR,0,0);ctx.clearRect(0,0,W,H);LV.clr=1}
+}
+
+/* ---------- one effect per attribute (DOM particles above the 3D view) ---------- */
+function lvP(L,cls,css,kf,o){const p=document.createElement('i');p.className='lvq '+(cls||'');if(css)p.style.cssText=css;L.appendChild(p);
+  const an=p.animate(kf,Object.assign({duration:900,easing:'ease-out',fill:'both'},o||{}));an.onfinish=()=>p.remove();return p}
+const lvR=(a,b)=>a+Math.random()*(b-a);
+function lvLater(ms,f){LV.tm.push(setTimeout(()=>{if(LV.on)f()},ms/lvTS()))}
+/* shake : added to the element's own transform (the landscape lock turns the canvas and the overlay a quarter) */
+function lvShake(L,amp){const el=L.closest('#lvup'),tg=el.classList.contains('flat')?el:G3.cv;if(!tg)return;const b=tg.style.transform||'';
+  tg.animate([0,1,2,3,4,5].map(i=>({transform:(b+' '+(i===5?'translate(0,0)':'translate('+lvR(-amp,amp).toFixed(1)+'px,'+lvR(-amp,amp).toFixed(1)+'px)')).trim()})),{duration:320})}
+function lvRing(L,col,d,sz,w){lvP(L,'ring','border-color:'+col+';border-width:'+(w||5)+'px',[{transform:'translate(-50%,-50%) scale(.2)',opacity:1},{transform:'translate(-50%,-50%) scale('+(sz||3)+')',opacity:0}],{duration:700,delay:d||0})}
+const LVFX={
+  /* hearts burst out and float up, a pink heartbeat ring */
+  Health(L,c){for(let i=0;i<14;i++){const an=lvR(0,6.28),r=lvR(110,210);
+      lvP(L,'heart','',[{transform:'translate(-50%,-50%) scale(.2)',opacity:0},{transform:'translate(calc(-50% + '+(Math.cos(an)*r*.5)+'px),calc(-50% + '+(Math.sin(an)*r*.4-20)+'px)) scale(1.6)',opacity:1,offset:.35},{transform:'translate(calc(-50% + '+(Math.cos(an)*r)+'px),calc(-50% + '+(Math.sin(an)*r*.6-110)+'px)) scale(1.2)',opacity:0}],{duration:1500,delay:300+i*45})}
+    [300,750,1200].forEach(d=>lvRing(L,c,d,3.2,6))},
+  /* speed lines streak across, chevrons zoom through */
+  Speed(L,c){for(let i=0;i<22;i++){const y=lvR(-110,110),w=lvR(60,180);
+      lvP(L,'line','width:'+w+'px;top:'+y+'px',[{transform:'translateX(260px)',opacity:0},{opacity:1,offset:.2},{transform:'translateX(-'+(300+w)+'px)',opacity:0}],{duration:lvR(380,620),delay:150+i*55,easing:'linear'})}
+    for(let i=0;i<3;i++)lvP(L,'chev','',[{transform:'translate(-50%,-50%) translateX(160px) scale(.6)',opacity:0},{opacity:1,offset:.3},{transform:'translate(-50%,-50%) translateX(-200px) scale(1.4)',opacity:0}],{duration:650,delay:500+i*260})},
+  /* a jump, then an impact : starburst, shockwaves, shake, sparks */
+  Damage(L,c){lvLater(620,()=>{lvShake(L,9);
+      lvP(L,'burst','',[{transform:'translate(-50%,-50%) scale(.2) rotate(0deg)',opacity:1},{transform:'translate(-50%,-50%) scale(1.5) rotate(25deg)',opacity:0}],{duration:520});
+      [0,120,240].forEach(d=>lvRing(L,c,d,3.6,8));
+      for(let i=0;i<18;i++){const an=lvR(0,6.28),r=lvR(90,190);lvP(L,'spark','',[{transform:'translate(-50%,-50%) rotate('+an+'rad) translateX(10px) scaleX(1)',opacity:1},{transform:'translate(-50%,-50%) rotate('+an+'rad) translateX('+r+'px) scaleX(.3)',opacity:0}],{duration:520})}})},
+  /* the battery charges segment by segment, little bolts around */
+  Endurance(L,c){const b=document.createElement('div');b.className='lvbat';b.innerHTML='<i></i><i></i><i></i><i></i><i></i>';L.appendChild(b);
+    b.animate([{transform:'translate(-50%,-50%) scale(.3)',opacity:0},{transform:'translate(-50%,-50%) scale(1)',opacity:1}],{duration:300,delay:250,fill:'both',easing:'cubic-bezier(.3,1.6,.5,1)'});
+    [...b.children].forEach((s,i)=>lvLater(450+i*230,()=>{s.classList.add('on');lvP(L,'bolt','left:'+lvR(-120,120)+'px;top:'+lvR(-110,40)+'px',[{transform:'scale(.2) rotate(-20deg)',opacity:0},{transform:'scale(1.1) rotate(5deg)',opacity:1,offset:.3},{transform:'scale(.8)',opacity:0}],{duration:600})}));
+    lvLater(1700,()=>{b.classList.add('full');lvRing(L,c,0,3,6)})},
+  /* green crosses spiral upward from the pedestal */
+  Regen(L,c){for(let i=0;i<26;i++){const x0=lvR(-80,80),dx=lvR(-30,30);
+      lvP(L,'plus','',[{transform:'translate('+x0+'px,90px) scale(.3)',opacity:0},{transform:'translate('+(x0+dx)+'px,20px) scale(1)',opacity:1,offset:.3},{transform:'translate('+(x0-dx)+'px,-150px) scale(.6)',opacity:0}],{duration:1400,delay:200+i*60,easing:'ease-in-out'})}
+    lvRing(L,c,250,3,5);lvRing(L,c,1100,3,5)},
+  /* mirror shards turn around the agent, then beams bounce away */
+  Reflection(L,c){const ring=document.createElement('div');ring.className='lvshards';ring.innerHTML=Array.from({length:8},(_,i)=>'<i style="--k:'+i+'"></i>').join('');L.appendChild(ring);
+    ring.animate([{transform:'translate(-50%,-50%) rotate(0deg) scale(.3)',opacity:0},{transform:'translate(-50%,-50%) rotate(200deg) scale(1)',opacity:1,offset:.4},{transform:'translate(-50%,-50%) rotate(420deg) scale(1.05)',opacity:1,offset:.8},{transform:'translate(-50%,-50%) rotate(480deg) scale(1.6)',opacity:0}],{duration:2200,delay:200,fill:'both'});
+    lvLater(1500,()=>{for(let i=0;i<10;i++){const an=i/10*6.28;lvP(L,'beam','',[{transform:'translate(-50%,-50%) rotate('+an+'rad) translateX(30px) scaleX(.2)',opacity:1},{transform:'translate(-50%,-50%) rotate('+an+'rad) translateX(200px) scaleX(1)',opacity:0}],{duration:600})}})},
+  /* blue particles are pulled into the agent, then a bubble shield pops */
+  Absorption(L,c){for(let i=0;i<30;i++){const an=lvR(0,6.28),r=lvR(150,230);
+      lvP(L,'dot','',[{transform:'translate(calc(-50% + '+Math.cos(an)*r+'px),calc(-50% + '+Math.sin(an)*r*.7+'px)) scale(1.2)',opacity:0},{opacity:1,offset:.3},{transform:'translate(-50%,-50%) scale(.2)',opacity:.2}],{duration:900,delay:150+i*30,easing:'ease-in'})}
+    lvLater(1250,()=>{lvP(L,'bubble','',[{transform:'translate(-50%,-50%) scale(.3)',opacity:0},{transform:'translate(-50%,-50%) scale(1.08)',opacity:1,offset:.35},{transform:'translate(-50%,-50%) scale(1)',opacity:1,offset:.8},{transform:'translate(-50%,-50%) scale(1.25)',opacity:0}],{duration:1500});lvRing(L,c,0,3,5)})},
+  /* a chrome shine sweeps over, casings fly out */
+  ChromeGun(L,c){lvLater(450,()=>{lvP(L,'shine','',[{transform:'translateX(-340px) rotate(18deg)',opacity:0},{opacity:1,offset:.2},{transform:'translateX(340px) rotate(18deg)',opacity:0}],{duration:600,easing:'ease-in-out'})});
+    for(let i=0;i<14;i++){const s=i%2?1:-1;lvP(L,'case','',[{transform:'translate(-50%,-50%) rotate(0deg)',opacity:0},{opacity:1,offset:.1},{transform:'translate(calc(-50% + '+(s*lvR(80,180))+'px),calc(-50% + '+lvR(-160,-60)+'px)) rotate('+lvR(300,720)+'deg)',offset:.55},{transform:'translate(calc(-50% + '+(s*lvR(150,240))+'px),calc(-50% + 90px)) rotate('+lvR(720,1080)+'deg)',opacity:0}],{duration:1200,delay:700+i*70,easing:'cubic-bezier(.2,.6,.6,1)'})}},
+  /* smoke puff, the agent turns invisible, then a slash and it is back */
+  Assassins(L,c){const puff=()=>{for(let i=0;i<14;i++){const an=lvR(0,6.28),r=lvR(40,120);lvP(L,'smoke','',[{transform:'translate(-50%,-50%) scale(.4)',opacity:.9},{transform:'translate(calc(-50% + '+Math.cos(an)*r+'px),calc(-50% + '+(Math.sin(an)*r*.5+30)+'px)) scale(1.8)',opacity:0}],{duration:900})}};
+    lvLater(420,puff);lvLater(1550,()=>{puff();lvP(L,'slash','',[{transform:'translate(-50%,-50%) rotate(-28deg) scaleX(0)',opacity:1},{transform:'translate(-50%,-50%) rotate(-28deg) scaleX(1)',opacity:1,offset:.4},{transform:'translate(-50%,-50%) rotate(-28deg) scaleX(1)',opacity:0}],{duration:520,easing:'ease-out'});lvShake(L,5)})},
+  /* golden orbs turn around and shrink into the agent, then a flash */
+  Accumulation(L,c){const o=document.createElement('div');o.className='lvorbs';o.innerHTML=Array.from({length:6},(_,i)=>'<i style="--k:'+i+'"></i>').join('');L.appendChild(o);
+    o.animate([{transform:'translate(-50%,-50%) rotate(0deg) scale(1.6)',opacity:0},{opacity:1,offset:.15},{transform:'translate(-50%,-50%) rotate(540deg) scale(.15)',opacity:1,offset:.95},{transform:'translate(-50%,-50%) rotate(560deg) scale(0)',opacity:0}],{duration:1000,delay:150,fill:'both',easing:'ease-in'});
+    lvLater(1150,()=>{lvP(L,'flash','',[{opacity:.9},{opacity:0}],{duration:450});[0,140].forEach(d=>lvRing(L,c,d,3.6,7))})},
+  def(L,c){for(let i=0;i<16;i++){const an=lvR(0,6.28),r=lvR(80,170);lvP(L,'star','',[{transform:'translate(-50%,-50%) scale(.2)',opacity:0},{transform:'translate(calc(-50% + '+Math.cos(an)*r+'px),calc(-50% + '+Math.sin(an)*r*.6+'px)) scale(1) rotate(90deg)',opacity:0}],{duration:1100,delay:250+i*40})}}
+};
 
 /* ================= keyboard & mouse bindings =================
    Every action has two slots. A slot holds 'K:<KeyboardEvent.code>' (physical key, whatever the layout)
