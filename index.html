@@ -788,6 +788,9 @@ body.lvup #gl{z-index:45}
 .lvl .lvtx.pk{color:#ff7a93}.lvl .lvtx.cy{color:#7ff0ff}.lvl .lvtx.or{color:#ffb21f}.lvl .lvtx.gr{color:#a8ff6a}.lvl .lvtx.pu{color:#d9a8ff}.lvl .lvtx.go{color:#ffd22e}
 @keyframes lvTx{0%{transform:translate(-50%,-50%) scale(.2) rotate(-12deg);opacity:0}18%{transform:translate(-50%,-50%) scale(1.25) rotate(-6deg);opacity:1}
   32%{transform:translate(-50%,-50%) scale(1) rotate(-4deg)}78%{opacity:1}100%{transform:translate(-50%,-85%) scale(1) rotate(-4deg);opacity:0}}
+/* profile scene (Accumulation) : the title goes top centre, the plate bottom centre, the target keeps the right */
+#lvup.side .lvtt{left:26%;right:22%;top:calc(3% + var(--ot,0px))}
+#lvup.side .lvpl{left:26%;right:22%;top:auto;bottom:calc(4% + var(--ob,0px));max-width:none}
 
 #lobby{position:fixed;left:0;top:0;right:0;bottom:0;z-index:5;box-sizing:border-box;overflow:hidden;background:#86d9ff}
 #app{position:relative;width:100%;height:100%;overflow:hidden}
@@ -5720,6 +5723,7 @@ const LV={on:false,t0:0,id:'',a:'',e:null,el:null,tm:[],end:0};
 const LV_COL={Health:'#ff4f6d',Speed:'#29e0ff',Damage:'#ff8a1f',Endurance:'#9dff5a',Regen:'#4fe08a',Reflection:'#7ad7ff',
   Absorption:'#4f9dff',ChromeGun:'#e3ecf5',Assassins:'#a45cff',Accumulation:'#ffcf3a'};
 const LV_DUR=3.6;                                   /* closes by itself after this many seconds */
+const LV_SIDE=-Math.PI/2;   /* profile : the agent turns a quarter to face the screen's right */
 const LVP={dist:190,h:62,tz:40,fov:.62,sx:-.3};   /* sx : the agent stands left of centre (36 %), the plate goes on the right */            /* close-up camera on one agent */
 const LV_FIT={tonio:1,cupid:1.08,geiger:1.25,san:1.3,loris:1.42};   /* camera distance per agent height (a new agent gets 1.3) */
 const lvC=a=>LV_COL[a]||'#ffd22e';
@@ -5737,13 +5741,14 @@ function lvPlay(id,a,from,to){
     addEventListener('resize',()=>{if(LV.on&&typeof rotFit==='function'){rotFit(el);rotFit(bk);fxSize();LV.sig=''}})}
   const col=lvC(a),max=to>=AT_MAX,art=typeof agArtOf==='function'?agArtOf(id):'';
   const gl=!G3.failed&&(G3.on||(typeof gl3Init==='function'&&gl3Init()));
-  for(const x of [el,bk]){x.className='lvl a-'+a+(gl?'':' flat');x.style.setProperty('--c',col);x.classList.remove('out')}
+  for(const x of [el,bk]){x.className='lvl a-'+a+(gl?'':' flat')+(a==='Accumulation'&&!window.LV_ACC_OLD&&!window.LV_ACC_FRONT?' side':'');x.style.setProperty('--c',col);x.classList.remove('out')}
   bk.innerHTML='<div class="lvbg"></div>'+(gl?'':'<div class="lvped"></div><img class="lvart" src="'+art+'" alt="">')+'<canvas class="lvcv"></canvas><div class="lvfx"></div>';
   el.innerHTML='<canvas class="lvcv"></canvas><div class="lvfx"></div><div class="lvtt"><b>'+(max?'MAX LEVEL!':'LEVEL UP!')+'</b></div>'+
     '<div class="lvpl"><span class="lvic">'+(typeof frIcon==='function'?frIcon(a):'')+'</span><div><b>'+a+'</b>'+
       '<em>Lv '+from+' <s>&#9654;</s> <i>'+to+'</i></em><small>'+pgFx(a,from)+' <s>&#9654;</s> <u>'+pgFx(a,to)+'</u></small></div></div>'+
     '<div class="lvh">Tap to continue</div>';
   el.hidden=bk.hidden=false;if(typeof rotFit==='function'){rotFit(el);rotFit(bk)}
+  LV.side=a==='Accumulation'&&!window.LV_ACC_OLD&&!window.LV_ACC_FRONT;   /* profile scene : agent left, target right */
   LV.on=true;window.LVON=!!gl;LV.clr=0;LV.t0=performance.now();LV.id=id;LV.a=a;LV.gl=!!gl;LV.bk=bk;LV.fr=el;LV.sig='';
   {const w=bk.offsetWidth,h=bk.offsetHeight;LV.cx=w*.35;LV.cy=h*.5;LV.fy=h*.24;LV.u=LV.fy/95}   /* until the 3D view places them (no WebGL : stays so) */
   if(gl){const port=H>W&&!window.BF_DESK,C=lvCam(port?H/W:W/H);lvPlace(C.VP,C.ax,C.ay,C.k)}
@@ -5752,7 +5757,7 @@ function lvPlay(id,a,from,to){
   if(gl)document.body.classList.add('lvup');
   sfxSafe('lvup');
   LV.zoomF=null;
-  (((window.LV_ACC_OLD&&LVFX_OLD[a])||LVFX[a])||LVFX.def)(col,bk.querySelector('.lvfx'),el.querySelector('.lvfx'));
+  (((window.LV_ACC_OLD&&LVFX_OLD[a])||(window.LV_ACC_FRONT&&LVFX_OLD[a+'Front'])||LVFX[a])||LVFX.def)(col,bk.querySelector('.lvfx'),el.querySelector('.lvfx'));
   LV.tm.push(setTimeout(()=>lvStop(),(window.LV_HOLD||LV_DUR)*1000));   /* LV_HOLD : tests keep it open longer */
 }
 function lvStop(now){
@@ -5800,7 +5805,7 @@ function lvRender(){
   /* the agent : fast spin that slows down, then faces the camera with a small sway */
   const e=LV.e,turns=a==='Speed'?4:2,sd=a==='Speed'?1.25:1.5,toCam=Math.PI;
   e.x=e.rx=ax;e.y=e.ry=ay;
-  e.face=e.vf=toCam+turns*Math.PI*2*lvEase(t/sd)+(t>sd?Math.sin((t-sd)*1.4)*.3*Math.min(1,(t-sd)*2):0);
+  e.face=e.vf=toCam+(LV.side?LV_SIDE:0)+turns*Math.PI*2*lvEase(t/sd)+(t>sd?Math.sin((t-sd)*1.4)*(LV.side?.06:.3)*Math.min(1,(t-sd)*2):0);
   let al=1,fl=0;
   if(a==='Assassins'){const k=t<.45?0:t<.75?(t-.45)/.3:t<1.55?1:t<1.85?1-(t-1.55)/.3:0;al=1-k*.88}
   if(a==='Damage'&&t>.62&&t<.8)fl=.85*(1-(t-.62)/.18);
@@ -5818,7 +5823,7 @@ function lvRender(){
 function lvCam(asp){
   const k=LV_FIT[LV.id]||1.3,ax=COLO.x+40,ay=COLO.y,ex=ax-LVP.dist*k,ey=ay,eye=[ex,-ey,LVP.h*k];
   const P=M4.persp(asp<1.9?2*Math.atan(Math.tan(LVP.fov/2)*1.9/asp):LVP.fov,asp,5,4000),V=M4.look(eye,[ax,-ay,LVP.tz*k],[0,0,1]);
-  return{k,ax,ay,eye,VP:M4.mul(new Float32Array([1,0,0,0, 0,1,0,0, 0,0,1,0, LVP.sx,0,0,1]),M4.mul(P,V))};
+  return{k,ax,ay,eye,VP:M4.mul(new Float32Array([1,0,0,0, 0,1,0,0, 0,0,1,0, LV.side?-.56:LVP.sx,0,0,1]),M4.mul(P,V))};
 }
 /* m : the camera, gives the effects' origin and scale ; mz : the same with the zoom, places the CSS sky */
 function lvPlace(m,ax,ay,k,mz){
@@ -6110,50 +6115,54 @@ const LVFX={
       fxBurst(24,{v0:200,v1:620,s0:2.5,s1:4,l0:.35,l1:.6,c:['#ffffff','#c47dff'],p:{sh:'streak',len:U(26),gl:1,drag:.2,c0:'rgba(160,90,255,0)',f:1}})});
     fxConfetti(col,2000);
   },
-  /* a real archery target on the left ; the agent's round hovers above its head, spins faster and faster while it charges,
-     then flies dead centre : bullseye, the whole view zooms on the target, rings ripple across the screen */
+  /* profile scene : the agent on the left faces right ; its round floats in front of the weapon and spins up on its long axis,
+     then crosses the screen left to right into an archery target seen from the side : bullseye, zoom on the target */
   Accumulation(col){
-    const w=FX.w,h=FX.h,cx=LV.cx,cy=LV.cy,RT=Math.min(h*.27,w*.115),TX=w*.145-cx,TY=h*.5-cy,BX=U(-20),BY=Math.max(U(-178),-cy+U(46)),
-      TL=1.38,TH=1.56,AN=Math.atan2(TY-BY,TX-BX),st={spin:0,hit:0,wob:0};LV.acc={TX,TY,RT,TH};
-    /* zoom : eases in on the target from the launch, holds, eases back */
-    LV.zoomF=T=>{const k=T<TL?0:T<TH?(T-TL)/(TH-TL)*.6:T<TH+.18?.6+.4*lvEase((T-TH)/.18):T<2.5?1:T<3?1-lvEase((T-2.5)/.5):0;return{Z:1+.24*k,zx:TX,zy:TY}};
-    /* the target : rings gold / red / blue / black / white, on a wooden stand */
-    fxSp({d:.05,life:3.6,draw:(c,t,dt,s)=>{const pop=t<.3?Math.sin(t/.3*Math.PI/2)*1.1:t<.4?1.1-(t-.3):1,fa=t>3.1?1-(t-3.1)/.5:1,wb=st.hit?Math.sin((t-st.hit)*30)*Math.exp(-(t-st.hit)*5)*.08:0;
-      c.globalAlpha=fa;c.translate(TX,TY);
-      c.fillStyle='#7a4a20';c.strokeStyle='#100935';c.lineWidth=U(4);for(const sx of [-1,1]){c.beginPath();c.moveTo(sx*RT*.35,RT*.6);c.lineTo(sx*RT*.75,RT*1.5+U(40));c.lineTo(sx*RT*.6,RT*1.5+U(40));c.lineTo(sx*RT*.2,RT*.6);c.closePath();c.fill();c.stroke()}
-      c.rotate(wb);c.scale(pop*.9,pop);
-      c.fillStyle='rgba(10,5,38,.35)';c.beginPath();c.arc(U(6),U(9),RT*1.06,0,TAU);c.fill();
+    const w=FX.w,h=FX.h,cx=LV.cx,cy=LV.cy,RT=Math.min(h*.3,w*.15),TX=w*.82-cx,TY=U(-8),BX=U(178),BY=U(-8),TL=1.38,TH=1.52,st={spin:0,hit:0},SX=.34;
+    LV.acc={TX,TY,RT,TH,side:1};
+    LV.zoomF=T=>{const k=T<TL?0:T<TH?(T-TL)/(TH-TL)*.5:T<TH+.18?.5+.5*lvEase((T-TH)/.18):T<2.5?1:T<3?1-lvEase((T-2.5)/.5):0;return{Z:1+.22*k,zx:TX,zy:TY}};
+    /* the target, turned toward the shooter : straw boss with its thickness, face rings, stand */
+    fxSp({d:.05,life:3.6,draw:(c,t,dt,s)=>{const pop=t<.3?Math.sin(t/.3*Math.PI/2)*1.08:t<.4?1.08-(t-.3)*.8:1,fa=t>3.1?1-(t-3.1)/.5:1,
+      hk=st.hit?fxNow()-st.hit:9,push=hk<9?Math.sin(Math.min(1,hk/.08)*Math.PI/2)*U(10)*Math.exp(-hk*4):0,wb=hk<9?Math.sin(hk*32)*Math.exp(-hk*5)*.06:0;
+      c.globalAlpha=fa;c.translate(TX+push,TY);
+      c.fillStyle='#7a4a20';c.strokeStyle='#100935';c.lineWidth=U(4);
+      c.beginPath();c.moveTo(RT*.05,RT*.55);c.lineTo(RT*.55,RT*1.45+U(30));c.lineTo(RT*.42,RT*1.45+U(30));c.lineTo(-RT*.02,RT*.62);c.closePath();c.fill();c.stroke();
+      c.beginPath();c.moveTo(-RT*.02,RT*.55);c.lineTo(-RT*.35,RT*1.45+U(30));c.lineTo(-RT*.22,RT*1.45+U(30));c.lineTo(RT*.08,RT*.6);c.closePath();c.fill();c.stroke();
+      c.rotate(wb);c.scale(pop,pop);
+      const D=RT*.28;
+      c.fillStyle='#c9a46a';c.beginPath();c.ellipse(D,0,RT*SX,RT,0,-Math.PI/2,Math.PI/2);c.lineTo(0,RT);c.ellipse(0,0,RT*SX,RT,0,Math.PI/2,-Math.PI/2,true);c.closePath();c.fill();c.lineWidth=U(4);c.stroke();
+      c.strokeStyle='rgba(120,80,30,.55)';c.lineWidth=U(1.5);for(let i=1;i<6;i++){const y=-RT+i*RT/3,q=Math.sqrt(Math.max(0,1-(y/RT)**2))*RT*SX;c.beginPath();c.moveTo(q,y);c.lineTo(D+q,y);c.stroke()}
       const cols=['#f4f1e8','#f4f1e8','#1d1d24','#1d1d24','#2f8fe0','#2f8fe0','#e8303a','#e8303a','#ffd22e','#ffd22e'];
-      for(let i=0;i<10;i++){const r=RT*(1-i/10);c.fillStyle=cols[i];c.beginPath();c.arc(0,0,r,0,TAU);c.fill();c.strokeStyle=i===2||i===3?'#555':'#100935';c.lineWidth=i?U(1.4):U(5);c.stroke()}
-      c.fillStyle='#100935';c.beginPath();c.arc(0,0,RT*.025+U(1),0,TAU);c.fill();
-      c.globalCompositeOperation='lighter';c.globalAlpha=fa*.25;const gl=c.createRadialGradient(-RT*.4,-RT*.45,0,-RT*.3,-RT*.3,RT);gl.addColorStop(0,'#fff');gl.addColorStop(1,'rgba(255,255,255,0)');c.fillStyle=gl;c.beginPath();c.arc(0,0,RT,0,TAU);c.fill();
-      if(st.hit){const k=t-st.hit;c.globalAlpha=fa*Math.max(0,1-k/.5);c.fillStyle='#fff6c8';c.beginPath();c.arc(0,0,RT*(.2+k*.8),0,TAU);c.fill()}
+      for(let i=0;i<10;i++){const r=RT*(1-i/10);c.fillStyle=cols[i];c.beginPath();c.ellipse(0,0,r*SX,r,0,0,TAU);c.fill();c.strokeStyle=i===2||i===3?'#555':'#100935';c.lineWidth=i?U(1.3):U(4.5);c.stroke()}
+      c.globalCompositeOperation='lighter';c.globalAlpha=fa*.22;const gl=c.createLinearGradient(-RT*SX,0,RT*SX,0);gl.addColorStop(0,'#fff');gl.addColorStop(1,'rgba(255,255,255,0)');c.fillStyle=gl;c.beginPath();c.ellipse(0,0,RT*SX,RT,0,0,TAU);c.fill();
+      if(hk<9){c.globalAlpha=fa*Math.max(0,1-hk/.5);c.fillStyle='#fff6c8';c.beginPath();c.ellipse(0,0,RT*SX*(.25+hk),RT*(.25+hk),0,0,TAU);c.fill()}
       c.globalCompositeOperation='source-over';c.globalAlpha=fa;
-      if(st.hit){/* the round stuck in the centre, its tail toward the shooter, with cracks */
-        c.strokeStyle='#100935';c.lineWidth=U(2);for(let i=0;i<7;i++){const a=i/7*TAU+.3;c.beginPath();c.moveTo(Math.cos(a)*RT*.06,Math.sin(a)*RT*.06);c.lineTo(Math.cos(a+.15)*RT*.15,Math.sin(a+.15)*RT*.15);c.lineTo(Math.cos(a)*RT*.25,Math.sin(a)*RT*.25);c.stroke()}
-        c.rotate(AN+Math.PI);c.scale(1/(pop*.9),1/pop);lvRound(c,U(1),0,1,false)}}});
-    /* the round : appears above the head, spins up while energy is pulled in, wobbles, fires */
-    fxSp({d:.25,f:1,life:TL-.25+.01,draw:(c,t,dt,s)=>{const T=t+.25,k=Math.min(1,(T-.25)/(TL-.25)),pop=t<.25?Math.sin(t/.25*Math.PI/2)*1.15:1,sh=k>.7?(k-.7)*U(8):0;
-      st.spin+=dt*(3+k*k*95);c.translate(BX+R(-sh,sh),BY+R(-sh,sh)+Math.sin(T*3)*U(5)*(1-k));
+      if(hk<9){c.strokeStyle='#100935';c.lineWidth=U(2);for(let i=0;i<7;i++){const a=i/7*TAU+.3;c.beginPath();c.moveTo(Math.cos(a)*RT*.06*SX,Math.sin(a)*RT*.06);c.lineTo(Math.cos(a+.15)*RT*.16*SX,Math.sin(a+.15)*RT*.16);c.lineTo(Math.cos(a)*RT*.26*SX,Math.sin(a)*RT*.26);c.stroke()}
+        c.save();c.rotate(Math.sin(hk*40)*Math.exp(-hk*6)*.12);c.beginPath();c.rect(-U(200),-U(40),U(200),U(80));c.clip();c.translate(U(10),0);lvRound(c,U(1.35),0,0,true);c.restore()}}});
+    /* the round : spins up in front of the weapon */
+    fxSp({d:.25,f:1,life:TL-.25+.01,draw:(c,t,dt,s)=>{const T=t+.25,k=Math.min(1,(T-.25)/(TL-.25)),pop=t<.25?Math.sin(t/.25*Math.PI/2)*1.15:1,sh=k>.7?(k-.7)*U(7):0;
+      st.spin+=dt*(3+k*k*95);c.translate(BX+R(-sh,sh)*.4,BY+R(-sh,sh)+Math.sin(T*3)*U(5)*(1-k));
       c.globalCompositeOperation='lighter';const gr=c.createRadialGradient(0,0,0,0,0,U(60+50*k));gr.addColorStop(0,'rgba(255,220,90,'+(.25+.5*k)+')');gr.addColorStop(1,'rgba(255,170,0,0)');c.fillStyle=gr;c.beginPath();c.arc(0,0,U(60+50*k),0,TAU);c.fill();
-      for(let i=0;i<3;i++){c.globalAlpha=.25+.5*k;c.strokeStyle='#ffe27a';c.lineWidth=U(2.5);c.beginPath();c.ellipse(Math.cos(AN)*U(-20+i*20),Math.sin(AN)*U(-20+i*20),U(14+k*8),U(38+k*14),AN,st.spin*1.3+i*2.1,st.spin*1.3+i*2.1+Math.PI*1.2);c.stroke()}
-      c.globalCompositeOperation='source-over';c.globalAlpha=1;c.rotate(AN);c.scale(pop,pop);lvRound(c,U(1.35),st.spin,k,true)}});
+      for(let i=0;i<4;i++){const x=U(-36+i*24),ph=st.spin*1.4+i*1.6;c.globalAlpha=.25+.55*k;c.strokeStyle='#ffe27a';c.lineWidth=U(2.5);c.beginPath();c.ellipse(x,0,U(6+k*4),U(22+k*12),0,ph,ph+Math.PI*1.3);c.stroke()}
+      c.globalCompositeOperation='source-over';c.globalAlpha=1;c.scale(pop,pop);lvRound(c,U(1.35),st.spin,k,true)}});
     for(let i=0;i<46;i++){const an=R(0,TAU),r=U(R(120,220)),T=R(.35,.5);fxP({d:R(.35,TL-.5),x:BX+Math.cos(an)*r,y:BY+Math.sin(an)*r,vx:-Math.cos(an)*r/T,vy:-Math.sin(an)*r/T,life:T,sh:'streak',len:U(26),s:U(3),c:'#fff0a0',c0:'rgba(255,190,0,0)',gl:1,fi:.08,fo:.7})}
-    /* the revs : ticks that speed up */
-    {let tt=.35,i=0;while(tt<TL-.05){const q=tt;lvLater(q*1000,()=>sfxSafe(i++%2?'thunk':'reload'));tt+=Math.max(.06,.26-(tt-.35)*.2)}}
-    /* launch */
-    lvLater(TL*1000,()=>{sfxSafe('bigshot');lvShake(0,5);fxRing({x:BX,y:BY,c:'#ffe27a',r0:20,r1:160,w:8,life:.4});
-      fxP({x:BX,y:BY,life:.12,sh:'sp',s:U(70),s1:U(20),c:'#fff6c8',gl:1,r:AN});
-      fxSp({life:TH-TL+.25,draw:(c,t,dt,s)=>{const k=Math.min(1,t/(TH-TL)),e=k*k,x=BX+(TX-BX)*e,y=BY+(TY-BY)*e;
-        c.globalCompositeOperation='lighter';c.lineCap='round';const fa=k<1?1:Math.max(0,1-(t-(TH-TL))/.25);
-        for(const [lw,al,cc] of [[U(26),.3,'#ffb300'],[U(9),.9,'#ffe27a'],[U(3.5),1,'#ffffff']]){c.globalAlpha=al*fa;c.strokeStyle=cc;c.lineWidth=lw;c.beginPath();c.moveTo(BX,BY);c.lineTo(x,y);c.stroke()}
-        if(k<1){c.globalCompositeOperation='source-over';c.globalAlpha=1;c.translate(x,y);c.rotate(AN);lvRound(c,U(1.35),t*120,1,true)}}})});
+    {let tt=.35,i=0;while(tt<TL-.05){lvLater(tt*1000,()=>sfxSafe(i++%2?'thunk':'reload'));tt+=Math.max(.06,.26-(tt-.35)*.2)}}
+    /* launch : straight, left to right */
+    lvLater(TL*1000,()=>{sfxSafe('bigshot');lvShake(0,5);fxRing({x:BX,y:BY,c:'#ffe27a',r0:20,r1:150,w:8,life:.4,ey:1.4});
+      fxP({x:BX+U(40),y:BY,life:.12,sh:'sp',s:U(70),s1:U(20),c:'#fff6c8',gl:1});
+      for(let i=0;i<10;i++)fxP({x:BX,y:BY,vx:-U(R(80,220)),vy:U(R(-120,120)),drag:.1,life:R(.4,.7),sh:'glow',s:U(R(14,22)),s1:U(R(40,60)),c:'rgba(255,240,210,.6)',c0:'rgba(255,240,210,0)'});
+      const ex=TX-RT*SX*.2;
+      fxSp({f:1,life:TH-TL+.3,draw:(c,t,dt,s)=>{const k=Math.min(1,t/(TH-TL)),x=BX+(ex-BX)*k*k;
+        c.globalCompositeOperation='lighter';c.lineCap='round';const fa=k<1?1:Math.max(0,1-(t-(TH-TL))/.3);
+        for(const [lw,al,cc] of [[U(26),.3,'#ffb300'],[U(9),.9,'#ffe27a'],[U(3.5),1,'#ffffff']]){c.globalAlpha=al*fa;c.strokeStyle=cc;c.lineWidth=lw;c.beginPath();c.moveTo(BX,BY);c.lineTo(x,BY);c.stroke()}
+        for(let i=0;i<5;i++){const xx=BX+(x-BX)*(i+.5)/5;c.globalAlpha=.5*fa;c.strokeStyle='#fff3c8';c.lineWidth=U(2);c.beginPath();c.ellipse(xx,BY,U(5),U(16+i*3),0,0,TAU);c.stroke()}
+        if(k<1){c.globalCompositeOperation='source-over';c.globalAlpha=1;c.translate(x,BY);lvRound(c,U(1.35),t*120,1,true)}}})});
     /* bullseye */
-    lvLater(TH*1000,()=>{st.hit=FX.S.length?FX.T-.05:0;st.hit=Math.max(.01,fxNow()-.05);sfxSafe('hit');sfxSafe('ko');lvShake(0,11);fxFlash('#fff6c8',.2,.6);
-      for(const d of [0,.07,.14,.21])fxRing({x:TX,y:TY,c:d%.14?'#ffd22e':'#ffffff',r0:RT/LV.u*.2,r1:RT/LV.u*2.6,w:8,life:.7,d});
-      fxBurst(26,{x:TX,y:TY,v0:250,v1:650,s0:5,s1:10,l0:.6,l1:1,c:['#c8a070','#a5814f','#f4f1e8'],vr:14,rock:1,p:{sh:'rock',g:U(1300),drag:.5}});
-      fxBurst(34,{x:TX,y:TY,v0:300,v1:900,s0:6,s1:12,l0:.5,l1:.9,c:['#ffd22e','#fff6c8','#ff9500'],p:{sh:'sp',gl:1,drag:.12}});
-      lvTx('BULLSEYE!',TX+cx>w*.25?TX:TX+U(40),TY-RT-U(30),'big go');lvTx('100',TX+RT*.7,TY+RT*.55,'go',250)});
+    lvLater(TH*1000,()=>{st.hit=fxNow()+.0001;sfxSafe('hit');sfxSafe('ko');lvShake(0,11);fxFlash('#fff6c8',.2,.6);
+      for(const d of [0,.07,.14,.21])fxRing({x:TX,y:TY,c:d%.14?'#ffd22e':'#ffffff',r0:RT/LV.u*.2,r1:RT/LV.u*2.4,w:8,life:.7,d,ey:1.15});
+      fxBurst(24,{x:TX,y:TY,a0:-Math.PI*.6,a1:Math.PI*.6,v0:200,v1:620,s0:5,s1:10,l0:.6,l1:1,c:['#c8a070','#a5814f','#f4f1e8'],vr:14,rock:1,p:{sh:'rock',g:U(1300),drag:.5}});
+      fxBurst(30,{x:TX,y:TY,v0:300,v1:900,s0:6,s1:12,l0:.5,l1:.9,c:['#ffd22e','#fff6c8','#ff9500'],p:{sh:'sp',gl:1,drag:.12}});
+      lvTx('BULLSEYE!',TX-RT*.5-U(70),TY-RT*.62,'big go');lvTx('100',TX+RT*.55,TY+RT*.6,'go',250)});
     fxConfetti(col,2100);
   },
   def(col){fxBurst(28,{v0:200,v1:520,s0:8,s1:14,l0:.9,l1:1.3,c:['#ffd22e','#ffffff',col],vr:6,p:{sh:'star',drag:.3,g:U(200)}});fxConfetti(col,900)}
@@ -6264,7 +6273,8 @@ const LVBG={
       c.globalCompositeOperation='lighter';
       const g=c.createRadialGradient(cx,cy,0,cx,cy,M*.7);g.addColorStop(0,'rgba(255,200,60,'+(.1+.25*ch+.3*hit)*A+')');g.addColorStop(1,'rgba(255,140,0,'+(.03+.08*hit)*A+')');c.fillStyle=g;c.fillRect(0,0,w,h);
       for(let i=0;i<5;i++){const k=((T*.45+i/5)%1),r=q.RT*(1+k*5);c.globalAlpha=A*.13*(1-k)*(1+3*hit);c.strokeStyle=i%2?'#ffd22e':'#ffffff';c.lineWidth=(3+6*(1-k))*u;c.beginPath();c.arc(tx,ty,r,0,TAU);c.stroke()}
-      if(fly||hit>.4){c.lineCap='round';for(let i=0;i<36;i++){const an=i/36*TAU+i,r1=M*(.25+((T*3+i*.37)%1)*.8),r0=r1+M*.18;c.globalAlpha=A*.35;c.strokeStyle='#fff3c8';c.lineWidth=2.5*u;c.beginPath();c.moveTo(tx+Math.cos(an)*r0,ty+Math.sin(an)*r0);c.lineTo(tx+Math.cos(an)*r1,ty+Math.sin(an)*r1);c.stroke()}}
+      if(q.side&&(fly||hit>.4)){c.lineCap='round';for(let i=0;i<40;i++){const y=((i*97)%100)/100*h,L=M*(.08+((i*37)%10)/80),x=((T*2.4+i*.137)%1)*(w+L)-L;c.globalAlpha=A*.4;c.strokeStyle='#fff3c8';c.lineWidth=2.5*u;c.beginPath();c.moveTo(x,y);c.lineTo(x+L,y);c.stroke()}}
+      else if(fly||hit>.4){c.lineCap='round';for(let i=0;i<36;i++){const an=i/36*TAU+i,r1=M*(.25+((T*3+i*.37)%1)*.8),r0=r1+M*.18;c.globalAlpha=A*.35;c.strokeStyle='#fff3c8';c.lineWidth=2.5*u;c.beginPath();c.moveTo(tx+Math.cos(an)*r0,ty+Math.sin(an)*r0);c.lineTo(tx+Math.cos(an)*r1,ty+Math.sin(an)*r1);c.stroke()}}
       for(const p of s.d){c.globalAlpha=A*(.3+.4*Math.sin(T*3+p.k));c.fillStyle='#ffe9a0';c.beginPath();c.arc(p.x+Math.sin(T*.7+p.k)*14*u,p.y-T*p.v,(1.5+ch*1.5)*u,0,TAU);c.fill()}
       c.globalCompositeOperation='source-over';bgVig(c,w,h,'rgba(80,40,0,.9)',A*(.45+.25*ch))}},
   def:{draw(c,T,w,h){bgVig(c,w,h,'rgba(10,5,40,.9)',lvIn(T)*.5)}}
@@ -6273,6 +6283,52 @@ const LVBG={
 /* ================= previous Accumulation show (revolver cylinder + gold coin rain), kept aside =================
    To bring it back : window.LV_ACC_OLD=true (or swap it into LVFX / LVBG). */
 const LVFX_OLD={
+  /* a real archery target on the left ; the agent's round hovers above its head, spins faster and faster while it charges,
+     then flies dead centre : bullseye, the whole view zooms on the target, rings ripple across the screen */
+  AccumulationFront(col){
+    const w=FX.w,h=FX.h,cx=LV.cx,cy=LV.cy,RT=Math.min(h*.27,w*.115),TX=w*.145-cx,TY=h*.5-cy,BX=U(-20),BY=Math.max(U(-178),-cy+U(46)),
+      TL=1.38,TH=1.56,AN=Math.atan2(TY-BY,TX-BX),st={spin:0,hit:0,wob:0};LV.acc={TX,TY,RT,TH};
+    /* zoom : eases in on the target from the launch, holds, eases back */
+    LV.zoomF=T=>{const k=T<TL?0:T<TH?(T-TL)/(TH-TL)*.6:T<TH+.18?.6+.4*lvEase((T-TH)/.18):T<2.5?1:T<3?1-lvEase((T-2.5)/.5):0;return{Z:1+.24*k,zx:TX,zy:TY}};
+    /* the target : rings gold / red / blue / black / white, on a wooden stand */
+    fxSp({d:.05,life:3.6,draw:(c,t,dt,s)=>{const pop=t<.3?Math.sin(t/.3*Math.PI/2)*1.1:t<.4?1.1-(t-.3):1,fa=t>3.1?1-(t-3.1)/.5:1,wb=st.hit?Math.sin((t-st.hit)*30)*Math.exp(-(t-st.hit)*5)*.08:0;
+      c.globalAlpha=fa;c.translate(TX,TY);
+      c.fillStyle='#7a4a20';c.strokeStyle='#100935';c.lineWidth=U(4);for(const sx of [-1,1]){c.beginPath();c.moveTo(sx*RT*.35,RT*.6);c.lineTo(sx*RT*.75,RT*1.5+U(40));c.lineTo(sx*RT*.6,RT*1.5+U(40));c.lineTo(sx*RT*.2,RT*.6);c.closePath();c.fill();c.stroke()}
+      c.rotate(wb);c.scale(pop*.9,pop);
+      c.fillStyle='rgba(10,5,38,.35)';c.beginPath();c.arc(U(6),U(9),RT*1.06,0,TAU);c.fill();
+      const cols=['#f4f1e8','#f4f1e8','#1d1d24','#1d1d24','#2f8fe0','#2f8fe0','#e8303a','#e8303a','#ffd22e','#ffd22e'];
+      for(let i=0;i<10;i++){const r=RT*(1-i/10);c.fillStyle=cols[i];c.beginPath();c.arc(0,0,r,0,TAU);c.fill();c.strokeStyle=i===2||i===3?'#555':'#100935';c.lineWidth=i?U(1.4):U(5);c.stroke()}
+      c.fillStyle='#100935';c.beginPath();c.arc(0,0,RT*.025+U(1),0,TAU);c.fill();
+      c.globalCompositeOperation='lighter';c.globalAlpha=fa*.25;const gl=c.createRadialGradient(-RT*.4,-RT*.45,0,-RT*.3,-RT*.3,RT);gl.addColorStop(0,'#fff');gl.addColorStop(1,'rgba(255,255,255,0)');c.fillStyle=gl;c.beginPath();c.arc(0,0,RT,0,TAU);c.fill();
+      if(st.hit){const k=t-st.hit;c.globalAlpha=fa*Math.max(0,1-k/.5);c.fillStyle='#fff6c8';c.beginPath();c.arc(0,0,RT*(.2+k*.8),0,TAU);c.fill()}
+      c.globalCompositeOperation='source-over';c.globalAlpha=fa;
+      if(st.hit){/* the round stuck in the centre, its tail toward the shooter, with cracks */
+        c.strokeStyle='#100935';c.lineWidth=U(2);for(let i=0;i<7;i++){const a=i/7*TAU+.3;c.beginPath();c.moveTo(Math.cos(a)*RT*.06,Math.sin(a)*RT*.06);c.lineTo(Math.cos(a+.15)*RT*.15,Math.sin(a+.15)*RT*.15);c.lineTo(Math.cos(a)*RT*.25,Math.sin(a)*RT*.25);c.stroke()}
+        c.rotate(AN+Math.PI);c.scale(1/(pop*.9),1/pop);lvRound(c,U(1),0,1,false)}}});
+    /* the round : appears above the head, spins up while energy is pulled in, wobbles, fires */
+    fxSp({d:.25,f:1,life:TL-.25+.01,draw:(c,t,dt,s)=>{const T=t+.25,k=Math.min(1,(T-.25)/(TL-.25)),pop=t<.25?Math.sin(t/.25*Math.PI/2)*1.15:1,sh=k>.7?(k-.7)*U(8):0;
+      st.spin+=dt*(3+k*k*95);c.translate(BX+R(-sh,sh),BY+R(-sh,sh)+Math.sin(T*3)*U(5)*(1-k));
+      c.globalCompositeOperation='lighter';const gr=c.createRadialGradient(0,0,0,0,0,U(60+50*k));gr.addColorStop(0,'rgba(255,220,90,'+(.25+.5*k)+')');gr.addColorStop(1,'rgba(255,170,0,0)');c.fillStyle=gr;c.beginPath();c.arc(0,0,U(60+50*k),0,TAU);c.fill();
+      for(let i=0;i<3;i++){c.globalAlpha=.25+.5*k;c.strokeStyle='#ffe27a';c.lineWidth=U(2.5);c.beginPath();c.ellipse(Math.cos(AN)*U(-20+i*20),Math.sin(AN)*U(-20+i*20),U(14+k*8),U(38+k*14),AN,st.spin*1.3+i*2.1,st.spin*1.3+i*2.1+Math.PI*1.2);c.stroke()}
+      c.globalCompositeOperation='source-over';c.globalAlpha=1;c.rotate(AN);c.scale(pop,pop);lvRound(c,U(1.35),st.spin,k,true)}});
+    for(let i=0;i<46;i++){const an=R(0,TAU),r=U(R(120,220)),T=R(.35,.5);fxP({d:R(.35,TL-.5),x:BX+Math.cos(an)*r,y:BY+Math.sin(an)*r,vx:-Math.cos(an)*r/T,vy:-Math.sin(an)*r/T,life:T,sh:'streak',len:U(26),s:U(3),c:'#fff0a0',c0:'rgba(255,190,0,0)',gl:1,fi:.08,fo:.7})}
+    /* the revs : ticks that speed up */
+    {let tt=.35,i=0;while(tt<TL-.05){const q=tt;lvLater(q*1000,()=>sfxSafe(i++%2?'thunk':'reload'));tt+=Math.max(.06,.26-(tt-.35)*.2)}}
+    /* launch */
+    lvLater(TL*1000,()=>{sfxSafe('bigshot');lvShake(0,5);fxRing({x:BX,y:BY,c:'#ffe27a',r0:20,r1:160,w:8,life:.4});
+      fxP({x:BX,y:BY,life:.12,sh:'sp',s:U(70),s1:U(20),c:'#fff6c8',gl:1,r:AN});
+      fxSp({life:TH-TL+.25,draw:(c,t,dt,s)=>{const k=Math.min(1,t/(TH-TL)),e=k*k,x=BX+(TX-BX)*e,y=BY+(TY-BY)*e;
+        c.globalCompositeOperation='lighter';c.lineCap='round';const fa=k<1?1:Math.max(0,1-(t-(TH-TL))/.25);
+        for(const [lw,al,cc] of [[U(26),.3,'#ffb300'],[U(9),.9,'#ffe27a'],[U(3.5),1,'#ffffff']]){c.globalAlpha=al*fa;c.strokeStyle=cc;c.lineWidth=lw;c.beginPath();c.moveTo(BX,BY);c.lineTo(x,y);c.stroke()}
+        if(k<1){c.globalCompositeOperation='source-over';c.globalAlpha=1;c.translate(x,y);c.rotate(AN);lvRound(c,U(1.35),t*120,1,true)}}})});
+    /* bullseye */
+    lvLater(TH*1000,()=>{st.hit=FX.S.length?FX.T-.05:0;st.hit=Math.max(.01,fxNow()-.05);sfxSafe('hit');sfxSafe('ko');lvShake(0,11);fxFlash('#fff6c8',.2,.6);
+      for(const d of [0,.07,.14,.21])fxRing({x:TX,y:TY,c:d%.14?'#ffd22e':'#ffffff',r0:RT/LV.u*.2,r1:RT/LV.u*2.6,w:8,life:.7,d});
+      fxBurst(26,{x:TX,y:TY,v0:250,v1:650,s0:5,s1:10,l0:.6,l1:1,c:['#c8a070','#a5814f','#f4f1e8'],vr:14,rock:1,p:{sh:'rock',g:U(1300),drag:.5}});
+      fxBurst(34,{x:TX,y:TY,v0:300,v1:900,s0:6,s1:12,l0:.5,l1:.9,c:['#ffd22e','#fff6c8','#ff9500'],p:{sh:'sp',gl:1,drag:.12}});
+      lvTx('BULLSEYE!',TX+cx>w*.25?TX:TX+U(40),TY-RT-U(30),'big go');lvTx('100',TX+RT*.7,TY+RT*.55,'go',250)});
+    fxConfetti(col,2100);
+  },
   /* six golden rounds load into a revolver cylinder, it spins... BANG */
   Accumulation(col){sfxSafe('reload');
     const cx=U(-205),cy=U(-35),Rc=U(60),filled=[0,0,0,0,0,0];
