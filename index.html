@@ -866,7 +866,7 @@ body.lvup #gl{z-index:45}
 .shpg{position:relative;height:396px;scroll-snap-align:start;display:flex;flex-direction:column}
 .shp1{padding-bottom:30px}
 .shbody{flex:1;min-height:0;display:flex;flex-direction:column;gap:10px;container-type:size}
-.shmore{position:absolute;left:50%;bottom:2px;transform:translateX(-50%);display:flex;align-items:center;gap:8px;height:26px;padding:0 16px;border-radius:13px;border:3px solid var(--lin);cursor:pointer;font:inherit;color:#fff;font-size:14px;
+.shmore{position:absolute;left:50%;bottom:6px;transform:translateX(-50%);display:flex;align-items:center;gap:8px;height:26px;padding:0 16px;border-radius:13px;border:3px solid var(--lin);cursor:pointer;font:inherit;color:#fff;font-size:14px;
   background:linear-gradient(180deg,#ff6a8a,#e0234e);box-shadow:0 3px 0 var(--sh)}
 .shmore i{width:10px;height:10px;border-right:3px solid #fff;border-bottom:3px solid #fff;transform:rotate(45deg) translate(-2px,-2px);animation:shDown 1.2s ease-in-out infinite}
 @keyframes shDown{50%{transform:rotate(45deg) translate(2px,2px)}}
@@ -963,6 +963,11 @@ body.lvup #gl{z-index:45}
 .shsp{position:absolute;left:-5px;top:-5px;width:10px;height:10px;border-radius:50%;z-index:5;pointer-events:none;box-shadow:0 0 8px rgba(255,255,255,.7)}
 .shtoast{position:absolute;left:50%;top:70px;transform:translate(-50%,-10px);opacity:0;z-index:6;pointer-events:none;padding:8px 18px;border-radius:14px;background:var(--lin);border:3px solid #fff;font-size:17px;font-weight:700;white-space:nowrap;transition:opacity .2s,transform .2s}
 .shtoast.on{opacity:1;transform:translate(-50%,0)}
+
+.shrbi svg{width:100%;height:100%;display:block;overflow:visible}
+.shrbi .rbsp{transform-box:fill-box;transform-origin:center;animation:rbTw 2.2s ease-in-out infinite}
+@keyframes rbTw{0%,100%{opacity:0;scale:.3}40%{opacity:1;scale:1}60%{opacity:.8}}
+.shrbc:nth-child(n){--d:0}
 
 #lobby{position:fixed;left:0;top:0;right:0;bottom:0;z-index:5;box-sizing:border-box;overflow:hidden;background:#86d9ff}
 #app{position:relative;width:100%;height:100%;overflow:hidden}
@@ -6774,6 +6779,76 @@ function nmEnd(name){NM.on=false;NM.tm.forEach(clearTimeout);NM.tm=[];NM.P=[];nm
 window.BFNAME={ask:nmAsk,show:nmShow,get:nmGet};
 document.addEventListener('click',e=>{const b=e.target.closest&&e.target.closest('#crname');if(!b)return;const c=document.getElementById('crt');if(c)c.hidden=true;nmAsk(true)});
 
+/* ================= Ruby pack art : faceted gems heaped in natural piles =================
+   Each gem is a brilliant seen from above (octagonal girdle, lighter table, alternating crown facets),
+   with a random size, angle and shade ; piles follow a mound shape and are drawn back to front. Seeded : the art never changes. */
+function rbRng(seed){let s=seed>>>0;return()=>{s=(s*1664525+1013904223)>>>0;return s/4294967296}}
+const RB_COL=[['#ff4d6d','#c8102e','#ff8fa3','#7a0019','#e0213f'],['#f2365a','#b0081f','#ff7a90','#62000f','#d4142f']];
+function rbGem(x,y,w,rot,dk,rnd){
+  const rx=w/2,ry=rx*.66,pts=[],tab=[];
+  for(let k=0;k<8;k++){const a=(k*45+22.5)*Math.PI/180,j=1+(rnd()-.5)*.06;pts.push([Math.cos(a)*rx*j,Math.sin(a)*ry*j]);tab.push([Math.cos(a)*rx*.5,Math.sin(a)*ry*.5-ry*.18])}
+  const P=p=>p.map(q=>q[0].toFixed(1)+','+q[1].toFixed(1)).join(' '),C=RB_COL[rnd()<.5?0:1];
+  let s='<g transform="translate('+x.toFixed(1)+','+y.toFixed(1)+') rotate('+rot.toFixed(1)+')">';
+  s+='<polygon points="'+P(pts)+'" fill="'+C[3]+'"/>';
+  for(let k=0;k<8;k++){const n=(k+1)%8,lit=(k>=4&&k<=7);   /* upper facets catch the light */
+    s+='<polygon points="'+P([pts[k],pts[n],tab[n],tab[k]])+'" fill="'+(lit?(k%2?C[2]:C[0]):(k%2?C[1]:C[4]))+'"/>'}
+  s+='<polygon points="'+P(tab)+'" fill="'+C[0]+'"/><polygon points="'+P([tab[5],tab[6],tab[7],[0,-ry*.18]])+'" fill="#ffd6de" opacity=".85"/>';
+  s+='<polygon points="'+P(pts)+'" fill="none" stroke="#3a0012" stroke-width="'+Math.max(.8,w*.045).toFixed(2)+'" stroke-linejoin="round"/>';
+  if(dk>0)s+='<polygon points="'+P(pts)+'" fill="#1a0010" opacity="'+dk.toFixed(2)+'"/>';
+  return s+'</g>'}
+/* a mound of n gems : centre cx, base y, half width hw, height h */
+function rbPile(rnd,n,cx,by,hw,h,w0,w1){const g=[];
+  for(let i=0;i<n;i++){const u=rnd()*2-1,top=h*(1-u*u),v=Math.pow(rnd(),.65)*top;g.push({x:cx+u*hw,y:by-v,w:w0+rnd()*(w1-w0),r:(rnd()-.5)*70,d:v/h})}
+  g.sort((a,b)=>a.y-b.y);
+  return g.map(q=>rbGem(q.x,q.y,q.w*(1-.15*q.d),q.r,.32*q.d*rnd()+(rnd()<.2?.12:0),rnd)).join('')}
+function rbLoose(rnd,list){return list.map(q=>rbGem(q[0],q[1],q[2],(rnd()-.5)*80,q[3]||0,rnd)).join('')}
+function rbSpark(list){return list.map((q,i)=>'<path class="rbsp" style="animation-delay:'+(i*.37).toFixed(2)+'s" transform="translate('+q[0]+','+q[1]+') scale('+(q[2]||1)+')" d="M0-7C1-1 1-1 7 0C1 1 1 1 0 7C-1 1-1 1-7 0C-1-1-1-1 0-7Z" fill="#fff"/>').join('')}
+const RB_DEFS='<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>'+
+  '<radialGradient id="rbGlow"><stop offset="0" stop-color="#ff7d97" stop-opacity=".55"/><stop offset="1" stop-color="#ff7d97" stop-opacity="0"/></radialGradient>'+
+  '<radialGradient id="rbGold"><stop offset="0" stop-color="#fff2a8" stop-opacity=".6"/><stop offset="1" stop-color="#ffd22e" stop-opacity="0"/></radialGradient>'+
+  '<linearGradient id="rbSack" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#8a5a2a"/><stop offset=".45" stop-color="#d9a35e"/><stop offset="1" stop-color="#7a4a1e"/></linearGradient>'+
+  '<linearGradient id="rbWood" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#c97a36"/><stop offset="1" stop-color="#7a3f12"/></linearGradient>'+
+  '<linearGradient id="rbWoodD" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#5a2a0a"/><stop offset="1" stop-color="#8a4a1a"/></linearGradient>'+
+  '<linearGradient id="rbRoy" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#b46dff"/><stop offset="1" stop-color="#5a1fa8"/></linearGradient>'+
+  '<linearGradient id="rbRoyD" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2c0f5a"/><stop offset="1" stop-color="#4a1a8a"/></linearGradient>'+
+  '<linearGradient id="rbBand" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#e0a800"/><stop offset=".5" stop-color="#fff2a8"/><stop offset="1" stop-color="#c98a00"/></linearGradient>'+
+  '</defs></svg>';
+function rbArt(t){
+  const rnd=rbRng(1000+t*77),o='<svg viewBox="0 0 160 130" xmlns="http://www.w3.org/2000/svg">',sh='<ellipse cx="80" cy="118" rx="58" ry="8" fill="#0a0526" opacity=".35"/>';
+  if(t===0)return o+'<circle cx="80" cy="66" r="52" fill="url(#rbGlow)"/><ellipse cx="80" cy="112" rx="34" ry="7" fill="#0a0526" opacity=".35"/>'+rbGem(80,70,70,-8,0,rnd)+rbSpark([[118,34,1.3],[44,46,.9],[104,96,.8]])+'</svg>';
+  if(t===1)return o+sh+'<circle cx="80" cy="80" r="50" fill="url(#rbGlow)" opacity=".6"/>'+rbPile(rnd,14,80,108,50,50,24,36)+rbLoose(rnd,[[28,112,18,.1],[132,110,16,.15]])+rbSpark([[110,52],[52,66,.8]])+'</svg>';
+  if(t===2)return o+sh+
+    '<path d="M34 64C16 78 14 106 30 116c16 9 84 9 100 0 16-10 14-38-4-52z" fill="url(#rbSack)" stroke="#3a2008" stroke-width="2.5"/>'+
+    '<path d="M46 74c-4 14-4 28 0 38M80 76v40M112 74c4 14 4 28 0 38" fill="none" stroke="#6a3a10" stroke-width="2" opacity=".55"/>'+
+    '<path d="M30 64q50-14 100 0q-8 10-50 10t-50-10z" fill="#5a3210" stroke="#3a2008" stroke-width="2.5"/>'+
+    rbPile(rnd,18,80,70,46,36,21,32)+
+    '<path d="M30 66q50 12 100 0" fill="none" stroke="#8a5a2a" stroke-width="5"/><path d="M30 66q50 12 100 0" fill="none" stroke="#3a2008" stroke-width="1.5"/>'+
+    '<path d="M48 76q-6 10 2 18" fill="none" stroke="#c9a05a" stroke-width="3"/>'+rbLoose(rnd,[[26,116,16,.1],[136,114,18,.1]])+rbSpark([[118,40],[56,38,.8]])+'</svg>';
+  if(t===3)return o+sh+
+    '<path d="M26 60C2 76 0 108 22 118c22 9 96 9 118-2 20-12 16-42-6-56z" fill="url(#rbSack)" stroke="#3a2008" stroke-width="2.5"/>'+
+    '<path d="M38 72c-6 16-6 32 0 44M80 74v46M124 72c6 16 6 32 0 44" fill="none" stroke="#6a3a10" stroke-width="2" opacity=".55"/>'+
+    '<path d="M22 60q58-18 116 0q-10 12-58 12t-58-12z" fill="#5a3210" stroke="#3a2008" stroke-width="2.5"/>'+
+    rbPile(rnd,28,80,66,56,50,21,33)+
+    '<path d="M22 62q58 14 116 0" fill="none" stroke="#8a5a2a" stroke-width="6"/><path d="M22 62q58 14 116 0" fill="none" stroke="#3a2008" stroke-width="1.5"/>'+
+    rbPile(rnd,10,30,122,22,12,15,22)+rbPile(rnd,9,132,122,22,10,14,21)+rbLoose(rnd,[[8,92,16,.1],[150,86,15,.15]])+rbSpark([[124,28],[44,24,.9],[84,14,.7]])+'</svg>';
+  if(t===4)return o+sh+
+    '<path d="M20 58l8-34h104l8 34z" fill="url(#rbWoodD)" stroke="#2a1404" stroke-width="2.5"/><path d="M40 24v34M80 24v34M120 24v34" stroke="url(#rbBand)" stroke-width="6"/>'+
+    rbPile(rnd,32,80,66,62,46,20,32)+
+    '<path d="M16 62h128v50a6 6 0 0 1-6 6H22a6 6 0 0 1-6-6z" fill="url(#rbWood)" stroke="#2a1404" stroke-width="2.5"/>'+
+    '<path d="M16 80h128M16 98h128" stroke="#5a2a0a" stroke-width="1.5" opacity=".6"/>'+
+    '<path d="M38 62v56M122 62v56" stroke="url(#rbBand)" stroke-width="7"/><path d="M16 64h128" stroke="url(#rbBand)" stroke-width="6"/>'+
+    '<rect x="71" y="72" width="18" height="22" rx="4" fill="url(#rbBand)" stroke="#5a3a00" stroke-width="2"/><circle cx="80" cy="82" r="3" fill="#3a2008"/>'+
+    rbLoose(rnd,[[8,120,16,.1],[150,118,17,.1],[24,124,13,.2]])+rbSpark([[130,30],[34,34,.9],[96,20,.8]])+'</svg>';
+  return o+'<circle cx="80" cy="64" r="64" fill="url(#rbGold)"/>'+sh+
+    '<path d="M16 58l8-36h112l8 36z" fill="url(#rbRoyD)" stroke="#1a0640" stroke-width="2.5"/><path d="M40 22v36M80 22v36M120 22v36" stroke="url(#rbBand)" stroke-width="6"/>'+
+    rbPile(rnd,36,80,64,66,48,20,32)+
+    '<g transform="translate(80 22) rotate(-8)"><path d="M-20 8l-4-20 11 9 13-15 13 15 11-9-4 20z" fill="url(#rbBand)" stroke="#5a3a00" stroke-width="2" stroke-linejoin="round"/><rect x="-21" y="6" width="42" height="7" rx="2" fill="url(#rbBand)" stroke="#5a3a00" stroke-width="2"/>'+rbGem(0,9,8,0,0,rnd)+rbGem(-12,9,6,0,0,rnd)+rbGem(12,9,6,0,0,rnd)+'</g>'+
+    '<path d="M12 60h136v52a6 6 0 0 1-6 6H18a6 6 0 0 1-6-6z" fill="url(#rbRoy)" stroke="#1a0640" stroke-width="2.5"/>'+
+    '<path d="M34 60v58M126 60v58" stroke="url(#rbBand)" stroke-width="8"/><path d="M12 62h136M12 116h136" stroke="url(#rbBand)" stroke-width="6"/>'+
+    '<rect x="69" y="70" width="22" height="26" rx="5" fill="url(#rbBand)" stroke="#5a3a00" stroke-width="2"/>'+rbGem(80,82,12,0,0,rnd)+
+    rbLoose(rnd,[[6,118,17,.1],[154,116,17,.1],[20,124,13,.2],[140,124,13,.2]])+rbSpark([[136,24,1.2],[24,28],[100,8,.8],[56,8,.7]])+'</svg>';
+}
+
 /* ================= Shop : the "counter" (layout C) =================
    - Decks on pedestals, paid in RUBIES only (the premium currency, not sold yet : 0 for everyone, Creator tools can add some)
    - Deal of the day : one deck at -30 %
@@ -6808,6 +6883,7 @@ const shHMS=ms=>{const h=Math.floor(ms/36e5),m=Math.floor(ms%36e5/6e4);return h?
 function shBuild(){
   let V=document.getElementById('shv');if(V)return V;
   V=document.createElement('div');V.id='shv';V.hidden=true;document.body.appendChild(V);
+  if(!document.getElementById('rbGlow'))document.body.insertAdjacentHTML('beforeend',RB_DEFS);
   V.innerHTML='<div class="shin"><div class="shhead"><button class="mvb" id="shx" aria-label="Back to lobby">&#8592;</button><div class="agtt"><b>SHOP</b><span>New offers in <i id="sht">0</i></span></div>'+
     '<div class="shcur"><span id="shcg">'+SH_GOLD+'<b>0</b></span><span id="shcp">'+SH_POT+'<b>0</b></span><span id="shcr" class="ruby">'+SH_RUBY+'<b>0</b></span>'+
     '<button class="shmy" id="shmy">'+'<span>MY DECKS</span><i id="shmyn">0</i></button></div></div>'+
@@ -6856,7 +6932,7 @@ function shRender(all){
   if(all||!V.querySelector('#shp2').innerHTML)V.querySelector('#shp2').innerHTML=
     '<div class="shp2h"><h3 class="t">RUBIES</h3><span>Coming soon</span></div>'+
     '<div class="shrbs">'+SHC.RUBY.map((r,i)=>'<div class="shrbc'+(r.hot?' hot':'')+(r.best?' best':'')+'" style="--i:'+i+'">'+(r.hot?'<em class="shtag t">POPULAR</em>':r.best?'<em class="shtag t">BEST VALUE</em>':'')+
-      '<div class="shrbi">'+SH_RUBY.repeat(Math.min(5,1+i)).replace(/class="shrb"/g,'class="shrb"')+'</div><b class="t">'+r.n.toLocaleString('en-US')+'</b>'+(r.b?'<small>'+r.b+' bonus</small>':'<small>&nbsp;</small>')+
+      '<div class="shrbi">'+rbArt(i)+'</div><b class="t">'+r.n.toLocaleString('en-US')+'</b>'+(r.b?'<small>'+r.b+' bonus</small>':'<small>&nbsp;</small>')+
       '<button class="shbuy money t" data-sh="rbp">'+r.p+'</button></div>').join('')+'</div>'+
     '<div class="shp shconv"><h4 class="t">POTIONS &#8594; GOLD</h4><div class="shcv"><span class="shci">'+SH_POT+'</span><b class="t">&#8594;</b><span class="shci">'+SH_GOLD+'</span><small>1 potion = '+PGC.POT+' gold</small></div>'+
       '<div class="shcb" id="shcb"></div></div>';
