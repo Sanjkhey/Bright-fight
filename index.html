@@ -514,6 +514,182 @@ html.homeapp .fsbtn,html.homeapp #lfs,html.homeapp #fsg{display:none!important}
 @keyframes wkpl{0%{opacity:0;transform:translate(-50%,-30%) scale(.6)}20%{opacity:1;transform:translate(-50%,-80%) scale(1.15)}100%{opacity:0;transform:translate(-50%,-220%) scale(1)}}
 #st .tile.l{height:88px}
 #st .tile.l svg{width:48px;height:48px}
+/* ================= Lobby skin : bold and dark, like a real mobile brawler =================
+   One family of solid panels (deep indigo, thick ink outline, hard shadow), white outlined text,
+   colour only where it means something : the icons, the resources, the PLAY button, the rewards. */
+#st{--pnl1:#3b2fa6;--pnl2:#251a72;--pnlD:#170f4a;--lin:#100935;--sh:#0a0526;--txt:#fff;--acc:#ffd22e}
+#st .p,#st .pill,#st .info{-webkit-backdrop-filter:none;backdrop-filter:none}
+#st .p{background:linear-gradient(180deg,var(--pnl1),var(--pnl2));border:4px solid var(--lin);border-radius:16px;color:var(--txt);
+  box-shadow:inset 0 3px 0 rgba(255,255,255,.2),inset 0 -4px 0 rgba(0,0,0,.18),0 5px 0 var(--sh)}
+#st .p:active{transform:translateY(3px);box-shadow:inset 0 3px 0 rgba(255,255,255,.2),0 2px 0 var(--sh)}
+/* white text with a thick ink outline everywhere */
+#st .t,#st .nm,#st .tile .t,#st .club .t,#st .mn,#st #pass .t.lb{color:#fff;-webkit-text-stroke:5px var(--lin);paint-order:stroke fill;text-shadow:0 3px 0 var(--lin)}
+#st .tile .t{font-size:16px;letter-spacing:.6px}
+#st .tile svg{filter:drop-shadow(0 3px 0 rgba(10,5,38,.55))}
+/* profile */
+#st .av{background:var(--pnlD);border:3px solid var(--lin);box-shadow:inset 0 2px 0 rgba(255,255,255,.12)}
+/* resources : dark bars, the icon sits on the left edge */
+#st .pill{background:linear-gradient(180deg,#1e1458,#120b3c);border:3.5px solid var(--lin);border-radius:12px;color:#fff;box-shadow:inset 0 2px 0 rgba(255,255,255,.12),0 4px 0 var(--sh)}
+#st .pill .t{font-size:25px;-webkit-text-stroke:5px var(--lin)}
+/* menu / fullscreen icons in white */
+#st .menu svg path,#st .menu svg rect,#st .fsb svg path{stroke:#fff}
+#st .menu svg{filter:drop-shadow(0 2px 0 var(--lin))}
+/* decks card */
+#st .bar{background:var(--pnlD);border:3px solid var(--lin);box-shadow:inset 0 3px 0 rgba(0,0,0,.35)}
+#st .bar .t{color:#fff;-webkit-text-stroke:4px var(--lin);font-size:16px}
+#st .fill{background:linear-gradient(180deg,#ffe86b,#ffb300 60%,#ff9500)}
+#st .lv{background:#fff;color:var(--lin);border:4px solid var(--lin);box-shadow:0 3px 0 var(--sh);-webkit-text-stroke:0}
+/* mode card : dark strip on top, white title, pink subtitle */
+#st .mode .ev{background:var(--lin);color:#ffd22e;-webkit-text-stroke:0}
+#st .mode .ev b{color:#fff}
+#st .ms{color:#ff7ad9;-webkit-text-stroke:5px var(--lin);paint-order:stroke fill}
+#st .info{background:linear-gradient(180deg,#4f8dff,#2a5ce0);color:#fff;border:4px solid var(--lin);box-shadow:0 4px 0 var(--sh)}
+#st .info .t{color:#fff;-webkit-text-stroke:3px var(--lin)}
+/* PLAY keeps its own bright colours, with the same hard outline */
+#st .play{filter:none}
+#st #go{clip-path:none;border:4px solid var(--lin);border-radius:18px;color:#fff;-webkit-text-stroke:6px var(--lin);paint-order:stroke fill;text-shadow:0 4px 0 var(--lin);
+  background:linear-gradient(180deg,rgba(255,255,255,.5),rgba(255,255,255,0) 48%),linear-gradient(100deg,#b6ff3b,#29e0ff);
+  box-shadow:inset 0 -6px 0 rgba(0,60,90,.25),0 6px 0 var(--sh)}
+#st #go:active{transform:translateY(4px);box-shadow:inset 0 -6px 0 rgba(0,60,90,.25),0 2px 0 var(--sh)}
+#st #go svg{filter:drop-shadow(0 3px 0 var(--lin))}
+/* weekly gauge : a blue panel with dark slots, like a reward track */
+#st #wk{background:linear-gradient(180deg,#3d7cff,#2147c9);border:4px solid var(--lin);border-radius:18px;box-shadow:inset 0 3px 0 rgba(255,255,255,.25),0 5px 0 var(--sh)}
+#st #wk .wkh b{color:#fff;-webkit-text-stroke:5px var(--lin);paint-order:stroke fill;text-shadow:0 2px 0 var(--lin)}
+#st #wk .wkh span{color:#ffd22e;-webkit-text-stroke:3px var(--lin);paint-order:stroke fill}
+#st #wk .wktr{background:var(--pnlD);border-color:var(--lin)}
+#st #wk .wkn{width:42px;height:42px;margin-left:calc(-21px + var(--sd,1) * 26px);background:radial-gradient(circle at 50% 35%,#4a3cc0,#1d1460 75%);border:3px solid var(--lin);box-shadow:inset 0 2px 0 rgba(255,255,255,.2),0 3px 0 var(--sh);filter:none}
+#st #wk .wki svg{width:30px;height:30px}
+#st #wk .wkn.ready{background:radial-gradient(circle at 50% 35%,#fff7b0,#ffc400 75%);border-color:var(--lin)}
+#st #wk .wkn.done{opacity:.5}
+#st #wk .wkl{bottom:-9px;left:calc(50% + var(--sd,1) * 7px);font-size:12px;line-height:13px;padding:0 4px;background:var(--lin);color:#fff;border:2px solid #fff;border-radius:7px}
+#st #wk .wkr{left:calc(50% - var(--sd,1) * 26px);z-index:1;width:22px;height:22px;box-sizing:border-box;border-radius:50%;display:grid;place-items:center;font-size:12px;line-height:1;color:#fff;opacity:1;-webkit-text-stroke:0;background:var(--lin);border:2px solid #fff;box-shadow:0 2px 0 var(--sh)}
+#st #wk .wkn.ready .wkr,#st #wk .wkn.done .wkr{background:#ffd22e;color:var(--lin);border-color:var(--lin)}
+#st #wk .wkc{background:#ffd22e;color:var(--lin);border:2px solid var(--lin);font-weight:700}
+/* 3D lobby : name plates and the "pick 2" label in the same family */
+#lb3 .lbn{background:linear-gradient(180deg,var(--pnl1,#3b2fa6),var(--pnl2,#251a72));border:3px solid var(--lin,#100935);box-shadow:0 3px 0 var(--sh,#0a0526);color:#fff}
+#lb3 .lbn b{color:#fff;-webkit-text-stroke:4px var(--lin,#100935);paint-order:stroke fill}
+#lb3 .lbn i{color:var(--c,#ffd22e);-webkit-text-stroke:3px var(--lin,#100935);paint-order:stroke fill;filter:brightness(1.35)}
+#lb3 .lbp.empty .lbn{background:rgba(16,9,53,.55);border-style:dashed;border-color:#fff}
+#lb3 .lbp.empty .lbn b{color:#fff}
+#lb3 .lbt{background:var(--lin,#100935);color:#fff;box-shadow:0 2px 0 rgba(0,0,0,.3)}
+#st .toast{background:var(--lin);color:#fff;border:3px solid #fff}
+#st #wk .wkv{font-style:normal;margin-top:4px;padding:1px 8px;border-radius:9px;background:var(--lin);color:#fff;font-size:13px;-webkit-text-stroke:0}
+#st #wk .wkv i{font-style:normal;color:#ffd22e;font-size:15px}
+/* the gauge's tip : a glowing spark riding the fill (the count itself is in the header) */
+#st #wk .wkc{min-width:0;width:16px;height:16px;margin-left:-8px;padding:0;font-size:0;border-radius:50%;background:#fff;border:3px solid #ffd22e;box-shadow:0 0 10px 3px rgba(255,230,90,.9)}
+/* ================= Agents and Decks screens : the same family as the lobby ================= */
+#agv,#dkv{--lin:#100935;--sh:#0a0526;--pnl1:#3b2fa6;--pnl2:#251a72;--pnlD:#170f4a;
+  background:repeating-linear-gradient(135deg,rgba(255,255,255,.035) 0 22px,rgba(255,255,255,0) 22px 44px),radial-gradient(120% 95% at 50% 0%,#4f8dff 0%,#2c5ce0 52%,#1f3aa8 100%);color:#fff}
+#agv .aghead{background:linear-gradient(180deg,rgba(16,9,53,.5),rgba(16,9,53,0))}
+#agv .agtt,#dkv .agtt{color:#fff}
+#agv .agtt b,#dkv .agtt b{color:#fff;-webkit-text-stroke:5px var(--lin);paint-order:stroke fill;text-shadow:0 3px 0 var(--lin)}
+#agv .agtt span,#dkv .agtt span{color:#ffe36b;-webkit-text-stroke:3px var(--lin);paint-order:stroke fill}
+#agv .agnum{background:var(--lin);border:2px solid #fff;box-shadow:0 3px 0 var(--sh)}
+.mvb{background:linear-gradient(180deg,#3b2fa6,#251a72);border:3px solid #100935;box-shadow:inset 0 2px 0 rgba(255,255,255,.2),0 4px 0 #0a0526;-webkit-text-stroke:0}
+/* class rail */
+#agv .agrb{background:rgba(16,9,53,.45);box-shadow:inset 0 2px 0 rgba(0,0,0,.25)}
+#agv .agrb.on{background:linear-gradient(180deg,var(--pnl1),var(--pnl2));box-shadow:0 0 0 3px var(--c),0 3px 0 var(--sh)}
+/* agent cards : dark panels tinted by the class colour */
+#agv .agc{background:linear-gradient(100deg,color-mix(in srgb,var(--c) 55%,#251a72),#2a1f7e 48%,#1d145e);border:4px solid var(--lin);color:#fff;
+  box-shadow:inset 0 3px 0 rgba(255,255,255,.16),0 6px 0 var(--sh),0 12px 22px rgba(10,5,38,.3)}
+#agv .agc.agfoc{box-shadow:0 0 0 3px var(--c),inset 0 3px 0 rgba(255,255,255,.16),0 7px 0 var(--sh),0 16px 30px rgba(10,5,38,.4)}
+#agv .agmid h3{color:rgba(255,255,255,.42)}
+#agv .agmid h3.named{color:#fff;-webkit-text-stroke:5px var(--lin);paint-order:stroke fill;text-shadow:0 3px 0 var(--lin)}
+#agv .agcl{color:color-mix(in srgb,var(--c) 45%,#fff)}
+#agv .chip{background:rgba(10,5,38,.4);border:2px solid color-mix(in srgb,var(--c) 70%,#fff);color:#fff}
+#agv .chip.sk,#agv .chip.all{background:#ffd22e;border-color:var(--lin);color:var(--lin)}
+#agv .agrow{color:#fff}
+#agv .agrow i{color:color-mix(in srgb,var(--c) 50%,#fff)}
+#agv .agrow b{background:rgba(10,5,38,.5);border:1.5px solid rgba(255,255,255,.14)}
+#agv .agp{border:2.5px dashed color-mix(in srgb,var(--c) 60%,#fff);background:radial-gradient(circle at 50% 35%,color-mix(in srgb,var(--c) 45%,#2a1f7e),#1a1258)}
+#agv .agp>svg{fill:color-mix(in srgb,var(--c) 55%,#2a1f7e)}
+#agv .agc[data-ag] .agp{border:3px solid var(--lin);background:radial-gradient(circle at 50% 30%,color-mix(in srgb,var(--c) 30%,#fff),color-mix(in srgb,var(--c) 75%,#1d145e))}
+#agv .agi{color:color-mix(in srgb,var(--c) 55%,#fff);opacity:.9}
+#agv .aglv{background:var(--lin);border:2px solid #fff}
+#agv .agc.lock{filter:saturate(.55)}
+#agv .agc.lock .aglv{background:#4a4270}
+#agv .agc.sel{outline-color:#ffd22e}
+#agv .agc.sel::after{border:2px solid var(--lin);box-shadow:0 2px 0 var(--sh)}
+#agp{background:linear-gradient(160deg,#3b2fa6,#221866);color:#fff;border:4px solid var(--c);box-shadow:0 0 0 3px #100935,0 7px 0 #0a0526,0 16px 30px rgba(10,5,38,.4)}
+#agp .agpt h4{color:#fff;-webkit-text-stroke:5px #100935;paint-order:stroke fill;text-shadow:0 3px 0 #100935}
+#agp .agpt .agtag,#agp .agpt .agsh{color:color-mix(in srgb,var(--c) 45%,#fff)}
+#agp .agpt p{color:#ece8ff}
+/* decks screen */
+#dkv .dkcur span{background:linear-gradient(180deg,#1e1458,#120b3c);border:3px solid var(--lin);border-radius:12px;color:#fff;box-shadow:inset 0 2px 0 rgba(255,255,255,.12),0 4px 0 var(--sh)}
+#dkv .dkst{background:linear-gradient(180deg,var(--pnl1),var(--pnl2));border:4px solid var(--lin);color:#fff;box-shadow:inset 0 3px 0 rgba(255,255,255,.16),0 6px 0 var(--sh)}
+#dkv .dkrow2 b,#dkv .dkpity b{color:#fff}
+#dkv .dkrow2 em,#dkv .dkgt{color:#ffd22e}
+#dkv .dksm{color:#d9d0ff}
+#dkv .dkslots i{background:rgba(10,5,38,.55);border-color:rgba(255,255,255,.25)}
+#dkv .dkslots i.on{background:linear-gradient(#ffe45e,#ffb300);border-color:var(--lin)}
+#dkv .dkpot{background:linear-gradient(180deg,#d070ff,#9a33e8);border:3px solid var(--lin);color:#fff;box-shadow:inset 0 2px 0 rgba(255,255,255,.3),0 4px 0 var(--sh)}
+#dkv .dkpot b,#dkv .dkpot>span{color:#fff;-webkit-text-stroke:3px var(--lin);paint-order:stroke fill}
+#dkv .dkpot small{color:#ffe36b;-webkit-text-stroke:0}
+#dkv .dkpity>i{background:rgba(10,5,38,.55);border-color:rgba(255,255,255,.2)}
+#dkv .dkpity em{color:#d9d0ff}
+#dkv .dkfirst{background:#ffd22e;border-color:var(--lin);color:var(--lin)}
+#dkv .dkempty{color:#fff;opacity:1;-webkit-text-stroke:4px var(--lin);paint-order:stroke fill}
+#dkv .dkempty small{color:#ffe36b;-webkit-text-stroke:3px var(--lin)}
+#dkv .dkodds{color:#e3ebff}
+#dkv .dkt{background:var(--lin);color:#fff;border:2px solid #fff;box-shadow:0 2px 0 var(--sh)}
+#dkv .dkb{color:#fff}
+#dkv .dkc.empty{background:rgba(10,5,38,.3)}
+#dkv .dkc.empty .dkin{background:rgba(10,5,38,.35);border-color:rgba(255,255,255,.5)}
+#dkv .dkplus{color:#fff}
+#dkv .dkgar{border-top-color:rgba(255,255,255,.22)}
+#agv .aghead{background:linear-gradient(180deg,rgba(16,9,53,.82) 62%,rgba(16,9,53,0))}
+/* agent sheet (stats, upgrades, story) */
+#agv .pkinfo{background:linear-gradient(180deg,#3b2fa6,#221866);border:4px solid var(--lin);color:#fff;box-shadow:0 0 0 3px var(--c),0 6px 0 var(--sh)}
+#agv .pkinfo h4{color:#fff;-webkit-text-stroke:5px var(--lin);paint-order:stroke fill;text-shadow:0 3px 0 var(--lin)}
+#agv .pkinfo .agtag,#agv .pkinfo .agsh{color:color-mix(in srgb,var(--c) 45%,#fff)}
+#agv .pkinfo p{color:#ece8ff}
+#agv .pkinfo.fa2 h5{color:#ffd22e}
+#agv .fastory{color:#d9d0ff}
+#agv .upg .uh b{color:#fff;-webkit-text-stroke:4px var(--lin);paint-order:stroke fill}
+#agv .upg .uh span{color:#fff}
+#agv .ur{background:rgba(10,5,38,.35);border:2px solid color-mix(in srgb,var(--c) 65%,transparent)}
+#agv .ur.spa{background:rgba(122,60,255,.22);border-color:#b46dff}
+#agv .un b{color:#fff}
+#agv .un span{color:#ffd22e}
+#agv .uf{color:#d9d0ff}
+#agv .uf b{color:#fff}
+#agv .usm{color:#cfc4ff}
+#agv .dkbar{background:rgba(10,5,38,.55);border-color:rgba(255,255,255,.22)}
+#agv .dkbar em{color:#fff;-webkit-text-stroke:3px var(--lin);paint-order:stroke fill}
+#agv .ub button{border-color:var(--lin);box-shadow:0 3px 0 var(--sh)}
+#agv .ub button:disabled{opacity:.45;box-shadow:none}
+#agv .pgn{background:#ffd22e;border-color:var(--lin);color:var(--lin)}
+#agv .fapick{border-top-color:rgba(255,255,255,.18)}
+#agv .fapb{border-color:var(--lin);box-shadow:0 4px 0 var(--sh);color:var(--lin)}
+#agv .fapb:disabled{background:#4a4270;color:#c9c2e8;border-color:var(--lin)}
+#agv .pktabs button{background:rgba(10,5,38,.4);color:#fff}
+#agv .pktabs button.on{background:var(--c);color:#fff}
+#agv .upg.lock b{color:#fff}
+/* ================= result, settings and key-binding panels : same dark panels ================= */
+.panel,#keys .kp{background:linear-gradient(180deg,#3b2fa6,#221866);border:4px solid #100935;color:#fff;box-shadow:inset 0 3px 0 rgba(255,255,255,.16),0 7px 0 #0a0526,0 14px 30px rgba(10,5,38,.35)}
+.panel h2,#keys h2{color:#fff;-webkit-text-stroke:5px #100935;paint-order:stroke fill;text-shadow:0 3px 0 #100935}
+.panel .sub{color:#ffe36b}
+.panel .big{color:#fff;-webkit-text-stroke:6px #100935;paint-order:stroke fill;text-shadow:0 4px 0 #100935}
+.panel .note,#keys .kn{color:#d9d0ff}
+.panel .row{border-top-color:rgba(255,255,255,.16)}
+.panel .row small{color:#cfc4ff}
+.panel .sw{background:rgba(10,5,38,.55);border-color:#100935}
+.panel .sw::after{border-color:#100935}
+.panel .sw[aria-checked="true"]::after{background:#fff}
+.panel .pgr{color:#fff}
+.panel .pgr.dk{color:#100935;border-color:#100935}
+.panel .pgn{background:#ffd22e;border-color:#100935;color:#100935}
+.panel .btn:not(.ghost){clip-path:none;border:3px solid #100935;border-radius:14px;color:#fff;-webkit-text-stroke:5px #100935;paint-order:stroke fill;text-shadow:0 3px 0 #100935;box-shadow:inset 0 -4px 0 rgba(0,60,90,.25),0 4px 0 #0a0526}
+.panel .btn.ghost{background:linear-gradient(180deg,#4f8dff,#2a5ce0);color:#fff;box-shadow:inset 0 0 0 3px #100935,inset 0 5px 0 rgba(255,255,255,.2),0 4px 0 #0a0526;-webkit-text-stroke:4px #100935;paint-order:stroke fill}
+#keys .kr{color:#fff}
+#keys .kb{background:#1d1460;color:#fff;border-color:#100935;box-shadow:inset 0 2px 0 rgba(255,255,255,.12),0 3px 0 #0a0526}
+#keys .kb:hover{background:#2c2290}
+#keys .kb.none{background:rgba(10,5,38,.35);color:#8d84c0;border-color:rgba(255,255,255,.3)}
+#keys .kb.wait{background:#ffd22e;color:#100935}
+.panel .pgp i,#dkv .pgp i{background:rgba(10,5,38,.55);border-color:rgba(255,255,255,.5)}
+.panel .pgp i.on,#dkv .pgp i.on{background:#b6ff3b;border-color:#100935}
+.panel .sw[aria-checked="true"]{background:linear-gradient(100deg,#b6ff3b,#29e0ff)}
+.panel .btn.alt{background:linear-gradient(180deg,rgba(255,255,255,.35),rgba(255,255,255,0) 50%),linear-gradient(100deg,#c46bff,#ff5fc8)}
 
 #lobby{position:fixed;left:0;top:0;right:0;bottom:0;z-index:5;box-sizing:border-box;overflow:hidden;background:#86d9ff}
 #app{position:relative;width:100%;height:100%;overflow:hidden}
@@ -5347,14 +5523,16 @@ function wkIcon(st,small){
   const D=DKT[st.v]||DKT.common;     /* a tiny deck : two cards in the deck's colours */
   return '<svg viewBox="0 0 40 40"><rect x="9" y="5" width="22" height="30" rx="4" transform="rotate(-12 20 20)" fill="'+D.c2+'" stroke="#1a1050" stroke-width="3"/><rect x="10" y="5" width="22" height="30" rx="4" transform="rotate(8 20 20)" fill="'+D.col+'" stroke="#1a1050" stroke-width="3"/><path d="M21 13l2.2 4.6 5 .6-3.7 3.4 1 5-4.5-2.5-4.5 2.5 1-5-3.7-3.4 5-.6z" fill="#fff" transform="rotate(8 20 20)"/></svg>';
 }
-function wkLabel(st){return st.k==='gold'?String(st.v):st.k==='pot'?'x'+st.v:(DKT[st.v]||{}).name.replace(' deck','')}
-const wkPct=n=>Math.max(0,Math.min(1,n/WK_MAX))*100;
+function wkName(s){return s.k==='deck'?'1 '+DKT[s.v].name:s.v+(s.k==='gold'?' gold':' potion'+(s.v>1?'s':''))}
+function wkLabel(st){return st.k==='gold'?String(st.v):st.k==='pot'?'x'+st.v:''}   /* a deck is told by its colours (and its name on tap) */
+// the steps are evenly spaced on the track (2,4,6 would otherwise crowd the bottom) : the fill goes linearly from one step to the next
+const wkPct=n=>{n=Math.max(0,Math.min(WK_MAX,n));const L=WK_STEPS.length;let a=0,ia=0;for(let i=0;i<L;i++){const b=WK_STEPS[i].n;if(n<=b)return (ia+(b>a?(n-a)/(b-a):0))/L*100;a=b;ia=i+1}return 100};
 function wkBuild(){
   const st=document.getElementById('st');if(!st||document.getElementById('wk'))return;
   const el=document.createElement('div');el.id='wk';
-  el.innerHTML='<div class="wkh t"><b>WEEKLY</b><span id="wkt"></span></div>'+
+  el.innerHTML='<div class="wkh t"><b>WEEKLY</b><span id="wkt"></span><em class="wkv"><i id="wkv">0</i>/'+WK_MAX+' wins</em></div>'+
     '<div class="wkb"><div class="wktr"><i class="wkf" id="wkf"></i></div><span class="wkc t" id="wkc">0</span>'+
-    WK_STEPS.map((s,i)=>'<button class="wkn" data-i="'+i+'" style="--p:'+(wkPct(s.n)/100)+';--sd:'+(i%2?1:-1)+'" aria-label="Reward at '+s.n+' victories"><span class="wki">'+wkIcon(s)+'</span><span class="wkl t">'+wkLabel(s)+'</span><span class="wkr t">'+s.n+'</span></button>').join('')+'</div>';
+    WK_STEPS.map((s,i)=>'<button class="wkn" data-i="'+i+'" style="--p:'+(wkPct(s.n)/100)+';--sd:'+(i%2?1:-1)+'" aria-label="Reward at '+s.n+' victories"><span class="wki">'+wkIcon(s)+'</span>'+(wkLabel(s)?'<span class="wkl t">'+wkLabel(s)+'</span>':'')+'<span class="wkr t">'+s.n+'</span></button>').join('')+'</div>';
   st.appendChild(el);WK.el=el;
   el.addEventListener('click',e=>{const b=e.target.closest('.wkn');if(b)wkClaim(+b.dataset.i);else wkToast('Win matches (top 6) to fill the weekly gauge')});
   wkDraw(true);
@@ -5362,7 +5540,7 @@ function wkBuild(){
 function wkDraw(instant){
   if(!WK.el)return;const w=wkData();
   const shown=WK.anim?null:w.sh;
-  if(shown!==null){document.getElementById('wkf').style.height=wkPct(shown)+'%';const c=document.getElementById('wkc');c.textContent=shown;c.style.setProperty('--p',wkPct(shown)/100)}
+  if(shown!==null){document.getElementById('wkf').style.height=wkPct(shown)+'%';const c=document.getElementById('wkc');c.textContent=shown;document.getElementById('wkv').textContent=shown;c.style.setProperty('--p',wkPct(shown)/100)}
   document.getElementById('wkt').textContent=wkLeft();
   WK.el.querySelectorAll('.wkn').forEach(b=>{const i=+b.dataset.i,s=WK_STEPS[i],got=w.cl.indexOf(i)>=0,ok=(shown===null?w.v:shown)>=s.n;
     b.classList.toggle('done',got);b.classList.toggle('ready',ok&&!got)});
@@ -5371,14 +5549,14 @@ function wkDraw(instant){
 function wkClaim(i){
   const w=wkData(),s=WK_STEPS[i];
   if(w.cl.indexOf(i)>=0){wkToast('Already claimed');return}
-  if(WK.anim||w.sh<s.n){wkToast(s.n-w.v>0?(s.n-w.v)+' more victor'+(s.n-w.v>1?'ies':'y')+' this week':'Wait for the gauge');return}
+  if(WK.anim||w.sh<s.n){wkToast(s.n-w.v>0?wkName(s)+' : '+(s.n-w.v)+' more victor'+(s.n-w.v>1?'ies':'y'):'Wait for the gauge');return}
   w.cl.push(i);
   if(s.k==='gold')PG.d.gold+=s.v;else if(s.k==='pot')PG.d.pot+=s.v;else PG.d.dk.q.push(s.v);
   pgSave();
   const b=WK.el.querySelector('.wkn[data-i="'+i+'"]');b.classList.add('pop');setTimeout(()=>b.classList.remove('pop'),500);
   const target=document.getElementById(s.k==='gold'?'coinB':s.k==='pot'?'potB':'pass');
   wkFly(b,target,wkIcon(s),()=>{pgHud();if(target){target.classList.remove('wkhit');void target.offsetWidth;target.classList.add('wkhit')}});
-  wkToast('+'+(s.k==='deck'?'1 '+DKT[s.v].name:s.v+(s.k==='gold'?' gold':' potion'+(s.v>1?'s':''))));
+  wkToast('+'+wkName(s));
   wkDraw();
 }
 /* stage coordinates of an element's centre (the stage itself may be scaled or turned) */
@@ -5404,7 +5582,7 @@ function wkAnimate(){
   WK.anim=true;const from=w.sh,to=w.v,f=document.getElementById('wkf'),c=document.getElementById('wkc');
   const t0=performance.now(),dur=700+300*(to-from);
   const step=()=>{const k=Math.min(1,(performance.now()-t0)/dur),e=1-Math.pow(1-k,3),v=from+(to-from)*e;
-    f.style.height=wkPct(v)+'%';c.style.setProperty('--p',wkPct(v)/100);c.textContent=Math.floor(v+1e-6);
+    f.style.height=wkPct(v)+'%';c.style.setProperty('--p',wkPct(v)/100);c.textContent=Math.floor(v+1e-6);document.getElementById('wkv').textContent=Math.floor(v+1e-6);
     WK.el.querySelectorAll('.wkn').forEach(b=>{const s=WK_STEPS[+b.dataset.i];if(v>=s.n&&!b.classList.contains('ready')&&w.cl.indexOf(+b.dataset.i)<0){b.classList.add('ready','pop');setTimeout(()=>b.classList.remove('pop'),500)}});
     if(k<1){requestAnimationFrame(step);return}
     w.sh=to;pgSave();WK.anim=false;wkSpark(c);wkDraw()};
