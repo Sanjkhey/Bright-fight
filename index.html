@@ -6118,7 +6118,7 @@ const LVFX={
   /* profile scene : the agent on the left faces right ; its round floats in front of the weapon and spins up on its long axis,
      then crosses the screen left to right into an archery target seen from the side : bullseye, zoom on the target */
   Accumulation(col){
-    const w=FX.w,h=FX.h,cx=LV.cx,cy=LV.cy,RT=Math.min(h*.3,w*.15),TX=w*.82-cx,TY=U(-8),BX=U(178),BY=U(-8),TL=1.38,TH=1.52,st={spin:0,hit:0},SX=.34;
+    const w=FX.w,h=FX.h,cx=LV.cx,cy=LV.cy,RT=Math.min(h*.24,w*.12),TX=w*.83-cx,TY=U(-8),BX=U(178),BY=U(-8),TL=1.38,TH=1.52,st={spin:0,hit:0},SX=.34;
     LV.acc={TX,TY,RT,TH,side:1};
     LV.zoomF=T=>{const k=T<TL?0:T<TH?(T-TL)/(TH-TL)*.5:T<TH+.18?.5+.5*lvEase((T-TH)/.18):T<2.5?1:T<3?1-lvEase((T-2.5)/.5):0;return{Z:1+.22*k,zx:TX,zy:TY}};
     /* the target, turned toward the shooter : straw boss with its thickness, face rings, stand */
