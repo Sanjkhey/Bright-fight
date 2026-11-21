@@ -694,74 +694,79 @@ html.homeapp .fsbtn,html.homeapp #lfs,html.homeapp #fsg{display:none!important}
 body.lvup #gl{z-index:45}
 #lvup{position:fixed;left:0;top:0;right:0;bottom:0;z-index:46;overflow:hidden;font-family:var(--font,'Fredoka',sans-serif);color:#fff;
   -webkit-user-select:none;user-select:none;touch-action:none;cursor:pointer;animation:lvIn .25s ease-out;--c:#ffd22e}
-#lvup[hidden]{display:none}
-#lvup.out{animation:lvOut .26s ease-in forwards}
+.lvl[hidden]{display:none}
+.lvl.out{animation:lvOut .26s ease-in forwards}
 @keyframes lvIn{from{opacity:0}to{opacity:1}}
 @keyframes lvOut{to{opacity:0;transform:scale(1.04)}}
-#lvup.flat{background:radial-gradient(80% 90% at 50% 55%,#3b2fa6,#1a1050 70%)}
+/* back layer (under the 3D canvas) : night background, floor glow under the pedestal, rays, effects */
+#lvub{position:fixed;left:0;top:0;right:0;bottom:0;z-index:44;overflow:hidden;pointer-events:none;--c:#ffd22e;
+  background:radial-gradient(ellipse 300px 80px at var(--px,35%) var(--py,76%),rgba(140,120,255,.5),rgba(140,120,255,0) 70%),
+    linear-gradient(180deg,#130a3e 0,#1f1560 var(--hy,46%),#2b2083 var(--hy,46%),#3b2da8 100%)}
+#lvub[hidden]{display:none}
+#lvup{background:none}
 /* light rays turning behind (screen blend : they only brighten) */
-#lvup .lvbg{position:absolute;left:35%;top:50%;width:160vmax;height:160vmax;margin:-80vmax 0 0 -80vmax;mix-blend-mode:screen;opacity:.32;pointer-events:none;
+.lvl .lvbg{position:absolute;left:var(--ax,35%);top:var(--ay,50%);width:160vmax;height:160vmax;margin:-80vmax 0 0 -80vmax;opacity:.3;pointer-events:none;
   background:repeating-conic-gradient(from 0deg,color-mix(in srgb,var(--c) 70%,#fff) 0deg 9deg,transparent 9deg 24deg);
   -webkit-mask-image:radial-gradient(circle,#000 0,transparent 42%);mask-image:radial-gradient(circle,#000 0,transparent 42%);animation:lvRays 9s linear infinite}
 @keyframes lvRays{to{transform:rotate(360deg)}}
 /* fallback without WebGL : the card art spins on a flat pedestal */
-#lvup .lvped{position:absolute;left:35%;top:74%;width:230px;height:52px;margin-left:-115px;border-radius:50%;background:radial-gradient(#fff3d6,#d9b56e);box-shadow:0 0 0 6px #ffd22e,0 0 40px var(--c)}
-#lvup .lvart{position:absolute;left:35%;top:46%;width:min(46%,420px);height:auto;max-height:64%;object-fit:contain;transform:translate(-50%,-50%);border-radius:14px;border:4px solid #100935;animation:lvSpin 1.5s cubic-bezier(.2,.7,.3,1) both}
+.lvl .lvped{position:absolute;left:35%;top:74%;width:230px;height:52px;margin-left:-115px;border-radius:50%;background:radial-gradient(#fff3d6,#d9b56e);box-shadow:0 0 0 6px #ffd22e,0 0 40px var(--c)}
+.lvl .lvart{position:absolute;left:35%;top:46%;width:min(46%,420px);height:auto;max-height:64%;object-fit:contain;transform:translate(-50%,-50%);border-radius:14px;border:4px solid #100935;animation:lvSpin 1.5s cubic-bezier(.2,.7,.3,1) both}
 @keyframes lvSpin{from{transform:translate(-50%,-50%) perspective(600px) rotateY(-720deg) scale(.6)}to{transform:translate(-50%,-50%) perspective(600px) rotateY(0) scale(1)}}
 /* title */
-#lvup .lvtt{position:absolute;left:58%;right:calc(2% + var(--or,0px));top:calc(22% + var(--ot,0px));text-align:center;pointer-events:none}
-#lvup .lvtt b{display:inline-block;font-size:clamp(32px,8.5vmin,64px);white-space:nowrap;font-weight:700;letter-spacing:2px;color:#ffd22e;-webkit-text-stroke:8px #100935;paint-order:stroke fill;
+.lvl .lvtt{position:absolute;left:58%;right:calc(2% + var(--or,0px));top:calc(22% + var(--ot,0px));text-align:center;pointer-events:none}
+.lvl .lvtt b{display:inline-block;font-size:clamp(32px,8.5vmin,64px);white-space:nowrap;font-weight:700;letter-spacing:2px;color:#ffd22e;-webkit-text-stroke:8px #100935;paint-order:stroke fill;
   text-shadow:0 6px 0 #100935,0 0 30px color-mix(in srgb,var(--c) 70%,transparent);animation:lvPop .6s cubic-bezier(.2,1.7,.4,1) .12s both}
 @keyframes lvPop{from{transform:scale(.2) rotate(-8deg);opacity:0}to{transform:scale(1) rotate(-2deg);opacity:1}}
 /* attribute plate */
-#lvup .lvpl{position:absolute;left:58%;right:calc(2% + var(--or,0px));margin:0 auto;width:max-content;max-width:calc(40% - var(--or,0px));box-sizing:border-box;top:calc(22% + var(--ot,0px) + clamp(50px,13vmin,92px));display:flex;align-items:center;gap:12px;padding:8px 22px 8px 10px;border-radius:18px;
+.lvl .lvpl{position:absolute;left:58%;right:calc(2% + var(--or,0px));margin:0 auto;width:max-content;max-width:calc(40% - var(--or,0px));box-sizing:border-box;top:calc(22% + var(--ot,0px) + clamp(50px,13vmin,92px));display:flex;align-items:center;gap:12px;padding:8px 22px 8px 10px;border-radius:18px;
   background:linear-gradient(180deg,#3b2fa6,#221866);border:4px solid #100935;box-shadow:0 0 0 3px var(--c),0 6px 0 #0a0526;pointer-events:none;
   animation:lvUp .45s cubic-bezier(.2,1.5,.4,1) .45s both}
 @keyframes lvUp{from{transform:translateX(80px);opacity:0}to{transform:none;opacity:1}}
-#lvup .lvic svg{width:54px;height:54px;display:block}
-#lvup .lvpl b{display:block;font-size:22px;line-height:1.05;-webkit-text-stroke:4px #100935;paint-order:stroke fill}
-#lvup .lvpl em{display:block;font-style:normal;font-size:20px;color:#fff;-webkit-text-stroke:4px #100935;paint-order:stroke fill}
-#lvup .lvpl em i{font-style:normal;color:#ffd22e;display:inline-block;animation:lvNum .5s cubic-bezier(.2,1.8,.4,1) .95s both}
+.lvl .lvic svg{width:54px;height:54px;display:block}
+.lvl .lvpl b{display:block;font-size:22px;line-height:1.05;-webkit-text-stroke:4px #100935;paint-order:stroke fill}
+.lvl .lvpl em{display:block;font-style:normal;font-size:20px;color:#fff;-webkit-text-stroke:4px #100935;paint-order:stroke fill}
+.lvl .lvpl em i{font-style:normal;color:#ffd22e;display:inline-block;animation:lvNum .5s cubic-bezier(.2,1.8,.4,1) .95s both}
 @keyframes lvNum{from{transform:scale(2.4);opacity:0}to{transform:scale(1);opacity:1}}
-#lvup .lvpl s{text-decoration:none;font-size:.7em;color:var(--c)}
-#lvup .lvpl small{display:block;font-size:13px;line-height:1.25;color:#d9d0ff}
-#lvup .lvpl b,#lvup .lvpl em{white-space:nowrap}
-#lvup .lvic{flex:none}
-#lvup .lvpl small u{text-decoration:none;color:#fff;font-weight:700}
-#lvup .lvh{position:absolute;right:calc(18px + var(--or,0px));bottom:calc(14px + var(--ob,0px));font-size:14px;color:#fff;opacity:0;-webkit-text-stroke:3px #100935;paint-order:stroke fill;animation:lvIn .4s ease-out 1.4s forwards;pointer-events:none}
+.lvl .lvpl s{text-decoration:none;font-size:.7em;color:var(--c)}
+.lvl .lvpl small{display:block;font-size:13px;line-height:1.25;color:#d9d0ff}
+.lvl .lvpl b,.lvl .lvpl em{white-space:nowrap}
+.lvl .lvic{flex:none}
+.lvl .lvpl small u{text-decoration:none;color:#fff;font-weight:700}
+.lvl .lvh{position:absolute;right:calc(18px + var(--or,0px));bottom:calc(14px + var(--ob,0px));font-size:14px;color:#fff;opacity:0;-webkit-text-stroke:3px #100935;paint-order:stroke fill;animation:lvIn .4s ease-out 1.4s forwards;pointer-events:none}
 /* effects layer, centred on the agent */
-#lvup .lvfx{position:absolute;left:35%;top:50%;width:0;height:0;pointer-events:none}
-#lvup .lvq{position:absolute;left:0;top:0;display:block;pointer-events:none}
-#lvup .ring{width:80px;height:80px;border-radius:50%;border:5px solid;box-sizing:border-box}
-#lvup .heart{width:34px;height:30px;background:#ff4f6d;clip-path:path('M17,30 C5,21 0,14 0,8 C0,3 4,0 8.5,0 C12,0 15,2 17,5 C19,2 22,0 25.5,0 C30,0 34,3 34,8 C34,14 29,21 17,30Z');filter:drop-shadow(0 0 1.5px #fff) drop-shadow(0 0 1.5px #fff) drop-shadow(0 0 8px #ff9db0)}
-#lvup .line{left:0;height:5px;border-radius:3px;background:linear-gradient(90deg,#fff,rgba(41,224,255,0))}
-#lvup .chev{width:70px;height:70px;background:#29e0ff;clip-path:polygon(60% 0,100% 50%,60% 100%,40% 100%,80% 50%,40% 0,20% 0,60% 50%,20% 100%,0 100%,40% 50%,0 0);transform:scaleX(-1)}
-#lvup .burst{width:200px;height:200px;background:radial-gradient(#fff,#ffd22e 35%,#ff8a1f 65%);clip-path:polygon(50% 0,60% 32%,93% 18%,72% 45%,100% 58%,67% 64%,78% 97%,50% 74%,22% 97%,33% 64%,0 58%,28% 45%,7% 18%,40% 32%)}
-#lvup .spark{width:26px;height:5px;border-radius:3px;background:#ffd22e;box-shadow:0 0 6px #ff8a1f}
-#lvup .lvbat{position:absolute;left:-200px;top:-30px;display:flex;gap:4px;padding:6px 10px 6px 6px;border:4px solid #100935;border-radius:10px;background:#1d1460;box-shadow:0 4px 0 #0a0526}
-#lvup .lvbat::after{content:'';position:absolute;right:-12px;top:50%;width:8px;height:18px;margin-top:-9px;border-radius:0 4px 4px 0;background:#100935}
-#lvup .lvbat i{width:14px;height:34px;border-radius:4px;background:rgba(255,255,255,.12);transition:background .15s,box-shadow .15s}
-#lvup .lvbat i.on{background:#9dff5a;box-shadow:0 0 10px #9dff5a}
-#lvup .lvbat.full{animation:lvFull .5s ease-in-out 2}
+.lvl .lvfx{position:absolute;left:var(--ax,35%);top:var(--ay,50%);width:0;height:0;pointer-events:none}
+.lvl .lvq{position:absolute;left:0;top:0;display:block;pointer-events:none}
+.lvl .ring{width:80px;height:80px;border-radius:50%;border:5px solid;box-sizing:border-box}
+.lvl .heart{width:34px;height:30px;background:#ff4f6d;clip-path:path('M17,30 C5,21 0,14 0,8 C0,3 4,0 8.5,0 C12,0 15,2 17,5 C19,2 22,0 25.5,0 C30,0 34,3 34,8 C34,14 29,21 17,30Z');filter:drop-shadow(0 0 1.5px #fff) drop-shadow(0 0 1.5px #fff) drop-shadow(0 0 8px #ff9db0)}
+.lvl .line{left:0;height:5px;border-radius:3px;background:linear-gradient(90deg,#fff,rgba(41,224,255,0))}
+.lvl .chev{width:70px;height:70px;background:#29e0ff;clip-path:polygon(60% 0,100% 50%,60% 100%,40% 100%,80% 50%,40% 0,20% 0,60% 50%,20% 100%,0 100%,40% 50%,0 0);transform:scaleX(-1)}
+.lvl .burst{width:200px;height:200px;background:radial-gradient(#fff,#ffd22e 35%,#ff8a1f 65%);clip-path:polygon(50% 0,60% 32%,93% 18%,72% 45%,100% 58%,67% 64%,78% 97%,50% 74%,22% 97%,33% 64%,0 58%,28% 45%,7% 18%,40% 32%)}
+.lvl .spark{width:26px;height:5px;border-radius:3px;background:#ffd22e;box-shadow:0 0 6px #ff8a1f}
+.lvl .lvbat{position:absolute;left:-200px;top:-30px;display:flex;gap:4px;padding:6px 10px 6px 6px;border:4px solid #100935;border-radius:10px;background:#1d1460;box-shadow:0 4px 0 #0a0526}
+.lvl .lvbat::after{content:'';position:absolute;right:-12px;top:50%;width:8px;height:18px;margin-top:-9px;border-radius:0 4px 4px 0;background:#100935}
+.lvl .lvbat i{width:14px;height:34px;border-radius:4px;background:rgba(255,255,255,.12);transition:background .15s,box-shadow .15s}
+.lvl .lvbat i.on{background:#9dff5a;box-shadow:0 0 10px #9dff5a}
+.lvl .lvbat.full{animation:lvFull .5s ease-in-out 2}
 @keyframes lvFull{50%{box-shadow:0 0 0 4px #9dff5a,0 0 30px #9dff5a}}
-#lvup .bolt{width:28px;height:42px;background:#fff36b;clip-path:polygon(60% 0,10% 55%,45% 55%,30% 100%,90% 40%,55% 40%,75% 0);filter:drop-shadow(0 0 6px #9dff5a)}
-#lvup .plus{width:26px;height:26px;background:#4fe08a;clip-path:polygon(35% 0,65% 0,65% 35%,100% 35%,100% 65%,65% 65%,65% 100%,35% 100%,35% 65%,0 65%,0 35%,35% 35%);filter:drop-shadow(0 0 5px #b8ffcf)}
-#lvup .lvshards{position:absolute;left:0;top:0;width:300px;height:300px}
-#lvup .lvshards i{position:absolute;left:50%;top:50%;width:26px;height:46px;margin:-23px 0 0 -13px;background:linear-gradient(135deg,#fff,#7ad7ff 45%,#3a8fd6);clip-path:polygon(50% 0,100% 30%,80% 100%,20% 100%,0 30%);
+.lvl .bolt{width:28px;height:42px;background:#fff36b;clip-path:polygon(60% 0,10% 55%,45% 55%,30% 100%,90% 40%,55% 40%,75% 0);filter:drop-shadow(0 0 6px #9dff5a)}
+.lvl .plus{width:26px;height:26px;background:#4fe08a;clip-path:polygon(35% 0,65% 0,65% 35%,100% 35%,100% 65%,65% 65%,65% 100%,35% 100%,35% 65%,0 65%,0 35%,35% 35%);filter:drop-shadow(0 0 5px #b8ffcf)}
+.lvl .lvshards{position:absolute;left:0;top:0;width:300px;height:300px}
+.lvl .lvshards i{position:absolute;left:50%;top:50%;width:26px;height:46px;margin:-23px 0 0 -13px;background:linear-gradient(135deg,#fff,#7ad7ff 45%,#3a8fd6);clip-path:polygon(50% 0,100% 30%,80% 100%,20% 100%,0 30%);
   transform:rotate(calc(var(--k) * 45deg)) translateY(-130px);filter:drop-shadow(0 0 8px #7ad7ff)}
-#lvup .beam{width:90px;height:6px;border-radius:3px;background:linear-gradient(90deg,rgba(122,215,255,0),#fff)}
-#lvup .dot{width:20px;height:20px;border-radius:50%;background:radial-gradient(#fff,#9cc8ff 60%);box-shadow:0 0 12px 3px #4f9dff}
-#lvup .bubble{width:250px;height:290px;border-radius:50%;border:4px solid rgba(160,205,255,.9);background:radial-gradient(circle at 35% 30%,rgba(255,255,255,.55),rgba(79,157,255,.18) 40%,rgba(79,157,255,.06) 70%);box-shadow:0 0 30px rgba(79,157,255,.7),inset 0 0 30px rgba(79,157,255,.5)}
-#lvup .shine{left:-60px;top:-260px;width:70px;height:520px;background:linear-gradient(90deg,transparent,rgba(255,255,255,.9),transparent);mix-blend-mode:screen}
-#lvup .case{width:13px;height:28px;border-radius:4px;background:linear-gradient(90deg,#b8862a,#ffe9a0,#d9a43a);border:2.5px solid #100935;box-shadow:0 0 8px rgba(255,233,160,.6)}
-#lvup .smoke{width:120px;height:120px;border-radius:50%;background:radial-gradient(#7d4fd0,rgba(70,25,130,.85) 45%,rgba(40,10,80,0) 70%)}
-#lvup .slash{width:360px;height:10px;border-radius:5px;background:linear-gradient(90deg,transparent,#fff 30%,#e2c8ff 70%,transparent);box-shadow:0 0 18px #a45cff;transform-origin:50% 50%}
-#lvup .lvorbs{position:absolute;left:0;top:0;width:280px;height:280px}
-#lvup .lvorbs i{position:absolute;left:50%;top:50%;width:24px;height:24px;margin:-12px;border-radius:50%;background:radial-gradient(#fff,#ffcf3a 55%,#ff9500);box-shadow:0 0 14px #ffcf3a;transform:rotate(calc(var(--k) * 60deg)) translateY(-120px)}
-#lvup .flash{left:-100vmax;top:-100vmax;width:200vmax;height:200vmax;background:radial-gradient(circle,#fff6c8,rgba(255,207,58,.4) 30%,transparent 60%)}
-#lvup .star{width:30px;height:30px;background:#ffd22e;clip-path:polygon(50% 0,61% 35%,98% 35%,68% 57%,79% 91%,50% 70%,21% 91%,32% 57%,2% 35%,39% 35%)}
-@media (prefers-reduced-motion:reduce){#lvup .lvbg{animation:none}}
-@media (min-width:1100px) and (min-height:640px){#lvup .lvpl{zoom:1.5}#lvup .lvh{font-size:18px}}
+.lvl .beam{width:90px;height:6px;border-radius:3px;background:linear-gradient(90deg,rgba(122,215,255,0),#fff)}
+.lvl .dot{width:20px;height:20px;border-radius:50%;background:radial-gradient(#fff,#9cc8ff 60%);box-shadow:0 0 12px 3px #4f9dff}
+.lvl .bubble{width:250px;height:290px;border-radius:50%;border:4px solid rgba(160,205,255,.9);background:radial-gradient(circle at 35% 30%,rgba(255,255,255,.55),rgba(79,157,255,.18) 40%,rgba(79,157,255,.06) 70%);box-shadow:0 0 30px rgba(79,157,255,.7),inset 0 0 30px rgba(79,157,255,.5)}
+.lvl .shine{left:-60px;top:-260px;width:70px;height:520px;background:linear-gradient(90deg,transparent,rgba(255,255,255,.9),transparent);mix-blend-mode:screen}
+.lvl .case{width:13px;height:28px;border-radius:4px;background:linear-gradient(90deg,#b8862a,#ffe9a0,#d9a43a);border:2.5px solid #100935;box-shadow:0 0 8px rgba(255,233,160,.6)}
+.lvl .smoke{width:120px;height:120px;border-radius:50%;background:radial-gradient(#7d4fd0,rgba(70,25,130,.85) 45%,rgba(40,10,80,0) 70%)}
+.lvl .slash{width:360px;height:10px;border-radius:5px;background:linear-gradient(90deg,transparent,#fff 30%,#e2c8ff 70%,transparent);box-shadow:0 0 18px #a45cff;transform-origin:50% 50%}
+.lvl .lvorbs{position:absolute;left:0;top:0;width:280px;height:280px}
+.lvl .lvorbs i{position:absolute;left:50%;top:50%;width:24px;height:24px;margin:-12px;border-radius:50%;background:radial-gradient(#fff,#ffcf3a 55%,#ff9500);box-shadow:0 0 14px #ffcf3a;transform:rotate(calc(var(--k) * 60deg)) translateY(-120px)}
+.lvl .flash{left:-100vmax;top:-100vmax;width:200vmax;height:200vmax;background:radial-gradient(circle,#fff6c8,rgba(255,207,58,.4) 30%,transparent 60%)}
+.lvl .star{width:30px;height:30px;background:#ffd22e;clip-path:polygon(50% 0,61% 35%,98% 35%,68% 57%,79% 91%,50% 70%,21% 91%,32% 57%,2% 35%,39% 35%)}
+@media (prefers-reduced-motion:reduce){.lvl .lvbg{animation:none}}
+@media (min-width:1100px) and (min-height:640px){.lvl .lvpl{zoom:1.5}.lvl .lvh{font-size:18px}}
 
 #lobby{position:fixed;left:0;top:0;right:0;bottom:0;z-index:5;box-sizing:border-box;overflow:hidden;background:#86d9ff}
 #app{position:relative;width:100%;height:100%;overflow:hidden}
@@ -2667,12 +2672,14 @@ function nearestSeen(e,range){
 }
 /* screen-space stick direction -> world direction (the ground is foreshortened vertically by the camera tilt) */
 function s2w(x,y){if(!G3.on)return[x,y];const m=Math.hypot(x,y);if(m<1e-6)return[x,y];const yy=y/Math.sin(EL3),n=Math.hypot(x,yy);return[x/n*m,yy/n*m]}
+/* every pixel back to fully opaque (the canvas has an alpha channel for the level-up show only) */
+function glOpaque(gl){gl.colorMask(false,false,false,true);gl.clearColor(0,0,0,1);gl.clear(gl.COLOR_BUFFER_BIT);gl.colorMask(true,true,true,true)}
 /* ---------- GL init ---------- */
 function gl3Init(){
   if(G3.failed||G3.on)return G3.on;
   try{
     const c=document.createElement('canvas');c.id='gl';c.style.cssText='position:fixed;left:0;top:0;width:100%;height:100%;display:block;touch-action:none;pointer-events:none';
-    const gl=c.getContext('webgl2',{antialias:!(window.G3OPT&&G3OPT.noaa),stencil:true,alpha:false,powerPreference:'high-performance'});
+    const gl=c.getContext('webgl2',{antialias:!(window.G3OPT&&G3OPT.noaa),stencil:true,alpha:true,premultipliedAlpha:true,powerPreference:'high-performance'});   /* alpha : only the level-up show leaves see-through pixels (glOpaque closes every other frame) */
     if(!gl)throw new Error('no webgl2');
     G3.cv=c;G3.gl=gl;
     cv.parentNode.insertBefore(c,cv);
@@ -2866,7 +2873,7 @@ function render3(){
 /* ---------- dispatcher : 3D when WebGL2 works, otherwise the faux-3D canvas renderer ---------- */
 function render(){
   if(!G3.failed&&(G3.on||gl3Init())){
-    try{if(window.LVON&&G.mode==='menu'){lvRender()}else if(typeof lb3Want==='function'&&lb3Want()){const lv=document.getElementById('lobby');if(lv&&lv.style.visibility==='hidden')return;lb3Render()}else{if(LB3.clr){LB3.clr=0;document.body.classList.remove('lb3')}render3()}G3.err=0;return}catch(e){console.error('render3 failed',e);G3.err=(G3.err||0)+1;if(G3.err>=5){G3.failed=true;G3.on=false;document.body.classList.remove('lb3');if(G3.cv&&G3.cv.parentNode)G3.cv.parentNode.removeChild(G3.cv)}}
+    try{if(window.LVON&&G.mode==='menu'){lvRender()}else if(typeof lb3Want==='function'&&lb3Want()){const lv=document.getElementById('lobby');if(lv&&lv.style.visibility==='hidden')return;lb3Render();glOpaque(G3.gl)}else{if(LB3.clr){LB3.clr=0;document.body.classList.remove('lb3')}render3();glOpaque(G3.gl)}G3.err=0;return}catch(e){console.error('render3 failed',e);G3.err=(G3.err||0)+1;if(G3.err>=5){G3.failed=true;G3.on=false;document.body.classList.remove('lb3');if(G3.cv&&G3.cv.parentNode)G3.cv.parentNode.removeChild(G3.cv)}}
   }
   render2D();
 }
@@ -3361,6 +3368,7 @@ function snShot(o){
   const L=o.light||[-.35,-.45,1],ll=Math.hypot(L[0],L[1],L[2]);gl.uniform3f(u.uL,L[0]/ll,L[1]/ll,L[2]/ll);gl.uniform2f(u.uSh,.55,-.15);gl.uniform3f(u.uCP,o.eye[0],o.eye[1],o.eye[2]);gl.uniform1f(u.uZon,0);
   const fa=o.face||0,e={rx:o.rx||0,ry:o.ry||0,face:fa,vf:fa,moving:!!o.moving,id:0,fT:o.fT===undefined?-1e9:o.fT,sK:o.sK||1,sAc:o.sAc||0,sAt:o.sAt||0};
   drawSan(gl,po,e,o.tm||0,1,0);
+  glOpaque(gl);
   const c2=document.createElement('canvas');c2.width=w;c2.height=h;c2.getContext('2d').drawImage(cv,0,0);
   return c2.toDataURL('image/png');
 }
@@ -3559,6 +3567,7 @@ function tkShot(o){
   const L=o.light||[-.35,-.45,1],ll=Math.hypot(L[0],L[1],L[2]);gl.uniform3f(u.uL,L[0]/ll,L[1]/ll,L[2]/ll);gl.uniform2f(u.uSh,.55,-.15);gl.uniform3f(u.uCP,o.eye[0],o.eye[1],o.eye[2]);gl.uniform1f(u.uZon,0);
   const fa=o.face||0,e={rx:o.rx||0,ry:o.ry||0,face:fa,vf:fa,moving:!!o.moving,id:0,fT:o.fT===undefined?-1e9:o.fT,tSp:o.tSp||0};
   drawTank(gl,po,e,o.tm||0,1,0);
+  glOpaque(gl);
   const c2=document.createElement('canvas');c2.width=w;c2.height=h;c2.getContext('2d').drawImage(cv,0,0);
   return c2.toDataURL('image/png');
 }
@@ -3805,6 +3814,7 @@ function tnShot(o){
   const L=o.light||[-.35,-.45,1],ll=Math.hypot(L[0],L[1],L[2]);gl.uniform3f(u.uL,L[0]/ll,L[1]/ll,L[2]/ll);gl.uniform2f(u.uSh,.55,-.15);gl.uniform3f(u.uCP,o.eye[0],o.eye[1],o.eye[2]);gl.uniform1f(u.uZon,0);
   const fa=o.face||0,e={rx:o.rx||0,ry:o.ry||0,face:fa,vf:fa,moving:!!o.moving,id:0,mlT:o.mlT===undefined?-1e9:o.mlT,fkT:o.fkT||0,abT:o.abT||0};
   drawTonio(gl,po,e,o.tm||0,1,0);
+  glOpaque(gl);
   const c2=document.createElement('canvas');c2.width=w;c2.height=h;c2.getContext('2d').drawImage(cv,0,0);
   return c2.toDataURL('image/png');
 }
@@ -3913,6 +3923,7 @@ function pShot(o){
   const fa=o.face||0,e={rx:o.rx||0,ry:o.ry||0,face:fa,vf:fa,moving:!!o.moving,id:0,fT:-1e9,cgT:0};
   drawCupid(gl,po,e,o.tm||0,1,0);
   if(o.heart)pHeartBullet(gl,po,o.heart[0],o.heart[1],o.heart[2],o.heart[3]||0,0,0);
+  glOpaque(gl);
   const c2=document.createElement('canvas');c2.width=w;c2.height=h;c2.getContext('2d').drawImage(cv,0,0);
   return c2.toDataURL('image/png');
 }
@@ -5700,32 +5711,33 @@ if(typeof SND!=='undefined')SND.lvup=(t,v)=>{[523,659,784,1047].forEach((f,i)=>s
 /* ---------- start / stop ---------- */
 function lvPlay(id,a,from,to){
   if(LV.on)lvStop(true);
-  let el=document.getElementById('lvup');
-  if(!el){el=document.createElement('div');el.id='lvup';document.body.appendChild(el);
+  /* two layers : behind the 3D agent (background, rays, effects) and in front of it (title, plate) */
+  let el=document.getElementById('lvup'),bk=document.getElementById('lvub');
+  if(!el){el=document.createElement('div');el.id='lvup';bk=document.createElement('div');bk.id='lvub';document.body.appendChild(bk);document.body.appendChild(el);
     el.addEventListener('pointerdown',e=>{e.preventDefault();e.stopPropagation();if(performance.now()-LV.t0>600)lvStop()});
-    addEventListener('resize',()=>{if(LV.on&&typeof rotFit==='function')rotFit(el)})}
-  const col=lvC(a),max=to>=AT_MAX,f=typeof agFind==='function'&&agFind(id),art=typeof agArtOf==='function'?agArtOf(id):'';
+    addEventListener('resize',()=>{if(LV.on&&typeof rotFit==='function'){rotFit(el);rotFit(bk)}})}
+  const col=lvC(a),max=to>=AT_MAX,art=typeof agArtOf==='function'?agArtOf(id):'';
   const gl=!G3.failed&&(G3.on||(typeof gl3Init==='function'&&gl3Init()));
-  el.className='a-'+a+(gl?'':' flat');el.style.setProperty('--c',col);
-  el.innerHTML='<div class="lvbg"></div>'+(gl?'':'<div class="lvped"></div><img class="lvart" src="'+art+'" alt="">')+'<div class="lvfx"></div>'+
-    '<div class="lvtt"><b>'+(max?'MAX LEVEL!':'LEVEL UP!')+'</b></div>'+
+  for(const x of [el,bk]){x.className='lvl a-'+a+(gl?'':' flat');x.style.setProperty('--c',col);x.classList.remove('out')}
+  bk.innerHTML='<div class="lvbg"></div><div class="lvfx"></div>'+(gl?'':'<div class="lvped"></div><img class="lvart" src="'+art+'" alt="">');
+  el.innerHTML='<div class="lvtt"><b>'+(max?'MAX LEVEL!':'LEVEL UP!')+'</b></div>'+
     '<div class="lvpl"><span class="lvic">'+(typeof frIcon==='function'?frIcon(a):'')+'</span><div><b>'+a+'</b>'+
       '<em>Lv '+from+' <s>&#9654;</s> <i>'+to+'</i></em><small>'+pgFx(a,from)+' <s>&#9654;</s> <u>'+pgFx(a,to)+'</u></small></div></div>'+
     '<div class="lvh">Tap to continue</div>';
-  el.hidden=false;if(typeof rotFit==='function')rotFit(el);
-  LV.on=true;window.LVON=!!gl;LV.clr=0;LV.t0=performance.now();LV.id=id;LV.a=a;LV.gl=!!gl;
+  el.hidden=bk.hidden=false;if(typeof rotFit==='function'){rotFit(el);rotFit(bk)}
+  LV.on=true;window.LVON=!!gl;LV.clr=0;LV.t0=performance.now();LV.id=id;LV.a=a;LV.gl=!!gl;LV.bk=bk;LV.sig='';
   LV.e={agt:id,id:1,rx:0,ry:0,x:0,y:0,face:0,vf:0,moving:false,hp:100,alive:true,fT:-1e9,sK:1,mlT:-1e9};
   if(gl)document.body.classList.add('lvup');
   sfxSafe('lvup');lvLater(380,()=>sfxSafe(LV_SND[a]||'bubble'));
-  (LVFX[a]||LVFX.def)(el.querySelector('.lvfx'),col);
+  (LVFX[a]||LVFX.def)(bk.querySelector('.lvfx'),col);
   LV.tm.push(setTimeout(()=>lvStop(),(window.LV_HOLD||LV_DUR)*1000));   /* LV_HOLD : tests keep it open longer */
 }
 function lvStop(now){
   if(!LV.on)return;LV.on=false;window.LVON=false;LV.tm.forEach(clearTimeout);LV.tm=[];
-  const el=document.getElementById('lvup');document.body.classList.remove('lvup');
-  if(!el)return;
-  if(now){el.hidden=true;el.innerHTML='';return}
-  el.classList.add('out');setTimeout(()=>{if(!LV.on){el.hidden=true;el.innerHTML='';el.classList.remove('out')}},260);
+  document.body.classList.remove('lvup');
+  const L=[document.getElementById('lvup'),document.getElementById('lvub')].filter(Boolean);
+  if(now){L.forEach(x=>{x.hidden=true;x.innerHTML=''});return}
+  L.forEach(x=>x.classList.add('out'));setTimeout(()=>{if(!LV.on)L.forEach(x=>{x.hidden=true;x.innerHTML='';x.classList.remove('out')})},260);
 }
 const lvEase=x=>1-Math.pow(1-Math.max(0,Math.min(1,x)),3);
 
@@ -5740,13 +5752,15 @@ function lvRender(){
   let VP=M4.mul(new Float32Array([1,0,0,0, 0,1,0,0, 0,0,1,0, LVP.sx,0,0,1]),M4.mul(P,V));
   if(port){const R=new Float32Array([0,-1,0,0, 1,0,0,0, 0,0,1,0, 0,0,0,1]);VP=M4.mul(R,VP)}
   gl.viewport(0,0,w,h);
-  gl.clearColor(.1,.06,.3,1);gl.clearStencil(0);gl.stencilMask(255);gl.depthMask(true);gl.clear(gl.COLOR_BUFFER_BIT|gl.DEPTH_BUFFER_BIT|gl.STENCIL_BUFFER_BIT);
+  gl.clearColor(0,0,0,0);gl.clearStencil(0);gl.stencilMask(255);gl.depthMask(true);gl.clear(gl.COLOR_BUFFER_BIT|gl.DEPTH_BUFFER_BIT|gl.STENCIL_BUFFER_BIT);
   gl.enable(gl.DEPTH_TEST);gl.depthFunc(gl.LEQUAL);gl.disable(gl.CULL_FACE);gl.disable(gl.BLEND);gl.disable(gl.STENCIL_TEST);
   const po=G3.po,u=po.u;gl.useProgram(po.p);gl.uniformMatrix4fv(u.uVP,false,VP);
   const L=LB3SUN.L;gl.uniform3f(u.uL,L[0],L[1],L[2]);gl.uniform2f(u.uSh,LB3SUN.sh[0],LB3SUN.sh[1]);gl.uniform1f(u.uSz,0);gl.uniform3f(u.uCP,eye[0],eye[1],eye[2]);gl.uniform1f(u.uZon,0);
-  /* floor : a wide dark disc, a lighter one, then the coloured glow under the pedestal */
-  drawM(gl,po,G3.unitDisc,M4.model(ax,-ay,-.5,0,900),1,0,[.16,.1,.42],1,0,1);
-  drawM(gl,po,G3.unitDisc,M4.model(ax,-ay,-.3,0,150),1,0,[.22,.15,.55],1,0,1);
+  /* the background, the floor and the effects are DOM, behind this canvas : only the glow, the pedestal and the agent are drawn here.
+     blendFunc -> separate alpha, so the see-through pixels compose right over the page */
+  const bf=gl.blendFunc;gl.blendFunc=(s,d)=>gl.blendFuncSeparate(s,d,gl.ONE,gl.ONE_MINUS_SRC_ALPHA);
+  try{
+  lvPlace(M4.mul(new Float32Array([1,0,0,0, 0,1,0,0, 0,0,1,0, LVP.sx,0,0,1]),M4.mul(P,V)),ax,ay,k);
   const pulse=.5+.5*Math.sin(t*6);
   gl.enable(gl.BLEND);gl.blendFunc(gl.SRC_ALPHA,gl.ONE);gl.depthMask(false);
   const gr=lvEase(t/.5);
@@ -5772,17 +5786,25 @@ function lvRender(){
   if(al<1){gl.depthMask(false)}else{gl.depthMask(true);gl.disable(gl.BLEND)}
   DPRE=M4.tr(0,0,LB3P.ped+hop);
   try{agOf(e).draw(gl,po,e,performance.now()/1000,al,fl)}finally{DPRE=null;gl.depthMask(true);gl.disable(gl.BLEND)}
+  }finally{gl.blendFunc=bf}
   if(!LV.clr){ctx.setTransform(DPR,0,0,DPR,0,0);ctx.clearRect(0,0,W,H);LV.clr=1}
 }
 
+function lvPlace(m,ax,ay,k){
+  const bk=LV.bk;if(!bk)return;const w=bk.offsetWidth,h=bk.offsetHeight;
+  const pr=(x,y,z)=>{const X=x,Y=-y,cx=m[0]*X+m[4]*Y+m[8]*z+m[12],cy=m[1]*X+m[5]*Y+m[9]*z+m[13],cw=m[3]*X+m[7]*Y+m[11]*z+m[15];return[(cx/cw*.5+.5)*w,(1-(cy/cw*.5+.5))*h]};
+  const p=pr(ax,ay,LB3P.ped),c=pr(ax,ay,LVP.tz*k*.85),hz=pr(ax+3000,ay,0),s=[p,c].map(q=>q.map(Math.round).join(',')).join(' ')+' '+Math.round(hz[1]);
+  if(s===LV.sig)return;LV.sig=s;const S=bk.style;
+  S.setProperty('--px',p[0]+'px');S.setProperty('--py',p[1]+'px');S.setProperty('--ax',c[0]+'px');S.setProperty('--ay',c[1]+'px');S.setProperty('--hy',hz[1]+'px');
+}
 /* ---------- one effect per attribute (DOM particles above the 3D view) ---------- */
 function lvP(L,cls,css,kf,o){const p=document.createElement('i');p.className='lvq '+(cls||'');if(css)p.style.cssText=css;L.appendChild(p);
   const an=p.animate(kf,Object.assign({duration:900,easing:'ease-out',fill:'both'},o||{}));an.onfinish=()=>p.remove();return p}
 const lvR=(a,b)=>a+Math.random()*(b-a);
 function lvLater(ms,f){LV.tm.push(setTimeout(()=>{if(LV.on)f()},ms/lvTS()))}
 /* shake : added to the element's own transform (the landscape lock turns the canvas and the overlay a quarter) */
-function lvShake(L,amp){const el=L.closest('#lvup'),tg=el.classList.contains('flat')?el:G3.cv;if(!tg)return;const b=tg.style.transform||'';
-  tg.animate([0,1,2,3,4,5].map(i=>({transform:(b+' '+(i===5?'translate(0,0)':'translate('+lvR(-amp,amp).toFixed(1)+'px,'+lvR(-amp,amp).toFixed(1)+'px)')).trim()})),{duration:320})}
+function lvShake(L,amp){const k=[0,1,2,3,4,5].map(i=>i===5?'translate(0,0)':'translate('+lvR(-amp,amp).toFixed(1)+'px,'+lvR(-amp,amp).toFixed(1)+'px)');
+  [LV.bk,LV.gl?G3.cv:null].forEach(tg=>{if(!tg)return;const b=tg.style.transform||'';tg.animate(k.map(x=>({transform:(b+' '+x).trim()})),{duration:320})})}
 function lvRing(L,col,d,sz,w){lvP(L,'ring','border-color:'+col+';border-width:'+(w||5)+'px',[{transform:'translate(-50%,-50%) scale(.2)',opacity:1},{transform:'translate(-50%,-50%) scale('+(sz||3)+')',opacity:0}],{duration:700,delay:d||0})}
 const LVFX={
   /* hearts burst out and float up, a pink heartbeat ring */
