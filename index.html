@@ -692,7 +692,7 @@ html.homeapp .fsbtn,html.homeapp #lfs,html.homeapp #fsg{display:none!important}
 .panel .btn.alt{background:linear-gradient(180deg,rgba(255,255,255,.35),rgba(255,255,255,0) 50%),linear-gradient(100deg,#c46bff,#ff5fc8)}
 
 /* ---------- top bar : the profile and the Club share the space up to the resources (each half of it) ---------- */
-#st{--tbw:calc((696px - var(--il,0px) - var(--ir,0px)) / 2)}
+#st{--tbw:calc((530px - var(--il,0px) - var(--ir,0px)) / 2)}   /* four resource pills : gold, potions, rubies and stars */
 #st .prof{width:var(--tbw);height:68px;gap:12px;padding:0 16px 0 10px}
 #st .av{width:52px;height:52px;flex:none}
 #st .av svg{width:40px;height:40px}
@@ -844,7 +844,7 @@ body.lvup #gl{z-index:45}
 #shv .shin{position:absolute;left:0;top:0;width:980px;height:450px;transform-origin:0 0;display:flex;flex-direction:column}
 #shv *{box-sizing:border-box}
 #shv .t,#shv h4,#shv .shn{-webkit-text-stroke:4px var(--lin);paint-order:stroke fill;text-shadow:0 3px 0 var(--lin)}
-.shhead{display:flex;align-items:center;gap:14px;min-height:54px;flex:none}
+.shhead{display:flex;align-items:center;gap:14px;height:54px;flex:none;padding:0 4px}
 .shhead .mvb{position:relative;flex:none;border-color:var(--lin);background:linear-gradient(180deg,#3b2fa6,#251a72);box-shadow:0 4px 0 var(--sh)}
 .shhead .agtt{display:flex;flex-direction:column;line-height:1.1;color:#fff}
 .shhead .agtt b{font-size:28px;color:#fff;-webkit-text-stroke:5px var(--lin);paint-order:stroke fill;text-shadow:0 3px 0 var(--lin)}
@@ -861,7 +861,41 @@ body.lvup #gl{z-index:45}
 .shmy i[hidden]{display:none}
 .shhit{animation:shHit .4s ease-out}
 @keyframes shHit{40%{transform:scale(1.18)}}
+.shsc{position:relative;flex:1;min-height:0;overflow-y:auto;overflow-x:hidden;scroll-snap-type:y proximity;scrollbar-width:none;-webkit-overflow-scrolling:touch;overscroll-behavior:contain}
+.shsc::-webkit-scrollbar{display:none}
+.shpg{position:relative;height:396px;scroll-snap-align:start;display:flex;flex-direction:column}
+.shp1{padding-bottom:30px}
 .shbody{flex:1;min-height:0;display:flex;flex-direction:column;gap:10px;container-type:size}
+.shmore{position:absolute;left:50%;bottom:2px;transform:translateX(-50%);display:flex;align-items:center;gap:8px;height:26px;padding:0 16px;border-radius:13px;border:3px solid var(--lin);cursor:pointer;font:inherit;color:#fff;font-size:14px;
+  background:linear-gradient(180deg,#ff6a8a,#e0234e);box-shadow:0 3px 0 var(--sh)}
+.shmore i{width:10px;height:10px;border-right:3px solid #fff;border-bottom:3px solid #fff;transform:rotate(45deg) translate(-2px,-2px);animation:shDown 1.2s ease-in-out infinite}
+@keyframes shDown{50%{transform:rotate(45deg) translate(2px,2px)}}
+/* page 2 : rubies for money (not on sale yet) and potions -> gold */
+.shp2{gap:10px;padding:6px 0 8px}
+.shp2h{display:flex;align-items:baseline;gap:12px;padding:0 6px}
+.shp2h h3{margin:0;font-size:26px;color:#ff6a8a}
+.shp2h span{font-size:14px;color:#ffe36b;padding:2px 10px;border-radius:10px;background:var(--lin)}
+.shrbs{display:grid;grid-template-columns:repeat(6,1fr);gap:10px;flex:1;min-height:0}
+.shrbc{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:space-between;padding:10px 6px 10px;border-radius:16px;border:4px solid var(--lin);
+  background:linear-gradient(180deg,#5a2fb8,#2c1a7a);box-shadow:inset 0 3px 0 rgba(255,255,255,.16),0 5px 0 var(--sh)}
+.shrbc.hot,.shrbc.best{background:linear-gradient(180deg,#7a3fd8,#3b1f9a);box-shadow:0 0 0 3px #ffd22e,inset 0 3px 0 rgba(255,255,255,.16),0 5px 0 var(--sh)}
+.shrbc>b{font-size:24px;color:#fff}
+.shrbc small{font-size:12px;color:#ffd22e}
+.shrbi{flex:1;min-height:0;width:100%;display:flex;flex-wrap:wrap;align-items:center;justify-content:center;align-content:center;gap:0 2px}
+.shrbi .shrb{width:calc(30px + var(--i) * 3px);height:calc(30px + var(--i) * 3px);margin:-4px;filter:drop-shadow(0 3px 0 rgba(10,5,38,.4))}
+.shtag{position:absolute;top:-12px;left:50%;transform:translateX(-50%);white-space:nowrap;padding:1px 8px;border-radius:8px;background:#ffd22e;color:#fff;font-style:normal;font-size:11px;border:2.5px solid var(--lin)}
+.shbuy.money{min-width:0;width:100%;height:38px;font-size:17px;background:linear-gradient(180deg,#8ff05a,#3fb92a);filter:saturate(.45) brightness(.9)}
+.shp2 .shconv{flex:none;flex-direction:row;justify-content:center;gap:24px;padding:8px 18px}
+.shp2 .shconv h4{margin:0}
+.shp2 .shcv{flex:none;gap:10px}
+.shp2 .shcv small{margin:0 0 0 6px}
+/* the Agents button that peeks in when fragments are bought */
+.shag{position:absolute;left:0;top:150px;z-index:4;width:108px;height:96px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;border-radius:0 18px 18px 0;border:4px solid var(--lin);border-left:0;cursor:pointer;font:inherit;color:#fff;
+  background:linear-gradient(180deg,#3b2fa6,#251a72);box-shadow:inset 0 3px 0 rgba(255,255,255,.2),0 5px 0 var(--sh);transform:translateX(-112%);transition:transform .35s cubic-bezier(.3,1.5,.5,1)}
+.shag.on{transform:translateX(0)}
+.shag svg{width:52px;height:46px}
+.shag span{font-size:14px}
+.shfrf svg{width:44px;height:44px}
 /* the decks on their pedestals : bigger with rarity */
 .shdecks{flex:1;min-height:0;container-type:size;display:grid;grid-template-columns:repeat(4,1fr);gap:12px;align-items:end;padding:6px 10px 0}
 .shd{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:100cqh;min-height:0;--s:calc(.7 + var(--i) * .1)}
@@ -890,7 +924,7 @@ body.lvup #gl{z-index:45}
 .shd.bought .shdk{animation:shJump .6s cubic-bezier(.3,1.6,.5,1)}
 @keyframes shJump{30%{transform:translateY(-34px) scale(1.15) rotate(-8deg)}}
 /* bottom panels */
-.shbot{flex:none;height:min(36cqh,210px);display:grid;grid-template-columns:1.6fr 1fr 1fr;gap:10px}
+.shbot{flex:none;height:min(38cqh,210px);display:grid;grid-template-columns:2.4fr 1fr;gap:10px}
 .shp{position:relative;border-radius:16px;padding:8px 12px 10px;background:linear-gradient(180deg,#3b2fa6,#251a72);border:4px solid var(--lin);box-shadow:inset 0 3px 0 rgba(255,255,255,.16),0 5px 0 var(--sh);display:flex;flex-direction:column;align-items:center;min-height:0}
 .shp h4{margin:0 0 6px;font-size:15px;color:#ffd22e;letter-spacing:.5px}
 .shp small{font-size:11px;line-height:1.2;color:#d9d0ff;text-align:center;margin:2px 0 6px;white-space:nowrap}
@@ -906,6 +940,7 @@ body.lvup #gl{z-index:45}
 .shft small{display:block;margin:0;text-align:left;font-size:11px;color:#cfc4ff}
 .shft i{font-style:normal;font-size:12px;color:#ffd22e}
 .shfo .shbuy{height:36px;min-width:86px;margin:0}
+.shor{font-style:normal;font-size:12px;color:#cfc4ff;margin:0 -2px}
 .shok{font-size:13px;color:#8ff05a}
 .shnone{font-size:13px;color:#d9d0ff;text-align:center;margin:auto}
 .shcv{display:flex;align-items:center;gap:8px;flex:1;min-height:0}
@@ -1229,6 +1264,7 @@ body.lvup #gl{z-index:45}
 <button class="b pill" id="starB" aria-label="Stars"><svg viewBox="0 0 40 40"><path d="M20 3l5 11.500 12.500 1.200-9.400 8.400 2.800 12.200L20 29.800 9.100 36.300l2.800-12.200L2.500 15.700 15 14.500z" fill="#ffd22e" stroke="#1a1050" stroke-width="3.2" stroke-linejoin="round"/></svg><span class="t" id="lstars">0</span></button>
 <button class="b pill" id="coinB" aria-label="Gold"><svg viewBox="0 0 40 40"><circle cx="20" cy="20" r="17" fill="#ffd22e" stroke="#1a1050" stroke-width="3.5"/><circle cx="20" cy="20" r="9" fill="none" stroke="#e8960c" stroke-width="3"/></svg><span class="t" id="coins">114</span></button>
 <button class="b pill" id="potB" aria-label="Potions"><svg viewBox="0 0 40 40"><path d="M15 4h10v9l9 15c2 5-1 9-6 9H12c-5 0-8-4-6-9l9-15z" fill="#b46dff" stroke="#1a1050" stroke-width="3" stroke-linejoin="round"/><path d="M9 26h22l3 4c1 3-1 5-4 5H10c-3 0-5-2-4-5z" fill="#ff4fd8"/><rect x="13" y="2" width="14" height="5" rx="2" fill="#fff" stroke="#1a1050" stroke-width="2.5"/></svg><span class="t" id="pots">0</span></button>
+<button class="b pill rub" id="rubB" aria-label="Rubies"><svg viewBox="0 0 40 40"><path d="M10 6h20l8 10-18 20L2 16z" fill="#ff2f5a" stroke="#1a1050" stroke-width="3" stroke-linejoin="round"/><path d="M2 16h36M14 6l-4 10 10 20 10-20-4-10" fill="none" stroke="#1a1050" stroke-width="1.8" stroke-linejoin="round" opacity=".55"/><path d="M12 9l-3 5h7z" fill="#fff" opacity=".7"/></svg><span class="t" id="rubs">0</span></button>
 </div>
 <button class="b p menu fsb fsbtn" id="lfs" aria-label="Fullscreen"><svg viewBox="0 0 34 34" fill="none" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 13V5h8M21 5h8v8M29 21v8h-8M13 29H5v-8"/></svg></button>
 <button class="b p menu" aria-label="Menu" data-t="Menu"><svg viewBox="0 0 34 34"><path d="M5 9h24M5 17h24M5 25h24" stroke="#fff" stroke-width="4" stroke-linecap="round"/></svg></button>
@@ -5337,7 +5373,7 @@ const ICO={
 };
 function pgHud(){
   const d=PG.d,$$=s=>document.querySelector(s);
-  const c=$$('#coins');if(c)c.textContent=d.gold;const p=$$('#pots');if(p)p.textContent=d.pot;
+  const c=$$('#coins');if(c)c.textContent=d.gold;const p=$$('#pots');if(p)p.textContent=d.pot;const rb=$$('#rubs');if(rb)rb.textContent=d.rb||0;
   const D=d.dk;dkTick();
   const f=$$('#fill'),t=$$('#pt'),lv=$$('#pass .lv'),b=$$('#bdg');
   if(f)f.style.width=(D.n?100*D.w/PGC.WINS:0)+'%';
@@ -6534,7 +6570,7 @@ const NM_ADJ=['Bright','Golden','Turbo','Lucky','Silent','Crazy','Mighty','Neon'
 const NM_NOUN=['Fox','Tiger','Comet','Ninja','Falcon','Bolt','Viper','Rocket','Ghost','Panda','Storm','Shark'];
 function nmGet(){try{return localStorage.getItem(NM_KEY)||''}catch(e){return ''}}
 function nmSet(n){try{localStorage.setItem(NM_KEY,n)}catch(e){}}
-function nmApply(n){const e=document.querySelector('#st .nm');if(e&&n)e.textContent=n;window.BF_NAME=n||window.BF_NAME}
+function nmApply(n){const e=document.querySelector('#st .nm');if(e&&n){e.textContent=n;e.style.fontSize=n.length>11?'19px':n.length>8?'23px':''}window.BF_NAME=n||window.BF_NAME}   /* long names shrink a little instead of being cut */
 function nmClean(s){return (s||'').replace(/\s+/g,' ').replace(/^\s+/,'').slice(0,NM_MAX)}
 function nmCheck(s){s=(s||'').trim();if(s.length<3)return 'At least 3 characters';if(s.length>NM_MAX)return 'At most '+NM_MAX+' characters';
   if(!/^[\p{L}\p{N}_ .-]+$/u.test(s))return 'Letters, numbers, _ . - and spaces only';return ''}
@@ -6575,9 +6611,9 @@ function nmSfx(n){if(typeof sfxSafe==='function')sfxSafe(n)}
 function nmShow(name){
   const st=document.getElementById('st'),el=NM.el;if(!st||!el)return;
   const W=st.offsetWidth,H=st.offsetHeight,nmEl=st.querySelector('.nm');
+  nmApply(name);nmEl.style.visibility='hidden';
   let tx=0,ty=0;{let n=nmEl;while(n&&n!==st){tx+=n.offsetLeft;ty+=n.offsetTop;n=n.offsetParent}}
   const tFs=parseFloat(getComputedStyle(nmEl).fontSize)||27,tH=nmEl.offsetHeight;
-  nmEl.textContent=name;nmEl.style.visibility='hidden';
   el.classList.add('show');el.innerHTML='<div class="nmbg"></div><canvas class="nmcv"></canvas><div class="nmw t"></div><canvas class="nmcv nmfront"></canvas><div class="nmflash"></div>';
   const w=el.querySelector('.nmw');w.innerHTML=[...name].map(ch=>'<span>'+(ch===' '?'&nbsp;':ch.replace(/[<&]/g,c=>c==='<'?'&lt;':'&amp;'))+'</span>').join('');
   w.style.fontSize=NM_FONT+'px';
@@ -6744,7 +6780,10 @@ document.addEventListener('click',e=>{const b=e.target.closest&&e.target.closest
    - Potions -> gold (1 potion = PGC.POT gold) ; never gold -> potions
    - Free gift once a day
    Saved in PG.d.rb (rubies) and PG.d.sh {day, promo, fr:[{id,a,n,p,b}], gift}. Offers renew at local midnight. */
-const SHC={DECK:{common:15,epic:40,mythic:100,special:220},PROMO:.3,FR_N:[6,9],FR_P:20,CONV:[1,10]};
+const SHC={DECK:{common:15,epic:40,mythic:100,special:220},PROMO:.3,FR_N:[6,9],FR_P:20,FR_R:1.5,CONV:[1,10],
+  /* rubies for real money : not on sale yet (needs the App Store / Google Play accounts) */
+  RUBY:[{n:80,p:'0,99 €'},{n:450,p:'4,99 €',b:'+12%'},{n:950,p:'9,99 €',b:'+19%'},{n:2000,p:'19,99 €',b:'+25%',hot:1},{n:5200,p:'49,99 €',b:'+30%'},{n:11000,p:'99,99 €',b:'+38%',best:1}]};
+const frRub=o=>Math.ceil(o.n*SHC.FR_R);   /* fragments paid in rubies : 1.5 ruby each */
 const SH={el:null,iv:0};
 const shDayKey=()=>{const d=new Date();return d.getFullYear()+'-'+(d.getMonth()+1)+'-'+d.getDate()};
 function shMsLeft(){const d=new Date(),m=new Date(d.getFullYear(),d.getMonth(),d.getDate()+1);return m-d}
@@ -6771,11 +6810,17 @@ function shBuild(){
   V.innerHTML='<div class="shin"><div class="shhead"><button class="mvb" id="shx" aria-label="Back to lobby">&#8592;</button><div class="agtt"><b>SHOP</b><span>New offers in <i id="sht">0</i></span></div>'+
     '<div class="shcur"><span id="shcg">'+SH_GOLD+'<b>0</b></span><span id="shcp">'+SH_POT+'<b>0</b></span><span id="shcr" class="ruby">'+SH_RUBY+'<b>0</b></span>'+
     '<button class="shmy" id="shmy">'+'<span>MY DECKS</span><i id="shmyn">0</i></button></div></div>'+
-    '<div class="shbody"><div class="shdecks" id="shdecks"></div><div class="shbot" id="shbot"></div></div><div class="shtoast" id="shtoast"></div></div>';
+    '<div class="shsc" id="shsc"><div class="shpg shp1"><div class="shbody"><div class="shdecks" id="shdecks"></div><div class="shbot" id="shbot"></div></div>'+
+      '<button class="shmore" id="shmore"><span class="t">RUBIES</span><i></i></button></div>'+
+    '<div class="shpg shp2" id="shp2"></div></div>'+
+    '<button class="shag" id="shag" aria-label="Agents">'+(document.querySelector('#st [data-t="Agents"] svg')||{outerHTML:''}).outerHTML+'<span class="t">AGENTS</span></button>'+
+    '<div class="shtoast" id="shtoast"></div></div>';
   V.querySelector('#shx').onclick=shHide;
   V.querySelector('#shmy').onclick=()=>{shHide();dkShow()};
+  V.querySelector('#shmore').onclick=()=>{const s=V.querySelector('#shsc');s.scrollTo({top:s.scrollHeight,behavior:'smooth'})};
+  V.querySelector('#shag').onclick=()=>{shHide();if(window.BF&&BF.showAgents)BF.showAgents()};
   V.addEventListener('click',e=>{const b=e.target.closest('[data-sh]');if(!b)return;const k=b.dataset.sh;
-    if(k==='deck')shBuyDeck(b.dataset.k,b);else if(k==='fr')shBuyFr(+b.dataset.i,b);else if(k==='conv')shConv(+b.dataset.n,b);else if(k==='gift')shGift(b)});
+    if(k==='deck')shBuyDeck(b.dataset.k,b);else if(k==='fr')shBuyFr(+b.dataset.i,b,b.dataset.c);else if(k==='rbp')shNo(b,'Rubies can\u2019t be bought yet');else if(k==='conv')shConv(+b.dataset.n,b);else if(k==='gift')shGift(b)});
   addEventListener('resize',()=>{if(!V.hidden){if(typeof rotFit==='function')rotFit(V);shFit()}});
   return V;
 }
@@ -6784,7 +6829,7 @@ const SHW=980,SHH=450;
 function shFit(){const V=document.getElementById('shv'),I=V&&V.querySelector('.shin');if(!I)return;const c=getComputedStyle(V),px=k=>parseFloat(c.getPropertyValue(k))||0;
   const l=Math.max(10,px('--ol')),r=Math.max(10,px('--or')),tp=Math.max(6,px('--ot')),b=Math.max(6,px('--ob')),w=V.offsetWidth-l-r,h=V.offsetHeight-tp-b,k=Math.min(w/SHW,h/SHH);
   I.style.transform='translate('+(l+(w-SHW*k)/2)+'px,'+(tp+(h-SHH*k)/2)+'px) scale('+k+')';SH.k=k}
-function shShow(){const V=shBuild();V.hidden=false;lobVis(false);if(typeof rotFit==='function')rotFit(V);shFit();shRender(true);sfxSafe('pop');
+function shShow(){const V=shBuild();V.hidden=false;lobVis(false);if(typeof rotFit==='function')rotFit(V);shFit();shRender(true);V.querySelector('#shsc').scrollTop=0;V.querySelector('#shag').classList.remove('on');sfxSafe('pop');
   clearInterval(SH.iv);SH.iv=setInterval(()=>{if(V.hidden){clearInterval(SH.iv);return}shTick()},1000)}
 function shHide(){const V=document.getElementById('shv');if(V)V.hidden=true;lobVis(true);clearInterval(SH.iv);pgHud()}
 function shTick(){const t=document.getElementById('sht');if(t)t.textContent=shHMS(shMsLeft());if(PG.d.sh&&PG.d.sh.day!==shDayKey())shRender(true)}
@@ -6801,20 +6846,26 @@ function shRender(all){
   const fr=s.fr.map((o,i)=>{const nm=(AGR[o.id]||{}).name||o.id,art=agArtOf(o.id);
     return '<div class="shfo'+(o.b?' done':'')+'"><div class="shfa">'+(art?'<img src="'+art+'" alt="">':'')+'<span class="shfi">'+frIcon(o.a)+'</span></div>'+
       '<div class="shft"><b>'+nm+'</b><small>'+o.a+'</small><i>x'+o.n+' fragments</i></div>'+
-      (o.b?'<span class="shok t">BOUGHT</span>':'<button class="shbuy gold" data-sh="fr" data-i="'+i+'">'+SH_GOLD+'<b>'+o.p+'</b></button>')+'</div>'}).join('')||'<p class="shnone">Unlock an agent to get fragment offers.</p>';
+      (o.b?'<span class="shok t">BOUGHT</span>':'<button class="shbuy gold" data-sh="fr" data-c="gold" data-i="'+i+'">'+SH_GOLD+'<b>'+o.p+'</b></button><em class="shor">or</em><button class="shbuy ruby" data-sh="fr" data-c="rb" data-i="'+i+'">'+SH_RUBY+'<b>'+frRub(o)+'</b></button>')+'</div>'}).join('')||'<p class="shnone">Unlock an agent to get fragment offers.</p>';
   const left=shMsLeft();
   V.querySelector('#shbot').innerHTML=
     '<div class="shp"><h4 class="t">FRAGMENTS OF THE DAY</h4><div class="shfr">'+fr+'</div></div>'+
-    '<div class="shp shconv"><h4 class="t">POTIONS &#8594; GOLD</h4><div class="shcv"><span class="shci">'+SH_POT+'</span><b class="t">&#8594;</b><span class="shci">'+SH_GOLD+'</span></div>'+
-      '<small>1 potion = '+PGC.POT+' gold</small>'+
-      '<div class="shcb">'+SHC.CONV.map(n=>'<button class="shbuy pot'+(d.pot<n?' poor':'')+'" data-sh="conv" data-n="'+n+'">'+SH_POT+'<b>'+n+'</b></button>').join('')+'</div></div>'+
     '<div class="shp shgift'+(s.gift?' done':'')+'"><h4 class="t">DAILY GIFT</h4><div class="shgi">'+SH_GIFT+'</div>'+
       (s.gift?'<span class="shwait">Next gift in '+shHMS(left)+'</span>':'<button class="shbuy free t" data-sh="gift">FREE</button>')+'</div>';
+  if(all||!V.querySelector('#shp2').innerHTML)V.querySelector('#shp2').innerHTML=
+    '<div class="shp2h"><h3 class="t">RUBIES</h3><span>Coming soon</span></div>'+
+    '<div class="shrbs">'+SHC.RUBY.map((r,i)=>'<div class="shrbc'+(r.hot?' hot':'')+(r.best?' best':'')+'" style="--i:'+i+'">'+(r.hot?'<em class="shtag t">POPULAR</em>':r.best?'<em class="shtag t">BEST VALUE</em>':'')+
+      '<div class="shrbi">'+SH_RUBY.repeat(Math.min(5,1+i)).replace(/class="shrb"/g,'class="shrb"')+'</div><b class="t">'+r.n.toLocaleString('en-US')+'</b>'+(r.b?'<small>'+r.b+' bonus</small>':'<small>&nbsp;</small>')+
+      '<button class="shbuy money t" data-sh="rbp">'+r.p+'</button></div>').join('')+'</div>'+
+    '<div class="shp shconv"><h4 class="t">POTIONS &#8594; GOLD</h4><div class="shcv"><span class="shci">'+SH_POT+'</span><b class="t">&#8594;</b><span class="shci">'+SH_GOLD+'</span><small>1 potion = '+PGC.POT+' gold</small></div>'+
+      '<div class="shcb" id="shcb"></div></div>';
+  const cb=V.querySelector('#shcb');if(cb)cb.innerHTML=SHC.CONV.map(n=>'<button class="shbuy pot'+(d.pot<n?' poor':'')+'" data-sh="conv" data-n="'+n+'">'+SH_POT+'<b>'+n+'</b></button>').join('');
 }
 function shToast(m){const t=document.getElementById('shtoast');if(!t)return;t.textContent=m;t.classList.remove('on');void t.offsetWidth;t.classList.add('on');clearTimeout(SH.tt);SH.tt=setTimeout(()=>t.classList.remove('on'),1800)}
 function shNo(b,m){shToast(m);sfxSafe('thunk');b.animate([{transform:'translateX(0)'},{transform:'translateX(-7px)'},{transform:'translateX(7px)'},{transform:'translateX(0)'}],{duration:240})}
 /* positions in the shop's own (unturned) pixels */
-function shPos(el){const V=document.querySelector('#shv .shin');let x=el.offsetWidth/2,y=el.offsetHeight/2,n=el;while(n&&n!==V){x+=n.offsetLeft;y+=n.offsetTop;n=n.offsetParent}return[x,y]}
+function shPos(el){const V=document.querySelector('#shv .shin');let x=el.offsetWidth/2,y=el.offsetHeight/2,n=el;while(n&&n!==V){x+=n.offsetLeft;y+=n.offsetTop;n=n.offsetParent}
+  const sc=document.getElementById('shsc');if(sc&&sc.contains(el))y-=sc.scrollTop;return[x,y]}
 function shFly(from,to,html,n,done){
   const V=document.querySelector('#shv .shin'),a=shPos(from),b=shPos(to);
   for(let k=0;k<n;k++){const f=document.createElement('div');f.className='shfly';f.innerHTML=html;V.appendChild(f);
@@ -6833,9 +6884,15 @@ function shBuyDeck(k,b){const d=PG.d,p=shDeckPrice(k);
   const card=b.closest('.shd'),dk=card.querySelector('.shdk');card.classList.remove('bought');void card.offsetWidth;card.classList.add('bought');shBurst(dk,DKT[k].col);
   shFly(dk,document.getElementById('shmy'),deckArt(k),1,()=>{shCur();sfxSafe('shing')});shCur();shToast('+1 '+DKT[k].name);
 }
-function shBuyFr(i,b){const s=shData(),o=s.fr[i],d=PG.d;if(!o||o.b)return;
-  if(d.gold<o.p)return shNo(b,'Not enough gold');
-  d.gold-=o.p;o.b=1;pgAddFr(o.id,o.a,o.n);pgSave();sfxSafe('pop');shBurst(b,'#ffd22e');shCur();
+function shAgPeek(on){const a=document.getElementById('shag');if(!a)return;clearTimeout(SH.agT);
+  if(on){a.classList.add('on')}else SH.agT=setTimeout(()=>a.classList.remove('on'),700)}
+function shBuyFr(i,b,cur){const s=shData(),o=s.fr[i],d=PG.d;if(!o||o.b)return;
+  const rb=cur==='rb',price=rb?frRub(o):o.p;
+  if(rb?(d.rb||0)<price:d.gold<price)return shNo(b,rb?'Not enough rubies':'Not enough gold');
+  if(rb)d.rb-=price;else d.gold-=price;o.b=1;pgAddFr(o.id,o.a,o.n);pgSave();sfxSafe('pop');shBurst(b,rb?'#ff2f5a':'#ffd22e');shCur();
+  const ag=document.getElementById('shag');shAgPeek(true);
+  const row=b.closest('.shfo'),src=row.querySelector('.shfa')||b;
+  setTimeout(()=>shFly(src,ag,'<span class="shfrf">'+frIcon(o.a)+'</span>',Math.min(6,2+Math.round(o.n/3)),()=>{sfxSafe('shing');shAgPeek(false)}),180);
   shToast('+'+o.n+' '+o.a+' fragments');setTimeout(()=>shRender(false),350);
   if(typeof AGV!=='undefined'&&AGV.built)pgMarkLocks();
 }
