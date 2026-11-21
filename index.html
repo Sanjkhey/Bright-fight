@@ -5789,7 +5789,7 @@ function lvRender(){
   if(a==='Assassins'){const k=t<.45?0:t<.75?(t-.45)/.3:t<1.55?1:t<1.85?1-(t-1.55)/.3:0;al=1-k*.88}
   if(a==='Damage'&&t>.62&&t<.8)fl=.85*(1-(t-.62)/.18);
   if(a==='Accumulation'&&t>1.15&&t<1.4)fl=.8*(1-(t-1.15)/.25);
-  if(a==='ChromeGun'&&t>.5&&t<.9)fl=.35*Math.sin((t-.5)/.4*Math.PI);
+  if(a==='ChromeGun'){const v=t<.45?0:t<1.65?(t-.45)/1.2:1;fl=t>2.3?0:.12+.18*v+.12*Math.max(0,Math.sin(t*(8+v*16)))*v}   /* chrome : a metallic gleam that pulses faster with the revs */
   gl.enable(gl.BLEND);gl.blendFunc(gl.SRC_ALPHA,gl.ONE_MINUS_SRC_ALPHA);gl.depthMask(false);
   drawM(gl,po,G3.unitDisc,M4.model(ax,-ay,LB3P.ped+.5+hop,0,PR*.95),1,0,[.06,.03,.2],.3*al,0,1);
   if(al<1){gl.depthMask(false)}else{gl.depthMask(true);gl.disable(gl.BLEND)}
@@ -5818,8 +5818,8 @@ const FX={P:[],S:[],cv:[],cx:[],w:0,h:0,dpr:1,last:0,run:0};
 const TAU=Math.PI*2,U=v=>v*LV.u,R=(a,b)=>a+Math.random()*(b-a),lvR=R;
 function lvLater(ms,f){LV.tm.push(setTimeout(()=>{if(LV.on)f()},ms/lvTS()))}
 function fxStart(b,f){
-  FX.P.length=0;FX.S.length=0;FX.cv=[b,f];fxSize();
-  FX.cx=FX.cv.map(c=>c.getContext('2d'));FX.last=performance.now();
+  FX.P.length=0;FX.S.length=0;FX.cv=[b,f];FX.T=0;fxSize();
+  FX.cx=FX.cv.map(c=>c.getContext("2d"));
   const id=++FX.run,loop=()=>{if(!LV.on||id!==FX.run)return;try{fxStep()}catch(e){console.error('lvfx',e)}requestAnimationFrame(loop)};requestAnimationFrame(loop);
 }
 /* canvas size = the overlay's own (landscape) box ; called again when the screen turns */
@@ -5827,20 +5827,21 @@ function fxSize(){const b=FX.cv[0];if(!b)return;const w=b.parentNode.offsetWidth
   FX.w=w;FX.h=h;FX.dpr=d;for(const c of FX.cv){c.width=Math.round(w*d);c.height=Math.round(h*d)}
   if(!LV.gl){LV.cx=w*.35;LV.cy=h*.5;LV.fy=h*.24;LV.u=LV.fy/95}}
 function fxStep(){
-  const now=performance.now(),dt=Math.min(.1,(now-FX.last)/1000*lvTS());   /* follows real time like the timers, even at a low frame rate */FX.last=now;
+  const T=fxNow(),dt=Math.max(0,Math.min(.1,T-FX.T));FX.T=T;   /* every age comes from the show clock (same as the timers) : no drift at a low frame rate */
   const cx=LV.cx,cy=LV.cy;
   for(const c of FX.cx){c.setTransform(FX.dpr,0,0,FX.dpr,0,0);c.clearRect(0,0,FX.w,FX.h);c.globalAlpha=1;c.globalCompositeOperation='source-over'}
-  for(let i=0;i<FX.S.length;i++){const s=FX.S[i];if(s.d>0){s.d-=dt;continue}s.t+=dt;if(s.t>=s.life||s.dead){FX.S.splice(i--,1);continue}
-    const c=FX.cx[s.f?1:0];c.save();c.translate(cx,cy);try{s.draw(c,s.t,dt,s)}finally{c.restore()}}
-  for(let i=0;i<FX.P.length;i++){const p=FX.P[i];if(p.d>0){p.d-=dt;continue}p.t+=dt;if(p.t>=p.life){FX.P.splice(i--,1);continue}
+  for(let i=0;i<FX.S.length;i++){const s=FX.S[i];if(T<s.b)continue;const st=T-s.b,sdt=Math.min(dt,st);s.t=st;if(s.t>=s.life||s.dead){FX.S.splice(i--,1);continue}
+    const c=FX.cx[s.f?1:0];c.save();c.translate(cx,cy);try{s.draw(c,s.t,sdt,s)}finally{c.restore()}}
+  for(let i=0;i<FX.P.length;i++){const p=FX.P[i];if(T<p.b)continue;const pt=T-p.b,dt=Math.min(.1,pt-p.t);p.t=pt;if(p.t>=p.life){FX.P.splice(i--,1);continue}
     if(p.up)p.up(p,dt);else{const dr=Math.pow(p.drag,dt);p.vx*=dr;p.vy*=dr;p.vy+=p.g*dt;p.x+=p.vx*dt;p.y+=p.vy*dt}
     p.r+=p.vr*dt;
     if(p.fl!==undefined&&p.y>p.fl&&p.vy>0){p.y=p.fl;p.vy*=-.38;p.vx*=.65;p.vr*=.5;if(p.onB)p.onB(p)}
     fxDrawP(FX.cx[p.f?1:0],p,cx,cy)}
 }
 function fxP(o){const p=Object.assign({x:0,y:0,vx:0,vy:0,g:0,drag:1,life:1,t:0,d:0,s:6,s1:null,c:'#fff',c0:'rgba(255,255,255,0)',a:1,fi:0,fo:.6,r:0,vr:0,sh:'c',gl:0,f:0,len:20},o);
-  if(p.s1===null)p.s1=p.s;FX.P.push(p);return p}
-function fxSp(o){const s=Object.assign({t:0,d:0,life:1,f:0},o);FX.S.push(s);return s}
+  if(p.s1===null)p.s1=p.s;p.b=fxNow()+p.d;p.t=0;FX.P.push(p);return p}
+function fxNow(){return (performance.now()-LV.t0)/1000*lvTS()}
+function fxSp(o){const s=Object.assign({t:0,d:0,life:1,f:0},o);s.b=fxNow()+s.d;FX.S.push(s);return s}
 function fxDrawP(c,p,cx,cy){
   const k=p.t/p.life;let a=p.a*(p.fi?Math.min(1,p.t/p.fi):1);if(k>p.fo)a*=1-(k-p.fo)/(1-p.fo);if(a<=.01)return;
   const s=Math.max(.1,p.s+(p.s1-p.s)*k);
@@ -6017,24 +6018,54 @@ const LVFX={
       lvTx('SHIELD!',U(-150),U(-125),'cy')});
     fxConfetti(col,1800);
   },
-  /* a chrome shine, then a burst of tracer rounds : casings fly out and bounce on the ground */
+  /* overdrive : the agent turns chrome, a rev counter climbs from x1 to x2 while clay discs fly in and get shot
+     faster and faster ; the needle hits the red : flash, "x2 SPEED!", a last volley clears every disc, steam and casings */
   ChromeGun(col){sfxSafe('chrome');
-    fxSp({d:.4,f:1,life:.45,draw:(c,t,dt,s)=>{const x=U(-260)+t/s.life*U(520);c.rotate(.32);c.globalCompositeOperation='lighter';const g=c.createLinearGradient(x-U(45),0,x+U(45),0);g.addColorStop(0,'rgba(255,255,255,0)');g.addColorStop(.5,'rgba(255,255,255,.55)');g.addColorStop(1,'rgba(255,255,255,0)');c.fillStyle=g;c.fillRect(x-U(45),U(-260),U(90),U(520))}});
-    /* two chrome barrels spin up on each side, then fire a fan of tracers ; casings rain and bounce */
-    for(const sd of [1,-1])fxSp({d:.45,life:2.1,draw:(c,t,dt,s)=>{const pop=Math.min(1,t/.2),fa=t>1.7?1-(t-1.7)/.4:1,sp=t<.3?t*10:t*(14+Math.min(1,(t-.3)*2)*26);
-      c.globalAlpha=fa;c.translate(sd*U(150),U(-5));c.scale(sd*pop*U(1),pop*U(1));
-      const g=c.createLinearGradient(0,-22,0,22);g.addColorStop(0,'#ffffff');g.addColorStop(.35,'#c9d3e0');g.addColorStop(.7,'#7d889c');g.addColorStop(1,'#4a5168');
-      c.fillStyle=g;c.strokeStyle='#100935';c.lineWidth=3.5;c.beginPath();c.roundRect?c.roundRect(-46,-22,70,44,10):c.rect(-46,-22,70,44);c.fill();c.stroke();
-      for(let k=0;k<4;k++){const y=Math.sin(sp+k*Math.PI/2)*14,z=Math.cos(sp+k*Math.PI/2);if(z<-.2)continue;c.fillStyle=z>.6?'#f4f7fb':'#aab4c4';c.beginPath();c.roundRect?c.roundRect(20,y-5,58,10,4):c.rect(20,y-5,58,10);c.fill();c.stroke()}
-      c.fillStyle='#2a2f44';c.beginPath();c.arc(82,0,9,0,TAU);c.fill();c.stroke();
-      c.globalCompositeOperation='lighter';c.globalAlpha=fa*.6;const sh=((t*1.3)%1)*100-46;const g2=c.createLinearGradient(sh-14,0,sh+14,0);g2.addColorStop(0,'rgba(255,255,255,0)');g2.addColorStop(.5,'rgba(255,255,255,.9)');g2.addColorStop(1,'rgba(255,255,255,0)');c.fillStyle=g2;c.fillRect(-46,-22,124,44)}});
-    for(let i=0;i<26;i++)lvLater(800+i*48,()=>{const sd=i%2?-1:1,mx=sd*U(235),my=U(-5)+U(R(-4,4)),an=(sd>0?0:Math.PI)+R(-.28,.28);if(i%2===0)sfxSafe(i%4?'minigun':'colt');
-      fxP({x:mx,y:my,vx:Math.cos(an)*U(2600),vy:Math.sin(an)*U(2600),life:.4,sh:'streak',len:U(190),s:U(6),c:'#fff6c8',c0:'rgba(255,170,40,0)',gl:1});
-      fxP({x:mx,y:my,life:.07,sh:'sp',s:U(R(34,46)),s1:U(14),c:'#ffe7a0',gl:1,r:R(0,1.5)});fxP({x:mx,y:my,life:.09,sh:'glow',s:U(40),c:'rgba(255,190,80,.9)',c0:'rgba(255,120,0,0)',gl:1});
-      fxP({x:sd*U(150),y:U(-25),vx:-sd*U(R(80,260)),vy:-U(R(480,700)),g:U(1900),vr:R(14,26)*-sd,life:R(1.2,1.6),sh:'casing',s:U(10),fl:LV.fy+U(R(8,36)),fo:.8,
-        onB:p=>{if(p.bn=(p.bn||0)+1,p.bn<3){fxP({x:p.x,y:p.y,life:.2,sh:'sp',s:U(12),s1:0,c:'#ffffff',gl:1});if(p.bn===1&&Math.random()<.35)sfxSafe('shing')}}})});
-    for(let i=0;i<12;i++)fxP({d:R(.4,2),x:U(R(-150,150)),y:U(R(-150,60)),life:.45,sh:'sp',s:U(R(7,13)),s1:0,c:'#ffffff',gl:1,fi:.15,fo:.3});
-    lvTx('RATATATA!',U(-150),U(-125),'go',800);fxConfetti(col,1900);
+    const T0=.45,TP=1.65,spd=t=>t<T0?1:t<TP?1+lvEase((t-T0)/(TP-T0))*1:2,gx=FX.w*.76-LV.cx,gy=U(100),RG=U(74);   /* the counter sits right, under the plate ; the discs fly on the left */
+    /* chrome gleam sweeping over the agent (front layer, kept to the agent's outline area) */
+    for(const d of [.15,.75,1.35])fxSp({d,f:1,life:.5,draw:(c,t,dt,s)=>{const k=t/s.life,y=U(-150)+k*U(300);c.beginPath();c.ellipse(0,U(5),U(78),U(112),0,0,TAU);c.clip();
+      c.globalCompositeOperation='lighter';c.rotate(-.35);const g=c.createLinearGradient(0,y-U(26),0,y+U(26));g.addColorStop(0,'rgba(255,255,255,0)');g.addColorStop(.5,'rgba(230,242,255,.55)');g.addColorStop(1,'rgba(255,255,255,0)');c.fillStyle=g;c.fillRect(U(-160),y-U(26),U(320),U(52))}});
+    /* rev counter */
+    fxSp({d:.1,life:2.9,draw:(c,t,dt,s)=>{const pop=t<.25?Math.sin(t/.25*Math.PI/2)*1.12:1,fa=t>2.4?1-(t-2.4)/.5:1,v=spd(t)+(t>TP?Math.sin(t*60)*.03:0);
+      c.globalAlpha=fa;c.translate(gx,gy);c.scale(pop,pop);
+      const A0=Math.PI*.8,A1=Math.PI*2.2,ang=v0=>A0+(A1-A0)*(v0-1);   /* x1 .. x2 over 252 deg */
+      const bg=c.createRadialGradient(-RG*.3,-RG*.35,0,0,0,RG);bg.addColorStop(0,'#f4f7fb');bg.addColorStop(.55,'#b7c2d3');bg.addColorStop(1,'#6b768c');
+      c.fillStyle=bg;c.strokeStyle='#100935';c.lineWidth=U(5);c.beginPath();c.arc(0,0,RG,0,TAU);c.fill();c.stroke();
+      c.fillStyle='#1a1440';c.beginPath();c.arc(0,0,RG*.8,0,TAU);c.fill();
+      c.lineCap='butt';c.lineWidth=RG*.13;c.strokeStyle='#2fd6ff';c.beginPath();c.arc(0,0,RG*.66,A0,ang(1.75));c.stroke();c.strokeStyle='#ff3b4f';c.beginPath();c.arc(0,0,RG*.66,ang(1.75),A1);c.stroke();
+      if(t>TP){c.globalCompositeOperation='lighter';c.globalAlpha=fa*(.5+.5*Math.sin(t*30));c.strokeStyle='#ff8a8a';c.lineWidth=RG*.2;c.beginPath();c.arc(0,0,RG*.66,ang(1.75),A1);c.stroke();c.globalCompositeOperation='source-over';c.globalAlpha=fa}
+      c.strokeStyle='#ffffff';c.lineWidth=U(2.5);for(let i=0;i<=8;i++){const a=A0+(A1-A0)*i/8,r1=RG*(i%4?.5:.44);c.beginPath();c.moveTo(Math.cos(a)*r1,Math.sin(a)*r1);c.lineTo(Math.cos(a)*RG*.57,Math.sin(a)*RG*.57);c.stroke()}
+      c.fillStyle='#fff';c.font='800 '+U(15)+'px Fredoka,sans-serif';c.textAlign='center';c.textBaseline='middle';
+      c.fillText('x1',Math.cos(A0)*RG*.62,Math.sin(A0)*RG*.62+U(12));c.fillStyle='#ff6b7a';c.fillText('x2',Math.cos(A1)*RG*.62,Math.sin(A1)*RG*.62+U(12));
+      const na=ang(Math.min(2.04,v));c.rotate(na);c.fillStyle='#ffd22e';c.strokeStyle='#100935';c.lineWidth=U(2.5);c.beginPath();c.moveTo(-RG*.12,-RG*.06);c.lineTo(RG*.7,0);c.lineTo(-RG*.12,RG*.06);c.closePath();c.fill();c.stroke();
+      c.rotate(-na);c.fillStyle='#ffd22e';c.beginPath();c.arc(0,0,RG*.12,0,TAU);c.fill();c.stroke();
+      c.fillStyle='#fff';c.font='800 '+U(17)+'px Fredoka,sans-serif';c.fillText('x'+v.toFixed(1),0,RG*.5)}});
+    /* clay discs : thrown in from the sides, each one shot by a tracer from the agent */
+    const disc=(sd,tShot,ty)=>{const fl=.42,g=U(900),tx=-U(R(120,320)),x0=-LV.cx-U(40),y0=ty+U(R(30,90)),vx=(tx-x0)/fl,vy=(ty-y0)/fl-g*fl/2;
+      const s=fxSp({d:Math.max(0,tShot-fl),life:2,draw:(c,t,dt,s)=>{const x=x0+vx*t,y=y0+vy*t+g*t*t/2;s.x=x;s.y=y;c.translate(x,y);c.rotate(sd*.3);const sq=.38+.12*Math.sin(t*14),r=U(30);
+        c.fillStyle='#ff7a1f';c.strokeStyle='#100935';c.lineWidth=U(3);c.beginPath();c.ellipse(0,0,r,r*sq,0,0,TAU);c.fill();c.stroke();
+        c.fillStyle='#ffb35c';c.beginPath();c.ellipse(0,-r*sq*.15,r*.62,r*sq*.55,0,0,TAU);c.fill();c.strokeStyle='#fff';c.lineWidth=U(2);c.beginPath();c.ellipse(0,-r*sq*.15,r*.4,r*sq*.32,0,0,TAU);c.stroke()}});
+      return s};
+    const shot=(d)=>{const sd=-1,ty=U(R(-175,30));const dk=disc(sd,d,ty);
+      lvLater(d*1000,()=>{if(dk.x===undefined)return;const mx=sd*U(42),my=U(-8),x=dk.x,y=dk.y;dk.dead=1;sfxSafe(Math.random()<.5?'colt':'minigun');sfxSafe('pop');
+        fxSp({f:0,life:.12,draw:(c,t,dt,s)=>{c.globalCompositeOperation='lighter';c.lineCap='round';for(const [w,al,cc] of [[U(14),.35,'#ffb347'],[U(4),1,'#fff6c8']]){c.globalAlpha=al*(1-t/s.life);c.strokeStyle=cc;c.lineWidth=w;c.beginPath();c.moveTo(mx,my);c.lineTo(x,y);c.stroke()}}});
+        fxP({x:mx,y:my,life:.08,sh:'sp',s:U(34),s1:U(12),c:'#ffe7a0',gl:1,r:R(0,1.5)});
+        fxP({x,y,life:.25,sh:'glow',s:U(26),s1:U(70),c:'rgba(255,200,120,.95)',c0:'rgba(255,120,0,0)',gl:1});
+        fxBurst(9,{x,y,v0:150,v1:420,s0:5,s1:9,l0:.7,l1:1,c:['#ff7a1f','#ffb35c','#e0601a'],vr:14,rock:1,p:{sh:'rock',g:U(1400),drag:.6}});
+        fxBurst(8,{x,y,v0:200,v1:520,s0:2,s1:3.5,l0:.25,l1:.45,c:'#fff3c8',p:{sh:'streak',len:U(18),gl:1,c0:'rgba(255,170,40,0)'}});
+        fxP({x:sd*U(30),y:U(-25),vx:-sd*U(R(80,240)),vy:-U(R(460,680)),g:U(1900),vr:R(14,26)*-sd,life:R(1.2,1.6),sh:'casing',s:U(9),fl:LV.fy+U(R(8,36)),fo:.8,
+          onB:p=>{if(p.bn=(p.bn||0)+1,p.bn<3){fxP({x:p.x,y:p.y,life:.2,sh:'sp',s:U(11),s1:0,c:'#ffffff',gl:1});if(p.bn===1&&Math.random()<.3)sfxSafe('shing')}}})})};
+    /* the rate doubles : the wait between shots follows the counter */
+    let tt=.62;while(tt<TP-.05){shot(tt);tt+=.24/spd(tt)}
+    /* peak : needle in the red */
+    lvLater(TP*1000,()=>{sfxSafe('chrome');sfxSafe('bigshot');fxFlash('#d8f2ff',.18,.35);lvShake(0,9);
+      fxRing({c:'#ffffff',r0:30,r1:420,w:10,life:.6});fxRing({c:'#2fd6ff',r0:30,r1:300,w:16,life:.5,d:.05});fxRing({x:gx,y:gy,c:'#ff3b4f',r0:50,r1:120,w:8,life:.5});
+      fxBurst(30,{x:gx,y:gy,v0:200,v1:500,s0:3,s1:5,l0:.4,l1:.7,c:['#ffffff','#ff8a8a'],p:{sh:'sp',gl:1,drag:.2}});
+      lvTx('x2 SPEED!',U(-40),U(-165),'big cy')});
+    for(let i=0;i<8;i++)shot(TP+.12+i*.045);
+    /* overheated : steam puffs */
+    for(let i=0;i<12;i++)fxP({d:R(1.9,2.4),x:U(R(-50,50)),y:U(R(-90,-40)),vx:U(R(-40,40)),vy:-U(R(90,170)),drag:.4,life:R(.8,1.2),sh:'glow',s:U(R(16,24)),s1:U(R(50,70)),c:'rgba(235,240,255,.55)',c0:'rgba(235,240,255,0)',fi:.1});
+    fxConfetti(col,2100);
   },
   /* Fruit-Ninja combo : targets are thrown up, invisible blades slice them one after the other, then a final X */
   Assassins(col){sfxSafe('invis');
