@@ -579,7 +579,7 @@ html.homeapp .fsbtn,html.homeapp #lfs,html.homeapp #fsg{display:none!important}
 #st #wk .wkc{min-width:0;width:16px;height:16px;margin-left:-8px;padding:0;font-size:0;border-radius:50%;background:#fff;border:3px solid #ffd22e;box-shadow:0 0 10px 3px rgba(255,230,90,.9)}
 /* ================= Agents and Decks screens : the same family as the lobby ================= */
 #agv,#dkv{--lin:#100935;--sh:#0a0526;--pnl1:#3b2fa6;--pnl2:#251a72;--pnlD:#170f4a;
-  background:repeating-linear-gradient(135deg,rgba(255,255,255,.035) 0 22px,rgba(255,255,255,0) 22px 44px),radial-gradient(120% 95% at 50% 0%,#4f8dff 0%,#2c5ce0 52%,#1f3aa8 100%);color:#fff}
+  background:repeating-linear-gradient(135deg,rgba(255,255,255,0) 0,rgba(255,255,255,.045) 11px,rgba(255,255,255,0) 22px,rgba(255,255,255,0) 44px),radial-gradient(120% 95% at 50% 0%,#4f8dff 0%,#2c5ce0 52%,#1f3aa8 100%);color:#fff}
 #agv .aghead{background:linear-gradient(180deg,rgba(16,9,53,.5),rgba(16,9,53,0))}
 #agv .agtt,#dkv .agtt{color:#fff}
 #agv .agtt b,#dkv .agtt b{color:#fff;-webkit-text-stroke:5px var(--lin);paint-order:stroke fill;text-shadow:0 3px 0 var(--lin)}
@@ -728,7 +728,7 @@ body.lvup #gl{z-index:45}
 #lvup{background:none}
 /* light rays turning behind (screen blend : they only brighten) */
 .lvl .lvbg{position:absolute;left:var(--ax,35%);top:var(--ay,50%);width:160vmax;height:160vmax;margin:-80vmax 0 0 -80vmax;opacity:.3;pointer-events:none;
-  background:repeating-conic-gradient(from 0deg,color-mix(in srgb,var(--c) 70%,#fff) 0deg 9deg,transparent 9deg 24deg);
+  background:repeating-conic-gradient(from 0deg,transparent 0deg,color-mix(in srgb,var(--c) 40%,transparent) 4deg,color-mix(in srgb,var(--c) 70%,#fff) 7deg,color-mix(in srgb,var(--c) 40%,transparent) 10deg,transparent 14deg,transparent 24deg);
   -webkit-mask-image:radial-gradient(circle,#000 0,rgba(0,0,0,.5) 40%,transparent 70%);mask-image:radial-gradient(circle,#000 0,rgba(0,0,0,.5) 40%,transparent 70%);animation:lvRays 9s linear infinite}
 @keyframes lvRays{to{transform:rotate(360deg)}}
 /* fallback without WebGL : the card art spins on a flat pedestal */
@@ -902,7 +902,7 @@ body.lvup #gl{z-index:45}
 #st *{-webkit-text-stroke:0!important}
 .t{text-shadow:none;letter-spacing:.3px}
 .sun{position:absolute;right:15%;top:-70px;width:320px;height:320px;border-radius:50%;background:radial-gradient(closest-side,#fffbd0 0,rgba(255,240,150,.7) 45%,transparent)}
-.rays{background:repeating-conic-gradient(rgba(255,255,255,.38) 0 6deg,transparent 6deg 12deg);top:-120px}
+.rays{background:repeating-conic-gradient(transparent 0,rgba(255,255,255,.38) 3deg,transparent 6deg,transparent 12deg);top:-120px}
 .spot{background:radial-gradient(closest-side,rgba(255,255,255,.55),transparent);top:40px}
 .cl{background:#fff;opacity:.92;box-shadow:0 4px 0 rgba(120,170,230,.35)}
 .cl::before{box-shadow:none}
@@ -5760,6 +5760,30 @@ function wkSpark(at,plus){
 })();
 function wkToast(t){if(window.LB&&LB.toast)LB.toast(t,2600)}
 
+/* ================= soft light : helpers so that no light effect has a hard edge =================
+   softRays : turning rays with feathered sides that fade out with distance (a pre-rendered texture, scaled up : smooth)
+   softBar  : a streak of light, an elongated halo with no straight edge (replaces gradient rectangles)
+   softRing : a ring with a glow around its line
+   softBand : a long band of light whose sides and ends fade (slashes, beams) */
+const SOFT={tex:{}};
+function softRaysTex(col,n){
+  const key=col+n;if(SOFT.tex[key])return SOFT.tex[key];
+  const S=512,cv=document.createElement('canvas');cv.width=cv.height=S;const c=cv.getContext('2d'),h=S/2;
+  const rgb=col.match(/\d+/g)||[255,210,46];const C=a=>'rgba('+rgb[0]+','+rgb[1]+','+rgb[2]+','+a+')';
+  if(c.createConicGradient){const g=c.createConicGradient(0,h,h);
+    for(let i=0;i<n;i++){const a=i/n,s=1/n;g.addColorStop(a,C(0));g.addColorStop(a+s*.28,C(.55));g.addColorStop(a+s*.42,C(1));g.addColorStop(a+s*.56,C(.55));g.addColorStop(Math.min(1,a+s*.84),C(0))}
+    c.fillStyle=g;c.fillRect(0,0,S,S)}
+  else{for(let i=0;i<n;i++){c.save();c.translate(h,h);c.rotate(i/n*Math.PI*2);for(let k=0;k<6;k++){c.fillStyle=C(.18);const wd=h*Math.tan(Math.PI/n*.5)*(1-k/6);c.beginPath();c.moveTo(0,0);c.lineTo(h*1.5,-wd);c.lineTo(h*1.5,wd);c.closePath();c.fill()}c.restore()}}
+  /* fade with distance, and a soft core */
+  c.globalCompositeOperation='destination-in';const m=c.createRadialGradient(h,h,0,h,h,h);m.addColorStop(0,'rgba(0,0,0,.25)');m.addColorStop(.12,'rgba(0,0,0,1)');m.addColorStop(.55,'rgba(0,0,0,.55)');m.addColorStop(1,'rgba(0,0,0,0)');
+  c.fillStyle=m;c.fillRect(0,0,S,S);SOFT.tex[key]=cv;return cv}
+function softRays(c,x,y,r,rot,a,col,n){if(a<=0)return;const t=softRaysTex(col||'255,210,46',n||18);c.save();c.globalCompositeOperation='lighter';c.globalAlpha=Math.min(1,a);c.translate(x,y);c.rotate(rot);c.drawImage(t,-r,-r,r*2,r*2);c.restore()}
+function softBar(c,x,y,len,wid,ang,col,a){if(a<=0)return;c.save();c.globalCompositeOperation='lighter';c.globalAlpha=Math.min(1,a);c.translate(x,y);c.rotate(ang||0);c.scale(wid/len,1);
+  const g=c.createRadialGradient(0,0,0,0,0,len/2);g.addColorStop(0,col.replace('A','1'));g.addColorStop(.35,col.replace('A','.55'));g.addColorStop(1,col.replace('A','0'));c.fillStyle=g;c.beginPath();c.arc(0,0,len/2,0,Math.PI*2);c.fill();c.restore()}
+function softRing(c,x,y,rx,ry,col,lw,a){if(a<=0)return;c.save();c.globalCompositeOperation='lighter';
+  for(const [k,al] of [[3.2,.16],[1.9,.3],[1,1]]){c.globalAlpha=Math.min(1,a)*al;c.strokeStyle=col;c.lineWidth=lw*k;c.beginPath();c.ellipse(x,y,Math.max(.1,rx),Math.max(.1,ry),0,0,Math.PI*2);c.stroke()}c.restore()}
+function softBand(c,x,y,len,wid,ang,col,a){softBar(c,x,y,len,wid*3,ang,col,a*.35);softBar(c,x,y,len,wid,ang,col,a)}
+
 /* ================= Level up : a short show after every attribute upgrade =================
    The agent's real 3D model spins on a pedestal (drawn on the WebGL canvas, brought above the agent screen),
    "LEVEL UP!" pops, and each attribute has its own effect (hearts for Health, speed lines for Speed ...).
@@ -5947,7 +5971,7 @@ const FXSH={
 /* helpers */
 function fxFlash(col,dur,a){fxSp({f:1,life:dur||.2,draw:(c,t,dt,s)=>{c.globalCompositeOperation='lighter';c.globalAlpha=(a||.8)*(1-t/s.life);c.fillStyle=col||'#fff';c.fillRect(-LV.cx,-LV.cy,FX.w,FX.h)}})}
 function fxRing(o){return fxSp({d:o.d||0,life:o.life||.7,f:o.f||0,draw:(c,t,dt,s)=>{const k=t/s.life,e=1-Math.pow(1-k,3),r=U(o.r0||20)+U(o.r1||200)*e;
-  c.globalCompositeOperation='lighter';c.globalAlpha=(o.a||1)*(1-k);c.strokeStyle=o.c;c.lineWidth=U(o.w||6)*(1-k*.7);c.beginPath();c.ellipse(o.x||0,o.y||0,r,r*(o.ey||1),0,0,TAU);c.stroke()}})}
+  softRing(c,o.x||0,o.y||0,r,r*(o.ey||1),o.c,U(o.w||6)*(1-k*.7)*.65,(o.a||1)*(1-k))}})}
 function fxBurst(n,o){for(let i=0;i<n;i++){const an=o.a0!==undefined?R(o.a0,o.a1):R(0,TAU),v=U(R(o.v0,o.v1));
   fxP(Object.assign({},o.p,{x:(o.x||0)+U(R(-(o.j||0),o.j||0)),y:(o.y||0)+U(R(-(o.j||0),o.j||0)),vx:Math.cos(an)*v,vy:Math.sin(an)*v*(o.ey||1),d:o.d||0,
     s:U(R(o.s0,o.s1)),s1:o.g1?U(R(o.s0,o.s1))*o.g1:null,life:R(o.l0||.6,o.l1||1),c:Array.isArray(o.c)?pick1(o.c):o.c,r:R(0,TAU),vr:o.vr?R(-o.vr,o.vr):0,pts:o.rock?rockPts():null}))}}
@@ -6042,9 +6066,7 @@ const LVFX={
     fxSp({d:.1,life:2.4,draw:(c,t,dt,s)=>{const k=t/s.life,fa=Math.min(1,t/.3)*(k>.75?(1-k)/.25:1);c.globalCompositeOperation='lighter';
       for(let st=0;st<2;st++)for(let i=0;i<18;i++){const ph=i/18,h=((t*.75+ph)%1),y=LV.fy-h*U(280),an=t*4.5+ph*TAU*1.6+st*Math.PI,x=Math.cos(an)*U(100),z=Math.sin(an),r=U(6+5*(z+1));
         c.globalAlpha=fa*(.35+.45*(z+1)/2)*Math.min(1,h*5)*Math.min(1,(1-h)*4);const g=c.createRadialGradient(x,y,0,x,y,r*2.4);g.addColorStop(0,st?'#eafff1':'#7dffb0');g.addColorStop(1,'rgba(79,224,138,0)');c.fillStyle=g;c.beginPath();c.arc(x,y,r*2.4,0,TAU);c.fill()}}});
-    fxSp({d:.05,life:2.4,draw:(c,t,dt,s)=>{const k=t/s.life,a=Math.min(1,t/.35)*(k>.7?(1-k)/.3:1)*(.75+.25*Math.sin(t*9)),w=U(95);c.globalCompositeOperation='lighter';
-      const g=c.createLinearGradient(-w,0,w,0);g.addColorStop(0,'rgba(79,224,138,0)');g.addColorStop(.5,'rgba(140,255,180,'+(.42*a)+')');g.addColorStop(1,'rgba(79,224,138,0)');c.fillStyle=g;c.fillRect(-w,-LV.cy,w*2,LV.fy+LV.cy);
-      const g2=c.createLinearGradient(-w*.3,0,w*.3,0);g2.addColorStop(0,'rgba(255,255,255,0)');g2.addColorStop(.5,'rgba(235,255,240,'+(.35*a)+')');g2.addColorStop(1,'rgba(255,255,255,0)');c.fillStyle=g2;c.fillRect(-w*.3,-LV.cy,w*.6,LV.fy+LV.cy)}});
+    fxSp({d:.05,life:2.4,draw:(c,t,dt,s)=>{const k=t/s.life,a=Math.min(1,t/.35)*(k>.7?(1-k)/.3:1)*(.75+.25*Math.sin(t*9));const ph=(LV.fy+LV.cy)*2.1,py=(LV.fy-LV.cy)/2;softBar(c,0,py,ph,U(200),0,'rgba(140,255,180,A)',.5*a);softBar(c,0,py,ph*.9,U(56),0,'rgba(235,255,240,A)',.45*a)}});
     for(let i=0;i<20;i++)fxP({d:R(.15,1.5),x:U(R(-110,110)),y:LV.fy-U(R(0,30)),vx:U(R(-60,60)),vy:-U(R(110,220)),drag:.7,life:R(1.2,1.8),sh:'leaf',s:U(R(7,12)),c:pick1(['#7ee07a','#4fc46a','#b6f07a']),r:R(0,TAU),vr:R(-4,4),fi:.15});
     for(let i=0;i<24;i++)fxP({d:R(.2,1.7),x:U(R(-120,120)),y:LV.fy-U(R(0,40)),vx:U(R(-30,30)),vy:-U(R(140,260)),drag:.6,life:R(1,1.5),sh:'plus',s:U(R(7,13)),c:pick1(['#4fe08a','#eafff1']),gl:1,fi:.1});
     for(const d of [.25,.85,1.45])fxRing({y:LV.fy,c:'#4fe08a',r0:40,r1:240,w:7,life:.9,ey:.3,d});
@@ -6093,8 +6115,7 @@ const LVFX={
   ChromeGun(col){sfxSafe('chrome');
     const T0=.45,TP=1.65,spd=t=>t<T0?1:t<TP?1+lvEase((t-T0)/(TP-T0))*1:2,gx=FX.w*.76-LV.cx,gy=U(100),RG=U(74);   /* the counter sits right, under the plate ; the discs fly on the left */
     /* chrome gleam sweeping over the agent (front layer, kept to the agent's outline area) */
-    for(const d of [.15,.75,1.35])fxSp({d,f:1,life:.5,draw:(c,t,dt,s)=>{const k=t/s.life,y=U(-150)+k*U(300);c.beginPath();c.ellipse(0,U(5),U(78),U(112),0,0,TAU);c.clip();
-      c.globalCompositeOperation='lighter';c.rotate(-.35);const g=c.createLinearGradient(0,y-U(26),0,y+U(26));g.addColorStop(0,'rgba(255,255,255,0)');g.addColorStop(.5,'rgba(230,242,255,.55)');g.addColorStop(1,'rgba(255,255,255,0)');c.fillStyle=g;c.fillRect(U(-160),y-U(26),U(320),U(52))}});
+    for(const d of [.15,.75,1.35])fxSp({d,f:1,life:.5,draw:(c,t,dt,s)=>{const k=t/s.life,y=U(-140)+k*U(280),fa=Math.sin(k*Math.PI);softBar(c,0,y,U(70),U(260),Math.PI/2-.35,'rgba(235,245,255,A)',.6*fa)}});
     /* rev counter */
     fxSp({d:.1,life:2.9,draw:(c,t,dt,s)=>{const pop=t<.25?Math.sin(t/.25*Math.PI/2)*1.12:1,fa=t>2.4?1-(t-2.4)/.5:1,v=spd(t)+(t>TP?Math.sin(t*60)*.03:0);
       c.globalAlpha=fa;c.translate(gx,gy);c.scale(pop,pop);
@@ -6296,7 +6317,7 @@ const LVBG={
   ChromeGun:{init(s,w,h){s.g=[[w*.06,h*.12,90,9,1],[w*.95,h*.85,120,12,-1],[w*.98,h*.08,60,8,-1],[w*.03,h*.9,70,8,1]];s.sp=bgArr(40,()=>({x:R(0,w),d:R(0,1),v:R(300,600)}))},
     draw(c,T,w,h,cx,cy,s){const A=lvIn(T),u=LV.u,TP=1.65,v=T<.45?1:T<TP?1+lvEase((T-.45)/1.2):2,red=T>TP?.5+.5*Math.sin(T*18):0;
       c.globalCompositeOperation='lighter';const off=(T*120*v)%(160*u);
-      for(let x=-h-160*u+off;x<w+h;x+=160*u){c.globalAlpha=A*.09;c.fillStyle='#e3ecf5';c.beginPath();c.moveTo(x,0);c.lineTo(x+60*u,0);c.lineTo(x+60*u-h,h);c.lineTo(x-h,h);c.fill()}
+      for(let x=-h-160*u+off;x<w+h;x+=160*u)softBar(c,x+30*u-h/2,h/2,Math.hypot(h,h)*1.25,70*u,Math.PI/4,'rgba(227,236,245,A)',A*.16);
       c.globalCompositeOperation='source-over';
       for(const [gx,gy,r,n,dir] of s.g){c.save();c.translate(gx,gy);c.rotate(dir*T*v*1.2);c.globalAlpha=A*.34;c.fillStyle='#aab4c4';c.beginPath();
         for(let i=0;i<n*2;i++){const a=i/(n*2)*TAU,rr=(i%2?r:r*.82)*u;c.lineTo(Math.cos(a-.12)*rr,Math.sin(a-.12)*rr);c.lineTo(Math.cos(a+.12)*rr,Math.sin(a+.12)*rr)}c.closePath();c.fill();
@@ -6310,7 +6331,7 @@ const LVBG={
       for(const q of s.bb){const sw=Math.sin(T*1.3+q.k)*6*u;c.fillStyle='rgba(20,6,40,.85)';c.fillRect(q.x+sw,0,q.wd*u,h);for(let y=h*.1;y<h;y+=h*.18){c.fillRect(q.x+sw-2,y,q.wd*u+4,4)}
         c.save();c.translate(q.x+sw+q.wd*u/2,h*.3+((q.k*50)%h*.4));c.rotate(-.6);c.beginPath();c.ellipse(16*u,0,22*u,5*u,0,0,TAU);c.fill();c.restore()}
       for(const q of s.pt){const x=((q.x-q.v*T*1.4)%(w+40)+w+40)%(w+40)-20,y=((q.y+q.v*T*.6)%(h+40)+h+40)%(h+40)-20;c.save();c.translate(x,y);c.rotate(T*2+q.k);c.globalAlpha=A*.9;c.fillStyle='#ffb7e0';c.beginPath();c.ellipse(0,0,q.s*u,q.s*.55*u,0,0,TAU);c.fill();c.restore()}
-      if(X){c.globalCompositeOperation='lighter';for(const [a,o] of [[-.6,0],[.6,.06]]){const k=Math.min(1,(T-1.56-o)/.08);if(k<=0)continue;c.save();c.translate(w/2,h/2);c.rotate(a);c.globalAlpha=X;c.fillStyle='#e2c8ff';c.fillRect(-w*k,-3*u,w*2*k,6*u);c.globalAlpha=X*.3;c.fillRect(-w*k,-14*u,w*2*k,28*u);c.restore()}}
+      if(X){c.globalCompositeOperation='lighter';for(const [a,o] of [[-.6,0],[.6,.06]]){const k=Math.min(1,(T-1.56-o)/.08);if(k<=0)continue;softBand(c,w/2,h/2,w*2.4*k,12*u,a+Math.PI/2,'rgba(226,200,255,A)',X)}}
       c.globalCompositeOperation='source-over';bgVig(c,w,h,'rgba(10,0,25,.95)',A*.6)}},
   Accumulation:{init(s,w,h){s.d=bgArr(50,()=>({x:R(0,w),y:R(0,h),k:R(0,TAU),v:R(10,30)}))},
     draw(c,T,w,h,cx,cy,s){const A=lvIn(T),u=LV.u,q=LV.acc||{TX:w*.14-cx,TY:0,RT:h*.27,TH:1.56},tx=q.TX+cx,ty=q.TY+cy,M=Math.hypot(w,h),
@@ -6543,11 +6564,9 @@ function nmShow(name){
     c.save();c.translate(cx+shx,cy+shy);
     /* rays, faster during the wind-up */
     const rayA=T<NMT.shat?Math.min(1,T/.5)*(T>NMT.slam?1:T>NMT.g1?.8:.5):Math.max(0,1-(T-NMT.shat)/.2);
-    if(rayA>0){c.globalCompositeOperation='lighter';c.save();c.rotate(T*(T>NMT.g1&&T<NMT.slam?1.6:.35));
-      for(let i=0;i<20;i++){c.rotate(TAU/20);const g=c.createLinearGradient(0,0,far,0);g.addColorStop(0,'rgba(255,210,46,'+(.34*rayA)+')');g.addColorStop(1,'rgba(255,210,46,0)');c.fillStyle=g;c.beginPath();c.moveTo(0,0);c.lineTo(far,-70);c.lineTo(far,70);c.closePath();c.fill()}c.restore()}
+    softRays(c,0,0,far*1.1,T*(T>NMT.g1&&T<NMT.slam?1.6:.35),.55*rayA,'255,210,46',16);
     /* gold shine bar */
-    if(gx>-.1&&gx<1.1){const bx=(gx-.5)*ww*sc;c.globalCompositeOperation='lighter';c.rotate(.18);const g=c.createLinearGradient(bx-60,0,bx+60,0);g.addColorStop(0,'rgba(255,240,170,0)');g.addColorStop(.5,'rgba(255,250,220,.9)');g.addColorStop(1,'rgba(255,240,170,0)');
-      c.fillStyle=g;c.fillRect(bx-60,-wh,120,wh*2);c.rotate(-.18)}
+    if(gx>-.1&&gx<1.1){const bx=(gx-.5)*ww*sc,fa=Math.min(1,(gx+.1)*5,(1.1-gx)*5);softBar(c,bx,0,wh*2.4,110,.18,'rgba(255,240,180,A)',.9*fa);softBar(c,bx,0,wh*1.5,34,.18,'rgba(255,255,240,A)',fa)}
     /* wind-up : energy sucked in, electric arcs, a growing core */
     if(T>NMT.g1&&T<NMT.slam){const q=(T-NMT.g1)/(NMT.slam-NMT.g1);c.globalCompositeOperation='lighter';
       const g=c.createRadialGradient(0,0,0,0,0,ww*sc*.9);g.addColorStop(0,'rgba(255,220,90,'+(.5*q)+')');g.addColorStop(1,'rgba(255,170,0,0)');c.fillStyle=g;c.beginPath();c.arc(0,0,ww*sc*.9,0,TAU);c.fill();
@@ -6564,7 +6583,7 @@ function nmShow(name){
     /* shockwaves */
     c.globalCompositeOperation='lighter';
     for(const [t0,col,w0,r1] of [[NMT.slam,'#ffffff',18,1000],[NMT.slam+.06,'#ffd22e',26,700],[NMT.slam+.14,'#ff9500',12,1250],[NMT.crack2,'#ffffff',8,800],[NMT.shat,'#fff3b0',14,1300]]){
-      const k2=(T-t0)/.7;if(k2<0||k2>1)continue;const r=40+r1*E(k2);c.globalAlpha=1-k2;c.strokeStyle=col;c.lineWidth=w0*(1-k2*.7);c.beginPath();c.ellipse(0,0,r,r*.78,0,0,TAU);c.stroke()}
+      const k2=(T-t0)/.7;if(k2<0||k2>1)continue;const r=40+r1*E(k2);softRing(c,0,0,r,r*.78,col,w0*(1-k2*.7)*.6,1-k2)}
     c.globalAlpha=1;c.restore();
     /* the shatter : every piece of the dark "glass" falls away, the lobby shows through */
     if(T>=NMT.shat){const tt=T-NMT.shat;const gr=c.createRadialGradient(cx,cy,0,cx,cy,far);gr.addColorStop(0,'#3a2a8a');gr.addColorStop(.55,'#170f4a');gr.addColorStop(1,'#0a0526');
@@ -6573,14 +6592,14 @@ function nmShow(name){
         if(py-120>H)continue;const a=Math.max(0,1-Math.max(0,t2-.35)/.5);if(a<=0)continue;
         c.save();c.globalAlpha=a;c.translate(px,py);c.rotate(r);c.beginPath();s0.p.forEach((q,i)=>i?c.lineTo(q[0],q[1]):c.moveTo(q[0],q[1]));c.closePath();
         c.translate(-(cx+s0.m[0]),-(cy+s0.m[1]));c.fillStyle=gr;c.fill();   /* the path is fixed : the gradient follows the piece, so it carries its own patch of the background */
-        c.strokeStyle='rgba(255,255,255,.85)';c.lineWidth=2;c.stroke();c.globalCompositeOperation='lighter';c.globalAlpha=a*.07;c.fillStyle='#bfd0ff';c.fill();c.restore()}
-      if(tt<.2){c.globalCompositeOperation='lighter';c.globalAlpha=(1-tt/.2)*.35;c.fillStyle='#fff6d8';c.fillRect(0,0,W,H);c.globalAlpha=1;c.globalCompositeOperation='source-over'}}
+        c.strokeStyle='rgba(220,230,255,.45)';c.lineWidth=1.6;c.stroke();c.globalCompositeOperation='lighter';c.globalAlpha=a*.07;c.fillStyle='#bfd0ff';c.fill();c.restore()}
+      if(tt<.25){c.save();c.globalCompositeOperation='lighter';c.globalAlpha=(1-tt/.25)*.5;const fg=c.createRadialGradient(cx,cy,0,cx,cy,far);fg.addColorStop(0,'#fff6d8');fg.addColorStop(1,'rgba(255,246,216,0)');c.fillStyle=fg;c.fillRect(0,0,W,H);c.restore()}}
     /* comet trail (front) */
     if(trail.length>1&&T<NMT.land+.15){cf.globalCompositeOperation='lighter';cf.lineCap='round';cf.lineJoin='round';const fa=T<NMT.land?1:1-(T-NMT.land)/.15;
       for(const [lw,col,al] of [[60,'#ff9f00',.25],[30,'#ffd22e',.5],[10,'#fff8d8',.9]]){cf.strokeStyle=col;for(let i=1;i<trail.length;i++){cf.globalAlpha=al*fa*i/trail.length;cf.lineWidth=lw*trail[i][2]*sc;cf.beginPath();cf.moveTo(trail[i-1][0],trail[i-1][1]);cf.lineTo(trail[i][0],trail[i][1]);cf.stroke()}}cf.globalAlpha=1}
     /* landing : rings */
     if(T>=NMT.land&&T<NMT.land+.8){const k2=(T-NMT.land)/.8,px=tx+ww*tFs/NM_FONT/2,py=ty+tH/2;cf.globalCompositeOperation='lighter';
-      for(const [dl,col] of [[0,'#fff3b0'],[.1,'#ffd22e'],[.2,'#ffffff']]){const kk=k2-dl;if(kk<0)continue;cf.globalAlpha=Math.max(0,1-kk);cf.strokeStyle=col;cf.lineWidth=9*(1-kk);cf.beginPath();cf.ellipse(px,py,30+320*E(kk),20+110*E(kk),0,0,TAU);cf.stroke()}cf.globalAlpha=1}
+      for(const [dl,col] of [[0,'#fff3b0'],[.1,'#ffd22e'],[.2,'#ffffff']]){const kk=k2-dl;if(kk<0)continue;softRing(cf,px,py,30+320*E(kk),20+110*E(kk),col,6*(1-kk),Math.max(0,1-kk))}cf.globalAlpha=1}
     /* particles */
     for(let i=0;i<NM.P.length;i++){const p=NM.P[i];p.t+=dt;if(p.t>=p.life){NM.P.splice(i--,1);continue}const dr=Math.pow(p.dr,dt);p.vx*=dr;p.vy*=dr;p.vy+=p.g*dt;p.x+=p.vx*dt;p.y+=p.vy*dt;p.r+=p.vr*dt;
       const g=p.f?cf:c,a=1-p.t/p.life;g.globalAlpha=a;g.globalCompositeOperation=p.gl?'lighter':'source-over';g.fillStyle=p.c;g.strokeStyle=p.c;g.save();g.translate(p.x,p.y);
