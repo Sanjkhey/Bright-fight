@@ -6796,12 +6796,17 @@ function rbGem(x,y,w,rot,dk,rnd){
   s+='<polygon points="'+P(pts)+'" fill="none" stroke="#3a0012" stroke-width="'+Math.max(.8,w*.045).toFixed(2)+'" stroke-linejoin="round"/>';
   if(dk>0)s+='<polygon points="'+P(pts)+'" fill="#1a0010" opacity="'+dk.toFixed(2)+'"/>';
   return s+'</g>'}
-/* a mound of n gems : centre cx, base y, half width hw, height h */
-function rbPile(rnd,n,cx,by,hw,h,w0,w1){const g=[];
-  for(let i=0;i<n;i++){const u=rnd()*2-1,top=h*(1-u*u),v=Math.pow(rnd(),.65)*top;g.push({x:cx+u*hw,y:by-v,w:w0+rnd()*(w1-w0),r:(rnd()-.5)*70,d:v/h})}
-  g.sort((a,b)=>a.y-b.y);
-  return g.map(q=>rbGem(q.x,q.y,q.w*(1-.15*q.d),q.r,.32*q.d*rnd()+(rnd()<.2?.12:0),rnd)).join('')}
-function rbLoose(rnd,list){return list.map(q=>rbGem(q[0],q[1],q[2],(rnd()-.5)*80,q[3]||0,rnd)).join('')}
+/* a mound packed row by row from the base up (n is ignored) : every gem rests on the row below, no gaps.
+   A dark mass behind fills the holes between gems ; upper rows sit further back and are drawn first. */
+function rbPile(rnd,n,cx,by,hw,h,w0,w1){
+  const aw=(w0+w1)/2,dy=aw*.36,rows=[];let k=0;
+  for(let v=0;v<=h*.98;v+=dy,k++){const half=hw*Math.sqrt(Math.max(0,1-v/h)),cnt=Math.max(1,Math.round(2*half/(aw*.68))),step=cnt>1?2*half/(cnt-1):0;
+    for(let i=0;i<cnt;i++){const x=cnt>1?cx-half+i*step:cx;rows.push({x:x+(rnd()-.5)*aw*.25,y:by-v-aw*.18+(rnd()-.5)*dy*.35,w:w0+rnd()*(w1-w0),r:(rnd()-.5)*50,d:v/h})}}
+  rows.sort((a,b)=>a.y-b.y);
+  const mass='<path d="M'+(cx-hw)+' '+by+'Q'+cx+' '+(by-2*h)+' '+(cx+hw)+' '+by+'Z" fill="#4a0010"/>';
+  return mass+rows.map(q=>rbGem(q.x,q.y,q.w*(1-.12*q.d),q.r,(rnd()<.35?.18:0)+.1*q.d,rnd)).join('')}
+/* gems lying on the ground : nearly flat, with a contact shadow */
+function rbLoose(rnd,list){return list.map(q=>'<ellipse cx="'+q[0]+'" cy="'+(q[1]+q[2]*.26).toFixed(1)+'" rx="'+(q[2]*.55).toFixed(1)+'" ry="'+(q[2]*.13).toFixed(1)+'" fill="#0a0526" opacity=".45"/>'+rbGem(q[0],q[1],q[2],(rnd()-.5)*24,q[3]||0,rnd)).join('')}
 function rbSpark(list){return list.map((q,i)=>'<path class="rbsp" style="animation-delay:'+(i*.37).toFixed(2)+'s" transform="translate('+q[0]+','+q[1]+') scale('+(q[2]||1)+')" d="M0-7C1-1 1-1 7 0C1 1 1 1 0 7C-1 1-1 1-7 0C-1-1-1-1 0-7Z" fill="#fff"/>').join('')}
 const RB_DEFS='<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>'+
   '<radialGradient id="rbGlow"><stop offset="0" stop-color="#ff7d97" stop-opacity=".55"/><stop offset="1" stop-color="#ff7d97" stop-opacity="0"/></radialGradient>'+
@@ -6815,22 +6820,22 @@ const RB_DEFS='<svg width="0" height="0" style="position:absolute" aria-hidden="
   '</defs></svg>';
 function rbArt(t){
   const rnd=rbRng(1000+t*77),o='<svg viewBox="0 0 160 130" xmlns="http://www.w3.org/2000/svg">',sh='<ellipse cx="80" cy="118" rx="58" ry="8" fill="#0a0526" opacity=".35"/>';
-  if(t===0)return o+'<circle cx="80" cy="66" r="52" fill="url(#rbGlow)"/><ellipse cx="80" cy="112" rx="34" ry="7" fill="#0a0526" opacity=".35"/>'+rbGem(80,70,70,-8,0,rnd)+rbSpark([[118,34,1.3],[44,46,.9],[104,96,.8]])+'</svg>';
-  if(t===1)return o+sh+'<circle cx="80" cy="80" r="50" fill="url(#rbGlow)" opacity=".6"/>'+rbPile(rnd,14,80,108,50,50,24,36)+rbLoose(rnd,[[28,112,18,.1],[132,110,16,.15]])+rbSpark([[110,52],[52,66,.8]])+'</svg>';
+  if(t===0)return o+'<circle cx="80" cy="72" r="52" fill="url(#rbGlow)"/><ellipse cx="80" cy="110" rx="38" ry="8" fill="#0a0526" opacity=".45"/><ellipse cx="80" cy="108" rx="24" ry="4" fill="#0a0526" opacity=".5"/>'+rbGem(80,86,72,-4,0,rnd)+rbSpark([[118,34,1.3],[44,46,.9],[104,96,.8]])+'</svg>';
+  if(t===1)return o+sh+'<circle cx="80" cy="80" r="50" fill="url(#rbGlow)" opacity=".6"/>'+rbPile(rnd,14,80,114,48,44,22,32)+rbLoose(rnd,[[26,113,18,.1],[134,113,16,.15]])+rbSpark([[110,52],[52,66,.8]])+'</svg>';
   if(t===2)return o+sh+
     '<path d="M34 64C16 78 14 106 30 116c16 9 84 9 100 0 16-10 14-38-4-52z" fill="url(#rbSack)" stroke="#3a2008" stroke-width="2.5"/>'+
     '<path d="M46 74c-4 14-4 28 0 38M80 76v40M112 74c4 14 4 28 0 38" fill="none" stroke="#6a3a10" stroke-width="2" opacity=".55"/>'+
     '<path d="M30 64q50-14 100 0q-8 10-50 10t-50-10z" fill="#5a3210" stroke="#3a2008" stroke-width="2.5"/>'+
     rbPile(rnd,18,80,70,46,36,21,32)+
     '<path d="M30 66q50 12 100 0" fill="none" stroke="#8a5a2a" stroke-width="5"/><path d="M30 66q50 12 100 0" fill="none" stroke="#3a2008" stroke-width="1.5"/>'+
-    '<path d="M48 76q-6 10 2 18" fill="none" stroke="#c9a05a" stroke-width="3"/>'+rbLoose(rnd,[[26,116,16,.1],[136,114,18,.1]])+rbSpark([[118,40],[56,38,.8]])+'</svg>';
+    '<path d="M48 76q-6 10 2 18" fill="none" stroke="#c9a05a" stroke-width="3"/>'+rbLoose(rnd,[[24,115,16,.1],[138,114,18,.1]])+rbSpark([[118,40],[56,38,.8]])+'</svg>';
   if(t===3)return o+sh+
     '<path d="M26 60C2 76 0 108 22 118c22 9 96 9 118-2 20-12 16-42-6-56z" fill="url(#rbSack)" stroke="#3a2008" stroke-width="2.5"/>'+
     '<path d="M38 72c-6 16-6 32 0 44M80 74v46M124 72c6 16 6 32 0 44" fill="none" stroke="#6a3a10" stroke-width="2" opacity=".55"/>'+
     '<path d="M22 60q58-18 116 0q-10 12-58 12t-58-12z" fill="#5a3210" stroke="#3a2008" stroke-width="2.5"/>'+
     rbPile(rnd,28,80,66,56,50,21,33)+
     '<path d="M22 62q58 14 116 0" fill="none" stroke="#8a5a2a" stroke-width="6"/><path d="M22 62q58 14 116 0" fill="none" stroke="#3a2008" stroke-width="1.5"/>'+
-    rbPile(rnd,10,30,122,22,12,15,22)+rbPile(rnd,9,132,122,22,10,14,21)+rbLoose(rnd,[[8,92,16,.1],[150,86,15,.15]])+rbSpark([[124,28],[44,24,.9],[84,14,.7]])+'</svg>';
+    rbPile(rnd,10,28,120,22,14,15,21)+rbPile(rnd,9,134,120,20,12,14,20)+rbLoose(rnd,[[10,118,14,.1],[152,117,13,.15]])+rbSpark([[124,28],[44,24,.9],[84,14,.7]])+'</svg>';
   if(t===4)return o+sh+
     '<path d="M20 58l8-34h104l8 34z" fill="url(#rbWoodD)" stroke="#2a1404" stroke-width="2.5"/><path d="M40 24v34M80 24v34M120 24v34" stroke="url(#rbBand)" stroke-width="6"/>'+
     rbPile(rnd,32,80,66,62,46,20,32)+
@@ -6838,7 +6843,7 @@ function rbArt(t){
     '<path d="M16 80h128M16 98h128" stroke="#5a2a0a" stroke-width="1.5" opacity=".6"/>'+
     '<path d="M38 62v56M122 62v56" stroke="url(#rbBand)" stroke-width="7"/><path d="M16 64h128" stroke="url(#rbBand)" stroke-width="6"/>'+
     '<rect x="71" y="72" width="18" height="22" rx="4" fill="url(#rbBand)" stroke="#5a3a00" stroke-width="2"/><circle cx="80" cy="82" r="3" fill="#3a2008"/>'+
-    rbLoose(rnd,[[8,120,16,.1],[150,118,17,.1],[24,124,13,.2]])+rbSpark([[130,30],[34,34,.9],[96,20,.8]])+'</svg>';
+    rbLoose(rnd,[[8,117,16,.1],[151,116,17,.1],[22,122,13,.2]])+rbSpark([[130,30],[34,34,.9],[96,20,.8]])+'</svg>';
   return o+'<circle cx="80" cy="64" r="64" fill="url(#rbGold)"/>'+sh+
     '<path d="M16 58l8-36h112l8 36z" fill="url(#rbRoyD)" stroke="#1a0640" stroke-width="2.5"/><path d="M40 22v36M80 22v36M120 22v36" stroke="url(#rbBand)" stroke-width="6"/>'+
     rbPile(rnd,36,80,64,66,48,20,32)+
@@ -6846,7 +6851,7 @@ function rbArt(t){
     '<path d="M12 60h136v52a6 6 0 0 1-6 6H18a6 6 0 0 1-6-6z" fill="url(#rbRoy)" stroke="#1a0640" stroke-width="2.5"/>'+
     '<path d="M34 60v58M126 60v58" stroke="url(#rbBand)" stroke-width="8"/><path d="M12 62h136M12 116h136" stroke="url(#rbBand)" stroke-width="6"/>'+
     '<rect x="69" y="70" width="22" height="26" rx="5" fill="url(#rbBand)" stroke="#5a3a00" stroke-width="2"/>'+rbGem(80,82,12,0,0,rnd)+
-    rbLoose(rnd,[[6,118,17,.1],[154,116,17,.1],[20,124,13,.2],[140,124,13,.2]])+rbSpark([[136,24,1.2],[24,28],[100,8,.8],[56,8,.7]])+'</svg>';
+    rbLoose(rnd,[[6,117,17,.1],[154,116,17,.1],[20,122,13,.2],[140,122,13,.2]])+rbSpark([[136,24,1.2],[24,28],[100,8,.8],[56,8,.7]])+'</svg>';
 }
 
 /* ================= Shop : the "counter" (layout C) =================
